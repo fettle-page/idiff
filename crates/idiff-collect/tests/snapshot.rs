@@ -44,3 +44,12 @@ fn real_snapshot_has_startup_path_and_shell_extensions() {
         assert!(!snap.items.is_empty(), "{kind:?} has no items");
     }
 }
+
+#[test]
+fn real_snapshot_has_firewall_rules_and_network() {
+    let firewall = read_one(SourceKind::Firewall);
+    assert!(firewall.ok, "{:?}", firewall.error);
+    assert!(!firewall.items.is_empty());
+    let network = read_one(SourceKind::Network);
+    assert!(network.ok, "{:?}", network.error);
+}
