@@ -66,10 +66,39 @@ fn discord_changes_are_split_correctly() {
 
     assert_eq!(owner(r"hkcu\native\discord"), Owner::App);
     assert_eq!(owner(r"appdata\local\discord"), Owner::App);
-    assert_eq!(owner("discord.lnk"), Owner::App);
-    // The Store updated itself meanwhile: a Microsoft package that only changed version.
-    assert_eq!(owner("microsoft.windowsstore"), Owner::Windows);
-    assert_eq!(r.len(), 10, "{r:#?}");
+    assert_eq!(r.len(), 8, "{r:#?}");
+}
+
+#[test]
+fn a_microsoft_store_app_updating_itself_is_windows() {
+    let (_, after) = discord();
+    let subject = find_subject(&diff(&after, &after), None, &[]);
+    let ms = "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US";
+    let store = |version: &str| Item {
+        key: "microsoft.windowsstore_8wekyb3d8bbwe".into(),
+        label: "Microsoft Store".into(),
+        target: Some(format!(
+            r"c:\program files\windowsapps\microsoft.windowsstore_{version}_x64__8wekyb3d8bbwe"
+        )),
+        props: BTreeMap::from([("version".into(), version.into()), ("publisher".into(), ms.into())]),
+    };
+    let d = Delta {
+        sources: BTreeMap::from([(
+            SourceKind::Packaged,
+            vec![Change::Modified {
+                before: store("22409.1401.5.0"),
+                after: store("22410.1401.3.0"),
+                fields: vec!["target".into(), "version".into()],
+            }],
+        )]),
+        notes: BTreeMap::new(),
+    };
+    let r = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
+    assert_eq!(r[0].owner, Owner::Windows);
+    assert_eq!(
+        r[0].reason,
+        Reason::Noise("a Microsoft Store app updated itself".into())
+    );
 }
 
 #[test]
@@ -329,7 +358,8 @@ fn signer_rules_use_the_publisher() {
     let r = attribute(&d, &subject, &NoiseList::parse("").unwrap(), &env);
     assert_eq!(find(&r, "zoomsvc").reason, Reason::SignerMatchesPublisher);
     assert_eq!(find(&r, "mssvc").reason, Reason::WindowsComponent);
-    assert_eq!(find(&r, "winsvc").reason, Reason::WindowsComponent);
+    // Something new in the Windows folder isn't Windows' without Windows' signature (kill test).
+    assert_eq!(find(&r, "winsvc").reason, Reason::Unattributed);
 
     // A Microsoft app's own Windows-folder and Microsoft-signed changes aren't hidden as Windows'.
     let teams = Subject {
@@ -418,4 +448,106 @@ fn microsoft_rule_is_skipped_for_microsoft_apps() {
     let env = BTreeMap::new();
     assert_ne!(attribute(&d, &office, &noise, &env)[0].owner, Owner::Windows);
     assert_eq!(attribute(&d, &discord, &noise, &env)[0].owner, Owner::Windows);
+}
+
+/// Cases the 30-app kill test found: added items in Windows' folders, or signed by Microsoft for a
+/// vendor, that are the app's.
+mod kill_test {
+    use super::*;
+
+    fn subject(name: &str, publisher: &str, dir: &str) -> Subject {
+        Subject {
+            name: name.into(),
+            publisher: Some(publisher.into()),
+            install_dirs: vec![dir.into()],
+            ..Default::default()
+        }
+    }
+
+    fn env() -> BTreeMap<String, String> {
+        BTreeMap::from([("SystemRoot".to_string(), r"C:\Windows".to_string())])
+    }
+
+    fn one(kind: SourceKind, change: Change, subject: &Subject) -> Attributed {
+        let d = Delta {
+            sources: BTreeMap::from([(kind, vec![change])]),
+            notes: BTreeMap::new(),
+        };
+        attribute(&d, subject, &NoiseList::builtin(), &env()).remove(0)
+    }
+
+    #[test]
+    fn a_whql_signed_driver_in_system32_is_not_windows() {
+        let malwarebytes = subject(
+            "Malwarebytes",
+            "Malwarebytes",
+            r"c:\program files\malwarebytes\anti-malware",
+        );
+        let driver = item(
+            "mbamswissarmy",
+            Some(r"c:\windows\system32\drivers\mbamswissarmy.sys"),
+            &[("signer", "Microsoft Windows Hardware Compatibility Publisher")],
+        );
+        let a = one(SourceKind::Drivers, Change::Added(driver), &malwarebytes);
+        assert_ne!(a.owner, Owner::Windows, "{a:?}");
+    }
+
+    #[test]
+    fn a_vendor_service_in_system32_is_the_apps_by_signer() {
+        let dropbox = subject("Dropbox", "Dropbox, Inc.", r"c:\program files (x86)\dropbox\client");
+        let service = item(
+            "dbxsvc",
+            Some(r"c:\windows\system32\dbxsvc.exe"),
+            &[("signer", "Dropbox, Inc")],
+        );
+        let a = one(SourceKind::Services, Change::Added(service), &dropbox);
+        assert_eq!(a.owner, Owner::App);
+        assert_eq!(a.reason, Reason::SignerMatchesPublisher);
+    }
+
+    #[test]
+    fn an_uninstall_shortcut_to_msiexec_is_not_windows() {
+        let audacity = subject("Audacity 4.0", "Audacity Team", r"c:\program files\audacity");
+        let shortcut = Item {
+            key: r"c:\programdata\microsoft\windows\start menu\programs\audacity 4.0\uninstall audacity 4.0.lnk".into(),
+            label: r"Start menu (all users)\Audacity 4.0\Uninstall Audacity 4.0.lnk".into(),
+            target: Some(r"c:\windows\system32\msiexec.exe".into()),
+            props: BTreeMap::from([
+                ("root".into(), "Start menu (all users)".into()),
+                ("kind".into(), "shortcut".into()),
+                ("signer".into(), "Microsoft Windows".into()),
+            ]),
+        };
+        let a = one(SourceKind::Folders, Change::Added(shortcut), &audacity);
+        assert_ne!(a.owner, Owner::Windows, "{a:?}");
+    }
+
+    #[test]
+    fn an_added_item_signed_as_windows_is_windows() {
+        let dropbox = subject("Dropbox", "Dropbox, Inc.", r"c:\program files (x86)\dropbox\client");
+        for signer in ["Microsoft Windows", "microsoft corporation"] {
+            let service = item("wuauserv", Some(r"c:\program files\x\y.exe"), &[("signer", signer)]);
+            let a = one(SourceKind::Services, Change::Added(service), &dropbox);
+            assert_eq!(a.reason, Reason::WindowsComponent, "{signer}");
+        }
+    }
+
+    #[test]
+    fn a_windows_folder_alone_hides_only_changes_to_existing_items() {
+        let dropbox = subject("Dropbox", "Dropbox, Inc.", r"c:\program files (x86)\dropbox\client");
+        let svchost = |start: &str| item("bits", Some(r"c:\windows\system32\svchost.exe"), &[("start", start)]);
+        let added = one(SourceKind::Services, Change::Added(svchost("2")), &dropbox);
+        assert_ne!(added.owner, Owner::Windows, "{added:?}");
+        let modified = Change::Modified {
+            before: svchost("2"),
+            after: svchost("3"),
+            fields: vec!["start".into()],
+        };
+        assert_eq!(
+            one(SourceKind::Services, modified, &dropbox).reason,
+            Reason::WindowsComponent
+        );
+        let removed = one(SourceKind::Services, Change::Removed(svchost("3")), &dropbox);
+        assert_eq!(removed.reason, Reason::WindowsComponent);
+    }
 }

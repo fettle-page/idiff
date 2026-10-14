@@ -141,7 +141,8 @@
           "label": "AppData\\Local\\Microsoft",
           "target": null,
           "props": {
-            "root": "AppData\\Local"
+            "root": "AppData\\Local",
+            "kind": "folder"
           }
         }
       ]
