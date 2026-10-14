@@ -11,6 +11,8 @@ const PROPS: &[(&str, &str)] = &[
     ("Protocol", "protocol"),
     ("LPort", "lport"),
     ("Svc", "svc"),
+    // The package a Store app's rule is for; those rules have no App.
+    ("PFN", "pfn"),
 ];
 
 /// One rule. The data is `v2.33|Field=value|Field=value|…`; a field that appears more than once
@@ -96,5 +98,13 @@ mod tests {
                 .is_some_and(|t| t.ends_with(r"\system32\svchost.exe"))
         );
         assert_eq!(parse_rule("x", "v2.10|Action=Block|Dir=Out|").target, None);
+
+        // Rules for Store apps name the package instead of a program.
+        let store = parse_rule(
+            "{78E1CD88-49E3-476E-B926-580E596AD309}",
+            "v2.31|Action=Allow|Active=TRUE|Dir=In|PFN=Microsoft.WindowsStore_8wekyb3d8bbwe|Name=@{Microsoft.WindowsStore}|",
+        );
+        assert_eq!(store.target, None);
+        assert_eq!(store.props["pfn"], "microsoft.windowsstore_8wekyb3d8bbwe");
     }
 }
