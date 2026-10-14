@@ -15,6 +15,8 @@ pub const NOT_BUILT_YET: &str = "not built yet";
 pub const TASKS_PARTIAL: &str = "some tasks are only visible to administrators";
 /// Why a source that only administrators can read wasn't read, as in "Couldn't check {source}: …".
 pub const NEEDS_ADMIN: &str = "needs administrator";
+/// The install command couldn't be started because Windows didn't find it.
+pub const COMMAND_NOT_FOUND: &str = "That command wasn't found. Check its name, or give its full path.";
 
 /// The subject when nothing says which app was installed.
 pub const UNKNOWN_APP: &str = "Unknown app";
