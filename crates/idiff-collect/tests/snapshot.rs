@@ -27,3 +27,21 @@ fn sources_not_built_yet_are_failed_not_empty() {
     assert!(!network.ok && network.items.is_empty());
     assert_eq!(network.error.as_deref(), Some("not built yet"));
 }
+
+#[test]
+fn real_snapshot_has_services_and_drivers() {
+    let s = snapshot(&SnapshotOptions {
+        only: Some(vec![SourceKind::Services, SourceKind::Drivers]),
+        ..Default::default()
+    });
+    let services = &s.sources[&SourceKind::Services];
+    let drivers = &s.sources[&SourceKind::Drivers];
+    assert!(services.ok, "{:?}", services.error);
+    assert!(drivers.ok, "{:?}", drivers.error);
+    let has = |items: &[idiff_core::model::Item], key: &str| items.iter().any(|i| i.key == key);
+    assert!(has(&services.items, "eventlog"));
+    assert!(has(&drivers.items, "tcpip"));
+    assert!(!has(&services.items, "tcpip") && !has(&drivers.items, "eventlog"));
+    // Per-user instances change at every sign-in, so only their templates are listed.
+    assert!(!services.items.iter().any(|i| i.key.starts_with("cdpusersvc_")));
+}

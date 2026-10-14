@@ -2,6 +2,7 @@
 //! `pub fn read() -> Result<SourceOutput, String>` that does the reading.
 
 pub mod programs;
+pub mod services;
 
 #[cfg(windows)]
 use crate::SourceOutput;
@@ -13,6 +14,8 @@ use idiff_core::model::SourceKind;
 pub fn source(kind: SourceKind) -> crate::runner::Source {
     let read: fn() -> Result<SourceOutput, String> = match kind {
         SourceKind::Programs => programs::read,
+        SourceKind::Services => services::read_services,
+        SourceKind::Drivers => services::read_drivers,
         _ => || Err("not built yet".into()),
     };
     Box::new(move || read().and_then(|out| serde_json::to_value(out).map_err(|e| e.to_string())))
