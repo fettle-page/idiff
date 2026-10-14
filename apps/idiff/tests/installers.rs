@@ -1,6 +1,6 @@
 //! Waiting for installers and uninstallers that keep working after the command returns.
 
-use idiff::run::is_installer;
+use idiff::run::{is_installer, temp_dir_candidates};
 
 const TEMP: &str = r"C:\Users\Niccolò\AppData\Local\Temp";
 
@@ -49,6 +49,29 @@ fn anything_running_from_temp_counts() {
     assert!(installer("x.exe", Some(r"C:\USERS\NICCOLÒ\APPDATA\LOCAL\TEMP\x.exe")));
     assert!(!installer("x.exe", Some(r"C:\Users\Niccolò\AppData\Local\Temp2\x.exe")));
     assert!(!installer("vlc.exe", Some(r"C:\Program Files\VideoLAN\VLC\vlc.exe")));
+
+    // SYSTEM's temp too: installers started by a service (updaters) run from there.
+    let env = |name: &str| match name {
+        "TEMP" => Some(TEMP.to_string()),
+        "SystemRoot" => Some(r"C:\Windows".to_string()),
+        _ => None,
+    };
+    let temps = temp_dir_candidates(env);
+    assert_eq!(temps, [TEMP.to_string(), r"C:\Windows\Temp".to_string()]);
+    assert!(is_installer(
+        "x.exe",
+        Some(r"C:\WINDOWS\Temp\{1A2B}\x.exe"),
+        true,
+        &temps
+    ));
+    assert!(!is_installer(
+        "x.exe",
+        Some(r"C:\Windows\Temporary\x.exe"),
+        true,
+        &temps
+    ));
+    assert!(!is_installer("x.exe", Some(r"C:\Windows\System32\x.exe"), true, &temps));
+    assert!(temp_dir_candidates(|_| None).is_empty());
 }
 
 #[test]

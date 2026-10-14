@@ -40,6 +40,7 @@ pub fn run(
         let deadline = Instant::now() + timeout;
         let started = SystemTime::now();
         let outcome = run_in_job(command, timeout).map_err(|e| e.to_string())?;
+        eprintln!("{}", copy::WAITING_FOR_INSTALLER);
         // Uninstallers often copy themselves to %TEMP% and restart from there, outside the job,
         // so the command (winget included) reports success while they're still at work.
         wait_for_installers(

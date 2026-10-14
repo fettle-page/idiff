@@ -88,12 +88,21 @@ pub fn is_installer(name: &str, image: Option<&str>, service_session: bool, temp
         || stem == "update"
 }
 
+/// The temp folders installers run from, as `var` gives them: the user's (%TEMP%, %TMP%) and
+/// SYSTEM's (`%SystemRoot%\Temp`), where installers started by a service, such as updaters, run.
+pub fn temp_dir_candidates(var: impl Fn(&str) -> Option<String>) -> Vec<String> {
+    let mut dirs: Vec<String> = ["TEMP", "TMP"].iter().filter_map(|name| var(name)).collect();
+    dirs.extend(var("SystemRoot").map(|root| format!(r"{}\Temp", root.trim_end_matches('\\'))));
+    dirs.dedup();
+    dirs
+}
+
 #[cfg(windows)]
 pub use windows_impl::{run_in_job, wait_for_installers, wait_for_msi_idle};
 
 #[cfg(windows)]
 mod windows_impl {
-    use super::{RunOutcome, is_installer, quote_args};
+    use super::{RunOutcome, is_installer, quote_args, temp_dir_candidates};
     use idiff_core::copy;
     use std::io;
     use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
@@ -256,11 +265,10 @@ mod windows_impl {
         UNIX_EPOCH_AS_FILETIME + (since_unix.as_nanos() / 100) as u64
     }
 
-    /// %TEMP% and %TMP% as full long paths, the form process image paths come in.
+    /// The temp folders as full long paths, the form process image paths come in.
     fn temp_dirs() -> Vec<String> {
-        let mut dirs: Vec<String> = ["TEMP", "TMP"]
-            .iter()
-            .filter_map(std::env::var_os)
+        let mut dirs: Vec<String> = temp_dir_candidates(|name| std::env::var(name).ok())
+            .into_iter()
             .filter_map(|p| std::fs::canonicalize(p).ok())
             .map(|p| {
                 let p = p.to_string_lossy().into_owned();
