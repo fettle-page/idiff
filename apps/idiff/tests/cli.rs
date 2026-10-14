@@ -1,7 +1,9 @@
 //! Runs the built binary on snapshot files, so `diff` is checked without any collector.
 
+use idiff::session::SessionMeta;
 use idiff_core::copy;
 use idiff_core::model::{Item, SCHEMA, Snapshot, SourceKind, SourceSnap};
+use idiff_core::verdict::{Level, Line, Mode, Receipt};
 use std::collections::BTreeMap;
 use std::process::{Command, Output};
 
@@ -60,7 +62,7 @@ fn write(dir: &tempfile::TempDir, name: &str, s: &Snapshot) -> String {
 }
 
 #[test]
-fn diff_prints_the_raw_delta() {
+fn diff_prints_a_receipt() {
     let dir = tempfile::tempdir().unwrap();
     let a = write(
         &dir,
@@ -74,23 +76,39 @@ fn diff_prints_the_raw_delta() {
     );
     let out = idiff(&["diff", &a, &b]);
     assert!(out.status.success(), "{}", stderr(&out));
+    let not_enriched = format!("· {}", copy::DIFF_NOT_ENRICHED);
     assert_eq!(
         stdout(&out).lines().collect::<Vec<_>>(),
         [
-            r"+ Folders new [c:\users\niccolò\appdata\local\new]",
-            r"- Folders old [c:\users\niccolò\appdata\local\old]",
-            "! Defender: needs administrator",
+            "Unknown app: installed",
+            "✓ No lasting changes found",
+            "· Couldn't check antivirus exclusions: needs administrator",
+            not_enriched.as_str(),
+            "",
+            "Also changed while installing (couldn't tell if it was this app)",
+            "· Added folder \"new\"",
+            "· Removed folder \"old\"",
         ]
     );
+    // Piped, so no colour.
+    assert!(!stdout(&out).contains('\x1b'));
+    let why = stdout(&idiff(&["diff", &a, &b, "--why"]));
+    let want = format!(r"    c:\users\niccolò\appdata\local\new: {}", copy::WHY_UNATTRIBUTED);
+    assert!(why.contains(&want), "{why}");
+    let app = stdout(&idiff(&["diff", &a, &b, "--app", "New Thing"]));
+    assert!(app.starts_with("New Thing: installed"), "{app}");
 }
 
 #[test]
-fn diff_of_identical_snapshots_says_so() {
+fn diff_of_identical_snapshots_finds_nothing() {
     let dir = tempfile::tempdir().unwrap();
     let a = write(&dir, "a.json", &snapshot(&["c:\\x"], None));
     let out = idiff(&["diff", &a, &a]);
     assert!(out.status.success());
-    assert_eq!(stdout(&out).trim(), copy::NO_CHANGES);
+    assert_eq!(
+        stdout(&out).lines().take(2).collect::<Vec<_>>(),
+        ["Unknown app: installed", "✓ No lasting changes found"]
+    );
 }
 
 #[test]
@@ -113,7 +131,6 @@ fn commands_not_built_yet_say_so() {
     for args in [
         &["run", "--", "winget", "install", "x"][..],
         &["leftovers", "last"],
-        &["show", "last", "--all"],
         &["export", "last", "--format", "md"],
         &["calibrate", "--minutes", "5"],
         &["list"],
@@ -164,4 +181,77 @@ fn snapshot_without_output_prints_it() {
     let out = idiff(&["snapshot", "--no-elevate"]);
     assert!(out.status.success(), "{}", stderr(&out));
     assert!(Snapshot::load(&stdout(&out)).is_ok());
+}
+
+fn idiff_at(home: &std::path::Path, args: &[&str]) -> Output {
+    Command::new(env!("CARGO_BIN_EXE_idiff"))
+        .args(args)
+        .env("IDIFF_HOME", home)
+        .output()
+        .unwrap()
+}
+
+/// A saved session with a receipt, as `run` leaves one.
+fn saved_session(home: &std::path::Path) -> Receipt {
+    let id = "20261014-123456-discord";
+    let dir = home.join("sessions").join(id);
+    std::fs::create_dir_all(&dir).unwrap();
+    let meta = SessionMeta {
+        id: id.into(),
+        command: vec!["winget".into(), "install".into(), "Discord.Discord".into()],
+        app_flag: None,
+        subject: Some("Discord".into()),
+        exit_code: Some(0),
+        started_ms: 1,
+        finished_ms: Some(2),
+        idiff_version: "0.1.0".into(),
+    };
+    let line = |level, text: &str| Line {
+        level,
+        text: text.into(),
+        items: vec!["mykey".into()],
+        why: vec![copy::WHY_TARGET_IN_INSTALL_DIR.into()],
+    };
+    let receipt = Receipt {
+        mode: Mode::Install,
+        title: "Discord 1.0.9170: installed".into(),
+        lines: vec![line(Level::Warn, "1 scheduled task: runs an updater every day")],
+        unknown: vec![],
+        hidden: vec![line(Level::Note, "Added driver x")],
+    };
+    std::fs::write(dir.join("session.json"), serde_json::to_string(&meta).unwrap()).unwrap();
+    std::fs::write(dir.join("receipt.json"), serde_json::to_string(&receipt).unwrap()).unwrap();
+    receipt
+}
+
+#[test]
+fn show_prints_a_saved_receipt() {
+    let home = tempfile::tempdir().unwrap();
+    let receipt = saved_session(home.path());
+    for target in ["last", "20261014-123456-discord"] {
+        let out = idiff_at(home.path(), &["show", target]);
+        assert!(out.status.success(), "{}", stderr(&out));
+        assert_eq!(
+            stdout(&out),
+            "Discord 1.0.9170: installed\n⚠ 1 scheduled task: runs an updater every day\n"
+        );
+    }
+    let all = stdout(&idiff_at(home.path(), &["show", "last", "--all", "--why"]));
+    assert!(
+        all.contains(copy::HIDDEN_HEADING) && all.contains("Added driver x"),
+        "{all}"
+    );
+    assert!(all.contains(copy::WHY_TARGET_IN_INSTALL_DIR), "{all}");
+    let json = stdout(&idiff_at(home.path(), &["show", "last", "--json"]));
+    assert_eq!(serde_json::from_str::<Receipt>(&json).unwrap(), receipt);
+}
+
+#[test]
+fn show_explains_what_to_do_first() {
+    let home = tempfile::tempdir().unwrap();
+    let out = idiff_at(home.path(), &["show", "last"]);
+    assert_eq!(out.status.code(), Some(1));
+    assert!(stderr(&out).contains(copy::NO_SESSIONS), "{}", stderr(&out));
+    let out = idiff_at(home.path(), &["show", "nope"]);
+    assert!(stderr(&out).contains(copy::NO_SUCH_SESSION), "{}", stderr(&out));
 }

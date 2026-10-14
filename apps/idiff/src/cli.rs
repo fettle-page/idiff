@@ -43,6 +43,12 @@ pub enum Command {
         after: PathBuf,
         #[arg(long)]
         app: Option<String>,
+        /// Also list the changes hidden as Windows' own
+        #[arg(long)]
+        all: bool,
+        /// Say why each change was given to the app or to Windows
+        #[arg(long)]
+        why: bool,
     },
     /// After an uninstall, show what the app left behind
     Leftovers {
@@ -92,6 +98,11 @@ pub enum Command {
     List,
 }
 
+/// Colour for a terminal, unless the user set `NO_COLOR` (an empty one doesn't count).
+pub fn color_enabled(terminal: bool, no_color: Option<&std::ffi::OsStr>) -> bool {
+    terminal && no_color.is_none_or(|v| v.is_empty())
+}
+
 #[derive(ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Format {
     Md,
@@ -107,6 +118,16 @@ mod tests {
     #[test]
     fn the_command_line_is_well_formed() {
         Cli::command().debug_assert();
+    }
+
+    #[test]
+    fn colour_is_for_terminals_without_no_color() {
+        use std::ffi::OsStr;
+        assert!(color_enabled(true, None));
+        assert!(!color_enabled(false, None));
+        assert!(!color_enabled(true, Some(OsStr::new("1"))));
+        // no-color.org: an empty NO_COLOR doesn't count.
+        assert!(color_enabled(true, Some(OsStr::new(""))));
     }
 
     #[test]

@@ -1,0 +1,21 @@
+Discord 1.0.9170: installed
+⚠ 1 scheduled task: runs an updater every day
+    \discordupdate: runs from the app's folder
+⚠ Starts with Windows
+    run|hkcu|software\microsoft\windows\currentversion\run|discord: runs from the app's folder
+✓ No services, drivers or firewall rules
+✓ Files only in your user folder (412 MB)
+    c:\users\a\appdata\local\discord: inside the app's folder
+· 3 Windows background changes hidden (idiff show --all)
+
+Also changed while installing (couldn't tell if it was this app)
+· Added service "Foo Service"
+    foosvc: no rule matched
+
+Hidden: Windows background changes
+· Added driver "mpkslabc123"
+    mpkslabc123: Windows background change: Microsoft Defender's per-update driver
+· Added scheduled task "MicrosoftEdgeUpdateTaskMachineUA"
+    \microsoftedgeupdatetaskmachineua: Windows background change: Microsoft Edge updating itself
+· Added firewall rule "hxoutlook.exe"
+    udp query user{8c3a1f5e-2b7d-4e9a-9f1c-0d2e3f4a5b6c}c:\program files\windowsapps\microsoft.windowscommunicationsapps_16005.14326.22342.0_x64__8wekyb3d8bbwe\hxoutlook.exe: Windows background change: a Store app's firewall rule
