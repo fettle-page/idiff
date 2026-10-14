@@ -278,6 +278,7 @@ fn run_records_every_step_and_prints_the_receipt() {
     let out = run_at(home.path(), &["cmd", "/c", "mkdir", &made.to_string_lossy()]);
     assert_eq!(out.status.code(), Some(0), "{}", stderr(&out));
     assert!(made.is_dir(), "the command ran");
+    assert!(stderr(&out).contains(copy::WAITING_FOR_INSTALLER), "{}", stderr(&out));
     let dir = only_session(home.path());
     for file in ["session.json", "before.json", "after.json", "receipt.json"] {
         assert!(dir.join(file).is_file(), "{file}");

@@ -243,6 +243,7 @@ fn cmd_run(
     let deadline = Instant::now() + Duration::from_secs(timeout_mins * 60);
     let started = SystemTime::now();
     let outcome = run_in_job(command, Duration::from_secs(timeout_mins * 60)).map_err(|e| e.to_string())?;
+    eprintln!("{}", copy::WAITING_FOR_INSTALLER);
     // Installers that relaunch themselves outside the job keep working after the command returns.
     wait_for_installers(
         started,

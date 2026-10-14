@@ -118,6 +118,7 @@ mod leftovers {
         );
         assert!(out.status.success(), "{}", stderr(&out));
         assert!(marker.is_dir(), "the uninstall command ran");
+        assert!(stderr(&out).contains(copy::WAITING_FOR_INSTALLER), "{}", stderr(&out));
         assert!(
             // The app's name comes from the session's winget command.
             stdout(&out).starts_with("Example.App: after uninstall, "),

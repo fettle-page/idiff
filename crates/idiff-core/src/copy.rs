@@ -168,6 +168,7 @@ pub const THE_APP: &str = "the app";
 pub const RUN_BEFORE: &str = "Reading this PC before the install...";
 pub const RUN_STARTING: &str = "Running: {command}";
 pub const RUN_SETTLING: &str = "Waiting {n} seconds for the app to settle...";
+pub const WAITING_FOR_INSTALLER: &str = "Waiting for the installer to finish...";
 pub const RUN_AFTER: &str = "Reading this PC again...";
 pub const RUN_TIMED_OUT: &str = "The install command was still running after {n} minutes";
 // leftovers, export, calibrate, list
