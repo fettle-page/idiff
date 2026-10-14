@@ -49,7 +49,33 @@ fn main() -> ExitCode {
             why,
             json,
         } => cmd_show(&session, all, why, json).map(|()| 0),
-        _ => Err(copy::NOT_BUILT_YET.to_string()),
+        Command::Leftovers {
+            session,
+            yes,
+            settle,
+            no_elevate,
+            command,
+        } => idiff::cmd::leftovers::run(
+            &session,
+            yes,
+            settle,
+            no_elevate,
+            &command,
+            &noise(),
+            &text_options(false, false),
+        ),
+        Command::Export {
+            session,
+            format,
+            output,
+            no_redact,
+        } => idiff::cmd::export::run(&session, format, output.as_deref(), no_redact).map(|()| 0),
+        Command::Calibrate {
+            minutes,
+            save,
+            no_elevate,
+        } => idiff::cmd::calibrate::run(minutes, save, no_elevate, &noise(), &text_options(true, true)).map(|()| 0),
+        Command::List => idiff::cmd::list::run().map(|()| 0),
     };
     match result {
         Ok(code) => ExitCode::from(code),
@@ -96,16 +122,14 @@ fn console_shows_colour() -> bool {
     true
 }
 
-/// The built-in noise list, plus the user's own `noise.local.toml` if there is one.
-fn noise() -> Result<NoiseList, String> {
-    let path = session::home().join("noise.local.toml");
-    match std::fs::read_to_string(&path) {
-        Ok(text) => NoiseList::parse(&text)
-            .map(|local| NoiseList::builtin().merged(local))
-            .map_err(|e| format!("{}: {e}", path.display())),
-        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(NoiseList::builtin()),
-        Err(e) => Err(format!("{} {}: {e}", copy::CANT_READ_FILE, path.display())),
+/// The built-in noise list, plus the user's own `noise.local.toml` if there is one. A local
+/// file with a mistake is left out, with a warning on stderr.
+fn noise() -> NoiseList {
+    let (noise, warning) = idiff::noise::load(&session::home());
+    if let Some(warning) = warning {
+        eprintln!("idiff: {warning}");
     }
+    noise
 }
 
 /// To the file given with `-o`, else to stdout. Asks through UAC for the administrator-only
@@ -133,7 +157,7 @@ fn cmd_diff(before: &Path, after: &Path, app: Option<&str>, all: bool, why: bool
     let (before, after) = (load(before)?, load(after)?);
     let delta = diff(&before, &after);
     let subject = find_subject(&delta, app, &[]);
-    let attributed = attribute(&delta, &subject, &noise()?, &after.env);
+    let attributed = attribute(&delta, &subject, &noise(), &after.env);
     let mut receipt = install_receipt(&subject, &attributed, &delta.notes, &delta.partial, None, &after.env);
     receipt.lines.push(Line {
         level: Level::Note,
@@ -145,18 +169,24 @@ fn cmd_diff(before: &Path, after: &Path, app: Option<&str>, all: bool, why: bool
     Ok(())
 }
 
+/// The install receipt, then the leftovers one if `leftovers` was run. `--json` prints the
+/// install receipt only (`export --format json` has both).
 fn cmd_show(target: &str, all: bool, why: bool, json: bool) -> Result<(), String> {
-    let session = session::open(target)?;
+    let s = session::open(target)?;
     // `run` writes the receipt last, so a run that stopped early has none.
-    if !session.dir.join("receipt.json").exists() {
+    if !s.dir.join("receipt.json").exists() {
         return Err(copy::SESSION_UNFINISHED.to_string());
     }
-    let receipt: Receipt = session.read_json("receipt.json")?;
+    let receipt: Receipt = s.read_json("receipt.json")?;
     if json {
         let text = serde_json::to_string_pretty(&receipt).map_err(|e| e.to_string())?;
         println!("{text}");
     } else {
         print!("{}", render::text(&receipt, &text_options(all, why)));
+        if s.dir.join("leftovers.json").is_file() {
+            let leftovers: Receipt = s.read_json("leftovers.json")?;
+            print!("\n{}", render::text(&leftovers, &text_options(all, why)));
+        }
     }
     Ok(())
 }
@@ -191,7 +221,7 @@ fn cmd_run(
     use std::time::{Duration, Instant};
 
     // Before anything runs, so a broken local noise list can't cost an install.
-    let noise = noise()?;
+    let noise = noise();
     let named = app.map(String::from).or_else(|| winget_id(command));
     let hint = named.clone().or_else(|| {
         command

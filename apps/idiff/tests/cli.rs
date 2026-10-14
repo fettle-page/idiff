@@ -126,20 +126,6 @@ fn diff_of_a_damaged_file_is_an_idiff_error() {
     assert!(stderr(&out).contains(copy::CANT_READ_FILE), "{}", stderr(&out));
 }
 
-#[test]
-fn commands_not_built_yet_say_so() {
-    for args in [
-        &["leftovers", "last"][..],
-        &["export", "last", "--format", "md"],
-        &["calibrate", "--minutes", "5"],
-        &["list"],
-    ] {
-        let out = idiff(args);
-        assert_eq!(out.status.code(), Some(1), "{args:?}");
-        assert!(stderr(&out).contains(copy::NOT_BUILT_YET), "{args:?}: {}", stderr(&out));
-    }
-}
-
 #[cfg(windows)]
 #[test]
 fn snapshot_writes_a_file_that_loads() {

@@ -165,3 +165,14 @@ pub const RUN_STARTING: &str = "Running: {command}";
 pub const RUN_SETTLING: &str = "Waiting {n} seconds for the app to settle...";
 pub const RUN_AFTER: &str = "Reading this PC again...";
 pub const RUN_TIMED_OUT: &str = "The install command was still running after {n} minutes";
+// leftovers, export, calibrate, list
+pub const UNINSTALL_NOW: &str = "Uninstall {app} now, then press Enter.";
+pub const NOT_REDACTED: &str = "Not redacted: this file contains your user and PC names.";
+pub const EXPORTED: &str = "Saved {path}";
+pub const CALIBRATE_WATCHING: &str = "Watching for {n} min. Don't install or change anything until it's done.";
+pub const CALIBRATE_LEFT: &str = "{time} left";
+pub const CALIBRATE_TITLE: &str = "What changed in {n} min with nothing installed";
+pub const CALIBRATE_SAVED: &str = "Added {n} rules to {path}";
+pub const CALIBRATE_NOTHING_TO_SAVE: &str = "Nothing to add to your noise list";
+pub const LIST_FINISHED: &str = "finished";
+pub const LIST_UNFINISHED: &str = "didn't finish";
