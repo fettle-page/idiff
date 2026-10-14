@@ -4,6 +4,7 @@
 pub mod firewall;
 pub mod folders;
 pub mod network;
+pub mod packaged;
 pub mod path;
 pub mod programs;
 pub mod shellext;
@@ -25,6 +26,7 @@ pub fn source(kind: SourceKind) -> crate::runner::Source {
         SourceKind::Firewall => firewall::read,
         SourceKind::Network => network::read,
         SourceKind::Folders => folders::read,
+        SourceKind::Packaged => packaged::read,
         _ => || Err("not built yet".into()),
     };
     Box::new(move || read().and_then(|out| serde_json::to_value(out).map_err(|e| e.to_string())))

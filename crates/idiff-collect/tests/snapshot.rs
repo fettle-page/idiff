@@ -20,12 +20,12 @@ fn real_snapshot_has_programs() {
 #[test]
 fn sources_not_built_yet_are_failed_not_empty() {
     let s = snapshot(&SnapshotOptions {
-        only: Some(vec![SourceKind::Packaged]),
+        only: Some(vec![SourceKind::Services]),
         ..Default::default()
     });
-    let packaged = &s.sources[&SourceKind::Packaged];
-    assert!(!packaged.ok && packaged.items.is_empty());
-    assert_eq!(packaged.error.as_deref(), Some("not built yet"));
+    let services = &s.sources[&SourceKind::Services];
+    assert!(!services.ok && services.items.is_empty());
+    assert_eq!(services.error.as_deref(), Some("not built yet"));
 }
 
 fn read_one(kind: SourceKind) -> idiff_core::model::SourceSnap {
@@ -57,4 +57,10 @@ fn real_snapshot_has_firewall_rules_and_network() {
     assert!(!firewall.items.is_empty());
     let network = read_one(SourceKind::Network);
     assert!(network.ok, "{:?}", network.error);
+}
+
+#[test]
+fn real_snapshot_has_packaged_apps() {
+    let packaged = read_one(SourceKind::Packaged);
+    assert!(packaged.ok, "{:?}", packaged.error);
 }
