@@ -106,18 +106,7 @@ pub fn markdown(r: &Receipt, all: bool) -> String {
 /// Several receipts in one Markdown file (an install, then its leftovers), with one footer.
 pub fn markdown_receipts(receipts: &[&Receipt], all: bool) -> String {
     let sections: Vec<String> = receipts.iter().map(|r| markdown_section(r, all, 2)).collect();
-    format!(
-        "{}
----
-
-{}
-",
-        sections.join(
-            "
-"
-        ),
-        md_escape(&footer())
-    )
+    format!("{}\n---\n\n{}\n", sections.join("\n"), md_escape(&footer()))
 }
 
 /// The receipt without the footer, its title a heading of `level` (`##` for 2), for pages that
