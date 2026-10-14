@@ -7,3 +7,4 @@ Cargo.lock text eol=lf
 *.xml text eol=lf
 # Golden receipts are compared byte for byte.
 crates/idiff-core/tests/golden/** text eol=lf
+*.ps1 text eol=crlf
