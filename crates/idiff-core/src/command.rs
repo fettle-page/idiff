@@ -131,7 +131,13 @@ fn expand_vars(s: &str, env: &Env) -> String {
     out
 }
 
+/// `%windir%` is the same folder as `%SystemRoot%`, and commands use both.
 fn lookup<'a>(env: &'a Env, name: &str) -> Option<&'a str> {
+    let name = if name.eq_ignore_ascii_case("windir") {
+        "SystemRoot"
+    } else {
+        name
+    };
     env.iter()
         .find(|(k, _)| k.eq_ignore_ascii_case(name))
         .map(|(_, v)| v.trim_end_matches('\\'))
