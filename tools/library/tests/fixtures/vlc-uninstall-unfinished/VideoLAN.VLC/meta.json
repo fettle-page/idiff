@@ -1,0 +1,10 @@
+{
+  "id": "VideoLAN.VLC",
+  "name": "VLC",
+  "version": "3.0.24",
+  "date": "2026-10-14",
+  "idiff_version": "0.9.0",
+  "runner_image": "win25-vs2026 20260925.250.1",
+  "run_url": "https://github.com/fettle-page/idiff/actions/runs/38644280475",
+  "failed": "leftovers: exit 2"
+}

@@ -1,0 +1,124 @@
+{
+  "mode": "Leftovers",
+  "title": "VLC 3.0.24: after uninstall, 11 leftovers",
+  "lines": [
+    {
+      "level": "Warn",
+      "text": "The uninstall was still running after 12 minutes, so this list may include things it would have removed",
+      "items": [],
+      "why": []
+    },
+    {
+      "level": "Bad",
+      "text": "Program \"VLC media player\" is still there",
+      "items": [
+        "hklm\\native\\vlc media player"
+      ],
+      "why": [
+        "the installed program's own entry"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "Right-click menu entry \"AddToPlaylistVLC\" is still there",
+      "items": [
+        "directory|verb|addtoplaylistvlc"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "Right-click menu entry \"PlayWithVLC\" is still there",
+      "items": [
+        "directory|verb|playwithvlc"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "188 MB in Program Files\\VideoLAN",
+      "items": [
+        "c:\\program files\\videolan"
+      ],
+      "why": [
+        "inside the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "Shortcut \"Start menu (all users)\\VideoLAN\\Documentation.lnk\" is still there",
+      "items": [
+        "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\documentation.lnk"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "Shortcut \"Start menu (all users)\\VideoLAN\\Release Notes.lnk\" is still there",
+      "items": [
+        "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\release notes.lnk"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "Shortcut \"Start menu (all users)\\VideoLAN\\VideoLAN Website.lnk\" is still there",
+      "items": [
+        "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\videolan website.lnk"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "Shortcut \"Start menu (all users)\\VideoLAN\\VLC media player - reset preferences and cache files.lnk\" is still there",
+      "items": [
+        "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\vlc media player - reset preferences and cache files.lnk"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "Shortcut \"Start menu (all users)\\VideoLAN\\VLC media player skinned.lnk\" is still there",
+      "items": [
+        "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\vlc media player skinned.lnk"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "Shortcut \"Start menu (all users)\\VideoLAN\\VLC media player.lnk\" is still there",
+      "items": [
+        "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\vlc media player.lnk"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "Shortcut \"Public Desktop\\VLC media player.lnk\" is still there",
+      "items": [
+        "c:\\users\\public\\desktop\\vlc media player.lnk"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    }
+  ],
+  "unknown": [],
+  "hidden": []
+}
