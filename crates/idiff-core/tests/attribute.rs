@@ -674,3 +674,82 @@ fn a_new_folder_holding_an_app_program_is_the_apps() {
     let broad = r.iter().find(|a| a.change.item().key == r"c:\program files").unwrap();
     assert_eq!(broad.owner, Owner::Unknown);
 }
+
+/// Install dirs for a subject found from one new Programs entry, with these new folders.
+fn dirs_with_folders(name: &str, publisher: &str, folders: &[&str]) -> Vec<String> {
+    let program = Item {
+        label: name.into(),
+        ..item(r"hklm\native\app", None, &[("version", "1"), ("publisher", publisher)])
+    };
+    let changes = vec![Change::Added(program)];
+    let d = Delta {
+        sources: BTreeMap::from([
+            (SourceKind::Programs, changes),
+            (
+                SourceKind::Folders,
+                folders
+                    .iter()
+                    .map(|f| Change::Added(item(f, None, &[("kind", "folder")])))
+                    .collect(),
+            ),
+        ]),
+        notes: BTreeMap::new(),
+        partial: Default::default(),
+    };
+    let subject = find_subject(&d, None, &[]);
+    assert_eq!(subject.name, name);
+    subject.install_dirs
+}
+
+#[test]
+fn g_hub_folders_are_found_by_short_words_and_prefixes() {
+    let theirs = [
+        r"c:\program files\logi",
+        r"c:\programdata\logi",
+        r"c:\programdata\lghub",
+        r"c:\users\a\appdata\local\lghub",
+        r"c:\programdata\lghubdata",
+        r"c:\users\a\appdata\roaming\g hub",
+        r"c:\users\a\appdata\roaming\lghub",
+    ];
+    let not_theirs = [
+        r"c:\programdata\logishrd",
+        r"c:\users\a\appdata\local\sentry",
+        r"c:\users\a\appdata\roaming\mozilla",
+    ];
+    let all: Vec<&str> = theirs.iter().chain(&not_theirs).copied().collect();
+    let dirs = dirs_with_folders("Logitech G HUB", "Logitech", &all);
+    for f in theirs {
+        assert!(dirs.iter().any(|d| d == f), "{f} should be G HUB's: {dirs:?}");
+    }
+    for f in not_theirs {
+        assert!(!dirs.iter().any(|d| d == f), "{f} isn't G HUB's: {dirs:?}");
+    }
+    let tokens = Subject {
+        name: "Logitech G HUB".into(),
+        publisher: Some("Logitech".into()),
+        ..Default::default()
+    }
+    .folder_tokens();
+    assert!(
+        tokens.contains(&"ghub".to_string()) && tokens.contains(&"logitech".to_string()),
+        "{tokens:?}"
+    );
+}
+
+#[test]
+fn generic_words_take_no_part_in_folder_names() {
+    // "media" is generic, so a folder "medi" isn't VLC's even though it starts the word.
+    let dirs = dirs_with_folders("VLC media player", "VideoLAN", &[r"c:\users\a\appdata\local\medi"]);
+    assert!(dirs.is_empty(), "{dirs:?}");
+    // Nor does Microsoft: "micro" doesn't start any of Teams' tokens.
+    let dirs = dirs_with_folders(
+        "Microsoft Teams",
+        "Microsoft Corporation",
+        &[r"c:\programdata\micro", r"c:\users\a\appdata\local\micr"],
+    );
+    assert!(dirs.is_empty(), "{dirs:?}");
+    // A short folder name is never a prefix match: "log" is too short to stand for "logitech".
+    let dirs = dirs_with_folders("Logitech G HUB", "Logitech", &[r"c:\programdata\log"]);
+    assert!(dirs.is_empty(), "{dirs:?}");
+}
