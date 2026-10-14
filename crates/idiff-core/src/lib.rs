@@ -9,3 +9,4 @@ pub mod model;
 pub mod noise;
 pub mod publisher;
 pub mod subject;
+pub mod verdict;

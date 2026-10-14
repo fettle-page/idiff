@@ -45,3 +45,94 @@ pub const SOURCE_PACKAGED: &str = "Store apps";
 pub const SOURCE_CERTS: &str = "trusted root certificates";
 pub const SOURCE_DEFENDER: &str = "antivirus exclusions";
 pub const SOURCE_NETWORK: &str = "network settings";
+
+// One item of each source, for "Scheduled task "X" is still there" and the change lists.
+pub const KIND_PROGRAM: &str = "Program";
+pub const KIND_SERVICE: &str = "Service";
+pub const KIND_DRIVER: &str = "Driver";
+pub const KIND_TASK: &str = "Scheduled task";
+pub const KIND_STARTUP: &str = "Startup entry";
+pub const KIND_FIREWALL: &str = "Firewall rule";
+pub const KIND_SHELL_EXT: &str = "Right-click menu entry";
+pub const KIND_PATH: &str = "PATH entry";
+pub const KIND_FOLDER: &str = "Folder";
+pub const KIND_SHORTCUT: &str = "Shortcut";
+pub const KIND_PACKAGED: &str = "Store app";
+pub const KIND_CERT: &str = "Trusted root certificate";
+pub const KIND_DEFENDER: &str = "Antivirus exclusion";
+pub const KIND_NETWORK: &str = "Network setting";
+
+// The receipt (spec §7). `{name}`-style parts are filled in by the verdict.
+pub const TITLE_INSTALLED: &str = "{name}: installed";
+pub const TITLE_UPDATED: &str = "{name}: updated from {previous} to {version}";
+pub const TITLE_LEFTOVERS_NONE: &str = "{name}: after uninstall, no leftovers";
+/// When some sources couldn't be checked, so "none" isn't certain.
+pub const TITLE_LEFTOVERS_NONE_FOUND: &str = "{name}: after uninstall, no leftovers found";
+pub const TITLE_LEFTOVERS_ONE: &str = "{name}: after uninstall, 1 leftover";
+pub const TITLE_LEFTOVERS_MANY: &str = "{name}: after uninstall, {n} leftovers";
+
+pub const RESTART_NEEDED: &str = "Needs a restart to finish";
+pub const EXIT_CODE: &str = "The install command exited with code {n}";
+pub const CERT_ADDED: &str = "Adds a trusted root certificate: \"{subject}\"";
+pub const DEFENDER_EXCLUSION: &str = "Excludes {path} from antivirus scans";
+pub const NETWORK_CHANGED: &str = "Changes your network settings: {what}";
+pub const NETWORK_HOSTS: &str = "hosts file";
+pub const NETWORK_PROXY: &str = "proxy";
+pub const NETWORK_WINSOCK: &str = "Winsock";
+pub const DRIVERS_ONE: &str = "Installs 1 driver: {names}";
+pub const DRIVERS_MANY: &str = "Installs {n} drivers: {names}";
+pub const SERVICES_ONE: &str = "Adds 1 background service: {names}";
+pub const SERVICES_MANY: &str = "Adds {n} background services: {names}";
+pub const SERVICE_STARTS_WITH_WINDOWS: &str = " (starts with Windows)";
+pub const SERVICE_FULL_RIGHTS: &str = " (full system rights)";
+pub const TASKS_ONE: &str = "1 scheduled task: {summary}";
+pub const TASKS_MANY: &str = "{n} scheduled tasks: {summary}";
+pub const STARTS_WITH_WINDOWS: &str = "Starts with Windows";
+pub const FIREWALL_INBOUND: &str = "Allows incoming connections for {program}";
+pub const FIREWALL_OUTBOUND: &str = "Adds outbound firewall rules for {program}";
+pub const SHELL_EXT_ADDED: &str = "Adds right-click menu entries";
+pub const PATH_ADDED: &str = "Adds to PATH: {entries}";
+pub const FILES_PROGRAM_FILES: &str = "Files in Program Files ({size})";
+pub const FILES_PROGRAM_DATA: &str = "Files in ProgramData ({size})";
+pub const FILES_ONLY_USER: &str = "Files only in your user folder ({size})";
+/// When the app also has files in Program Files or ProgramData.
+pub const FILES_USER: &str = "Files in your user folder ({size})";
+pub const SHORTCUT_DESKTOP: &str = "Adds a desktop shortcut";
+pub const SHORTCUT_START_MENU: &str = "Adds a Start menu entry";
+pub const ALSO_INSTALLED: &str = "Also installed: {names}";
+pub const CHANGES_ITEM: &str = "Changes {kind} \"{label}\"";
+/// Followed by the absent ones of the three below, as in "No drivers or firewall rules".
+pub const NONE_OF: &str = "No {things}";
+pub const NONE_SERVICES: &str = "services";
+pub const NONE_DRIVERS: &str = "drivers";
+pub const NONE_FIREWALL: &str = "firewall rules";
+pub const NOTHING_FOUND: &str = "No lasting changes found";
+pub const COULDNT_CHECK: &str = "Couldn't check {source}: {reason}";
+pub const HIDDEN_ONE: &str = "1 Windows background change hidden (idiff show --all)";
+pub const HIDDEN_MANY: &str = "{n} Windows background changes hidden (idiff show --all)";
+pub const ALSO_CHANGED: &str = "Also changed while installing (couldn't tell if it was this app)";
+pub const CHANGE_ADDED: &str = "Added {kind} \"{label}\"";
+pub const CHANGE_REMOVED: &str = "Removed {kind} \"{label}\"";
+pub const CHANGE_MODIFIED: &str = "Changed {kind} \"{label}\"";
+
+// Leftovers.
+pub const STILL_THERE: &str = "{kind} \"{label}\" is still there";
+pub const FOLDER_LEFT: &str = "{size} in {path}";
+pub const UNINSTALLER_ADDED: &str = "The uninstaller added {kind} \"{label}\"";
+pub const NOTHING_LEFT: &str = "Nothing left behind";
+
+// Scheduled task summaries: what it runs, then when.
+pub const RUNS_UPDATER: &str = "runs an updater";
+pub const RUNS_FILE: &str = "runs {exe}";
+/// A task with no program of its own (a COM handler).
+pub const RUNS_SOMETHING: &str = "runs a program";
+pub const WHEN_DAILY: &str = "every day";
+pub const WHEN_WEEKLY: &str = "every week";
+pub const WHEN_LOGON: &str = "at sign-in";
+pub const WHEN_BOOT: &str = "at startup";
+pub const WHEN_IDLE: &str = "when the PC is idle";
+pub const WHEN_ONCE: &str = "once";
+pub const WHEN_OTHER: &str = "on a schedule";
+pub const AS_SYSTEM: &str = ", as SYSTEM";
+/// Joins the last two absent things in `NONE_OF`; the others are joined with ", ".
+pub const NONE_LAST_JOIN: &str = " or ";
