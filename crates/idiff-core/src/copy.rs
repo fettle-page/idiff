@@ -11,6 +11,8 @@ pub const NO_SUCH_SESSION: &str = "There's no session with that id. See them wit
 pub const CANT_READ_FILE: &str = "Couldn't read";
 pub const NO_CHANGES: &str = "No changes";
 pub const NOT_BUILT_YET: &str = "not built yet";
+/// Why the scheduled tasks list is partial without administrator rights.
+pub const TASKS_PARTIAL: &str = "some tasks are only visible to administrators";
 
 pub const SOURCE_PROGRAMS: &str = "installed programs";
 pub const SOURCE_SERVICES: &str = "services";

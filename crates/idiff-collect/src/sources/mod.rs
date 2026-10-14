@@ -5,8 +5,10 @@ pub mod firewall;
 pub mod network;
 pub mod path;
 pub mod programs;
+pub mod services;
 pub mod shellext;
 pub mod startup;
+pub mod tasks;
 
 #[cfg(windows)]
 use crate::SourceOutput;
@@ -18,6 +20,9 @@ use idiff_core::model::SourceKind;
 pub fn source(kind: SourceKind) -> crate::runner::Source {
     let read: fn() -> Result<SourceOutput, String> = match kind {
         SourceKind::Programs => programs::read,
+        SourceKind::Services => services::read_services,
+        SourceKind::Drivers => services::read_drivers,
+        SourceKind::Tasks => tasks::read,
         SourceKind::Startup => startup::read,
         SourceKind::Path => path::read,
         SourceKind::ShellExt => shellext::read,

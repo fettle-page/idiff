@@ -111,8 +111,7 @@ fn diff_of_a_damaged_file_is_an_idiff_error() {
 #[test]
 fn commands_not_built_yet_say_so() {
     for args in [
-        &["snapshot"][..],
-        &["run", "--", "winget", "install", "x"],
+        &["run", "--", "winget", "install", "x"][..],
         &["leftovers", "last"],
         &["show", "last", "--all"],
         &["export", "last", "--format", "md"],
@@ -123,4 +122,26 @@ fn commands_not_built_yet_say_so() {
         assert_eq!(out.status.code(), Some(1), "{args:?}");
         assert!(stderr(&out).contains(copy::NOT_BUILT_YET), "{args:?}: {}", stderr(&out));
     }
+}
+
+#[cfg(windows)]
+#[test]
+fn snapshot_writes_a_file_that_loads() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("a.json");
+    let out = idiff(&["snapshot", "-o", &path.to_string_lossy()]);
+    assert!(out.status.success(), "{}", stderr(&out));
+    assert!(stdout(&out).is_empty());
+    let s = Snapshot::load(&std::fs::read_to_string(&path).unwrap()).unwrap();
+    assert_eq!(s.sources.len(), SourceKind::ALL.len());
+    let programs = &s.sources[&SourceKind::Programs];
+    assert!(programs.ok && !programs.items.is_empty(), "{:?}", programs.error);
+}
+
+#[cfg(windows)]
+#[test]
+fn snapshot_without_output_prints_it() {
+    let out = idiff(&["snapshot"]);
+    assert!(out.status.success(), "{}", stderr(&out));
+    assert!(Snapshot::load(&stdout(&out)).is_ok());
 }
