@@ -41,6 +41,33 @@ fn main() -> ExitCode {
             why,
             json,
         } => cmd_show(&session, all, why, json),
+        Command::Leftovers {
+            session,
+            yes,
+            settle,
+            no_elevate,
+            command,
+        } => {
+            let text = text_options(false, false);
+            match idiff::cmd::leftovers::run(&session, yes, settle, no_elevate, &command, &noise(), &text) {
+                Ok(0) => Ok(()),
+                // The uninstall command failed; the receipt was still printed.
+                Ok(code) => return ExitCode::from(code),
+                Err(e) => Err(e),
+            }
+        }
+        Command::Export {
+            session,
+            format,
+            output,
+            no_redact,
+        } => idiff::cmd::export::run(&session, format, output.as_deref(), no_redact),
+        Command::Calibrate {
+            minutes,
+            save,
+            no_elevate,
+        } => idiff::cmd::calibrate::run(minutes, save, no_elevate, &noise(), &text_options(true, true)),
+        Command::List => idiff::cmd::list::run(),
         _ => Err(copy::NOT_BUILT_YET.to_string()),
     };
     match result {
@@ -88,16 +115,14 @@ fn console_shows_colour() -> bool {
     true
 }
 
-/// The built-in noise list, plus the user's own `noise.local.toml` if there is one.
-fn noise() -> Result<NoiseList, String> {
-    let path = session::home().join("noise.local.toml");
-    match std::fs::read_to_string(&path) {
-        Ok(text) => NoiseList::parse(&text)
-            .map(|local| NoiseList::builtin().merged(local))
-            .map_err(|e| format!("{}: {e}", path.display())),
-        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(NoiseList::builtin()),
-        Err(e) => Err(format!("{} {}: {e}", copy::CANT_READ_FILE, path.display())),
+/// The built-in noise list, plus the user's own `noise.local.toml` if there is one. A local
+/// file with a mistake is left out, with a warning on stderr.
+fn noise() -> NoiseList {
+    let (noise, warning) = idiff::noise::load(&session::home());
+    if let Some(warning) = warning {
+        eprintln!("idiff: {warning}");
     }
+    noise
 }
 
 /// To the file given with `-o`, else to stdout. Asks through UAC for the administrator-only
@@ -125,7 +150,7 @@ fn cmd_diff(before: &Path, after: &Path, app: Option<&str>, all: bool, why: bool
     let (before, after) = (load(before)?, load(after)?);
     let delta = diff(&before, &after);
     let subject = find_subject(&delta, app, &[]);
-    let attributed = attribute(&delta, &subject, &noise()?, &after.env);
+    let attributed = attribute(&delta, &subject, &noise(), &after.env);
     let mut receipt = install_receipt(&subject, &attributed, &delta.notes, None, &after.env);
     receipt.lines.push(Line {
         level: Level::Note,
@@ -137,13 +162,20 @@ fn cmd_diff(before: &Path, after: &Path, app: Option<&str>, all: bool, why: bool
     Ok(())
 }
 
+/// The install receipt, then the leftovers one if `leftovers` was run. `--json` prints the
+/// install receipt only (`export --format json` has both).
 fn cmd_show(target: &str, all: bool, why: bool, json: bool) -> Result<(), String> {
-    let receipt: Receipt = session::open(target)?.read_json("receipt.json")?;
+    let s = session::open(target)?;
+    let receipt: Receipt = s.read_json("receipt.json")?;
     if json {
         let text = serde_json::to_string_pretty(&receipt).map_err(|e| e.to_string())?;
         println!("{text}");
     } else {
         print!("{}", render::text(&receipt, &text_options(all, why)));
+        if s.dir.join("leftovers.json").is_file() {
+            let leftovers: Receipt = s.read_json("leftovers.json")?;
+            print!("\n{}", render::text(&leftovers, &text_options(all, why)));
+        }
     }
     Ok(())
 }

@@ -128,17 +128,10 @@ fn diff_of_a_damaged_file_is_an_idiff_error() {
 
 #[test]
 fn commands_not_built_yet_say_so() {
-    for args in [
-        &["run", "--", "winget", "install", "x"][..],
-        &["leftovers", "last"],
-        &["export", "last", "--format", "md"],
-        &["calibrate", "--minutes", "5"],
-        &["list"],
-    ] {
-        let out = idiff(args);
-        assert_eq!(out.status.code(), Some(1), "{args:?}");
-        assert!(stderr(&out).contains(copy::NOT_BUILT_YET), "{args:?}: {}", stderr(&out));
-    }
+    // Only commands that do nothing yet belong here: anything built would really run.
+    let out = idiff(&["run", "--", "winget", "install", "x"]);
+    assert_eq!(out.status.code(), Some(1));
+    assert!(stderr(&out).contains(copy::NOT_BUILT_YET), "{}", stderr(&out));
 }
 
 #[cfg(windows)]

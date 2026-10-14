@@ -54,8 +54,12 @@ pub enum Command {
     Leftovers {
         /// A session id, or "last"
         session: String,
+        /// Don't ask to uninstall by hand; take the snapshot now
         #[arg(long)]
         yes: bool,
+        /// After the uninstall command, wait this long for anything it left running in the background
+        #[arg(long, value_name = "SECS", default_value_t = 5)]
+        settle: u64,
         #[arg(long)]
         no_elevate: bool,
         #[arg(last = true, value_name = "UNINSTALL COMMAND")]
@@ -93,6 +97,9 @@ pub enum Command {
         /// Add those changes to your local noise list
         #[arg(long)]
         save: bool,
+        /// Don't ask for administrator rights (scheduled tasks and antivirus exclusions stay incomplete)
+        #[arg(long)]
+        no_elevate: bool,
     },
     /// List the saved sessions
     List,
