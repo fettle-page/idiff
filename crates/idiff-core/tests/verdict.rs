@@ -632,3 +632,74 @@ fn the_hidden_count_has_two_hints() {
     );
     assert!(r.lines.iter().any(|l| l.text == hidden_count_text(3, false)));
 }
+
+#[test]
+fn empty_new_folders_show_no_size() {
+    let subject = Subject {
+        name: "X".into(),
+        ..Default::default()
+    };
+    let folder = |key: &str, root: &str, bytes: &str| {
+        app_added(
+            SourceKind::Folders,
+            item(key, key, None, &[("root", root), ("kind", "folder"), ("bytes", bytes)]),
+        )
+    };
+    let receipt = |folders: Vec<Attributed>| {
+        install_receipt(
+            &subject,
+            &folders,
+            &BTreeMap::new(),
+            &BTreeSet::new(),
+            Some(0),
+            &Env::new(),
+        )
+    };
+    let has = |r: &Receipt, line: (Level, &str)| texts(r).contains(&line);
+
+    let r = receipt(vec![folder(r"c:\users\a\appdata\local\x", r"AppData\Local", "0")]);
+    assert!(has(&r, (Level::Good, "Files only in your user folder")), "{r:#?}");
+    let r = receipt(vec![folder(r"c:\users\a\appdata\local\x", r"AppData\Local", "1")]);
+    assert!(
+        has(&r, (Level::Good, "Files only in your user folder (1 KB)")),
+        "{r:#?}"
+    );
+    let r = receipt(vec![
+        folder(r"c:\program files\x", "Program Files", "0"),
+        folder(r"c:\users\a\appdata\local\x", r"AppData\Local", "0"),
+    ]);
+    assert!(has(&r, (Level::Note, "Files in Program Files")), "{r:#?}");
+    assert!(has(&r, (Level::Note, "Files in your user folder")), "{r:#?}");
+}
+
+#[test]
+fn an_empty_leftover_folder_says_so() {
+    let (before, after, subject, install) = discord();
+    let mut uninstalled = before.clone();
+    let folder = after.sources[&SourceKind::Folders]
+        .items
+        .iter()
+        .find(|i| i.key.ends_with(r"\appdata\local\discord"))
+        .unwrap()
+        .clone();
+    uninstalled
+        .sources
+        .get_mut(&SourceKind::Folders)
+        .unwrap()
+        .items
+        .push(folder);
+    let key = r"c:\users\a\appdata\local\discord".to_string();
+    let r = leftovers_receipt(
+        &subject,
+        &install,
+        &uninstalled,
+        &[],
+        &BTreeMap::from([(key.clone(), 0)]),
+    );
+    assert_eq!(
+        texts(&r),
+        [(Level::Bad, r#"Folder "AppData\Local\Discord" is still there (empty)"#)]
+    );
+    let r = leftovers_receipt(&subject, &install, &uninstalled, &[], &BTreeMap::from([(key, 1)]));
+    assert_eq!(texts(&r), [(Level::Bad, r"1 KB in AppData\Local\Discord")]);
+}

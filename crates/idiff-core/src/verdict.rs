@@ -223,13 +223,14 @@ fn folder_place(item: &Item, env: &Env) -> FolderPlace {
     }
 }
 
-/// `{size}` for folders that enrichment measured; folders it didn't measure add nothing.
+/// `{size}` for folders that enrichment measured; folders it didn't measure add nothing. With
+/// nothing in them, there's no size to give: "Files only in your user folder", not "(0 KB)".
 fn folders_text(template: &str, folders: &[&Attributed]) -> String {
     let sizes: Vec<u64> = folders
         .iter()
         .filter_map(|a| prop(a.change.item(), "bytes").and_then(|b| b.parse().ok()))
         .collect();
-    if sizes.is_empty() {
+    if sizes.iter().sum::<u64>() == 0 {
         template.replace(" ({size})", "")
     } else {
         fill(template, &[("size", &format_size(sizes.iter().sum()))])
@@ -622,6 +623,16 @@ pub fn leftovers_receipt(
             .get(&item.key)
             .filter(|_| a.kind == SourceKind::Folders && !is_shortcut(item));
         let text = match size {
+            Some(0) => {
+                let still = fill(
+                    copy::STILL_THERE,
+                    &[
+                        ("kind", kind_name(a.kind, item)),
+                        ("label", display_label(a.kind, item)),
+                    ],
+                );
+                format!("{still}{}", copy::EMPTY_SUFFIX)
+            }
             Some(&bytes) => fill(
                 copy::FOLDER_LEFT,
                 &[("size", &format_size(bytes)), ("path", display_label(a.kind, item))],
