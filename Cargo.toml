@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/idiff-core", "crates/idiff-collect", "apps/idiff"]
+members = ["crates/idiff-core", "crates/idiff-collect", "apps/idiff", "tools/library"]
 
 [workspace.package]
 version = "0.1.0"

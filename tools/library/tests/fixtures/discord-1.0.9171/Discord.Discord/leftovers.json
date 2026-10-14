@@ -1,0 +1,28 @@
+{
+  "mode": "Leftovers",
+  "title": "Discord 1.0.9171: after uninstall, 2 leftovers",
+  "lines": [
+    {
+      "level": "Bad",
+      "text": "Scheduled task \"DiscordUpdate\" is still there",
+      "items": [
+        "\\discordupdate"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Bad",
+      "text": "340 MB in AppData\\Local\\Discord",
+      "items": [
+        "c:\\users\\a\\appdata\\local\\discord"
+      ],
+      "why": [
+        "inside the app's folder"
+      ]
+    }
+  ],
+  "unknown": [],
+  "hidden": []
+}

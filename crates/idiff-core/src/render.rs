@@ -100,23 +100,29 @@ pub fn md_escape(s: &str) -> String {
 }
 
 pub fn markdown(r: &Receipt, all: bool) -> String {
+    format!("{}\n---\n\n{}\n", markdown_section(r, all, 2), md_escape(&footer()))
+}
+
+/// The receipt without the footer, its title a heading of `level` (`##` for 2), for pages that
+/// hold more than one receipt.
+pub fn markdown_section(r: &Receipt, all: bool, level: usize) -> String {
     let list = |lines: &[Line]| -> String {
         lines
             .iter()
             .map(|l| format!("- {} {}\n", icon(l.level), md_escape(&l.text)))
             .collect()
     };
-    let mut out = format!("## {}\n\n{}", md_escape(&r.title), list(&r.lines));
+    let (title, sub) = ("#".repeat(level), "#".repeat(level + 1));
+    let mut out = format!("{title} {}\n\n{}", md_escape(&r.title), list(&r.lines));
     let mut section = |heading: &str, lines: &[Line]| {
         if !lines.is_empty() {
-            out.push_str(&format!("\n### {}\n\n{}", md_escape(heading), list(lines)));
+            out.push_str(&format!("\n{sub} {}\n\n{}", md_escape(heading), list(lines)));
         }
     };
     section(copy::ALSO_CHANGED, &r.unknown);
     if all {
         section(copy::HIDDEN_HEADING, &r.hidden);
     }
-    out.push_str(&format!("\n---\n\n{}\n", md_escape(&footer())));
     out
 }
 
