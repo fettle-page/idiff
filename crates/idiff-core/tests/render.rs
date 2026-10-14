@@ -170,3 +170,16 @@ fn markdown_can_not_be_injected() {
     assert!(!out.contains("](javascript:"));
     assert!(out.contains(r"\<script\>alert\(1\)\</script\>"), "{out}");
 }
+
+#[test]
+fn markdown_sections_nest_without_the_footer() {
+    let r = discord();
+    let section = idiff_core::render::markdown_section(&r, false, 3);
+    assert!(section.starts_with("### Discord 1.0.9170: installed\n"), "{section}");
+    assert!(section.contains("\n#### Also changed while installing"), "{section}");
+    assert!(!section.contains("Made with idiff"));
+    // The whole receipt is the same section at level 2, with the footer.
+    let full = markdown(&r, false);
+    assert!(full.starts_with(&idiff_core::render::markdown_section(&r, false, 2)));
+    assert!(full.contains("Made with idiff"));
+}

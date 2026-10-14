@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-12",
+  "id": "Discord.Discord",
+  "idiff_version": "0.9.0",
+  "name": "Discord",
+  "run_url": "https://github.com/fettle-page/idiff/actions/runs/123456",
+  "runner_image": "win25 20261004.1",
+  "version": "1.0.9170"
+}

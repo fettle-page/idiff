@@ -1,0 +1,94 @@
+{
+  "mode": "Install",
+  "title": "Discord 1.0.9171: installed",
+  "lines": [
+    {
+      "level": "Warn",
+      "text": "2 scheduled tasks: runs crashreporter.exe at sign-in; runs an updater every day",
+      "items": [
+        "\\discordcrashreporter",
+        "\\discordupdate"
+      ],
+      "why": [
+        "runs from the app's folder",
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Warn",
+      "text": "Starts with Windows",
+      "items": [
+        "run|hkcu|software\\microsoft\\windows\\currentversion\\run|discord"
+      ],
+      "why": [
+        "runs from the app's folder"
+      ]
+    },
+    {
+      "level": "Good",
+      "text": "No services, drivers or firewall rules",
+      "items": [],
+      "why": []
+    },
+    {
+      "level": "Good",
+      "text": "Files only in your user folder (412 MB)",
+      "items": [
+        "c:\\users\\a\\appdata\\local\\discord"
+      ],
+      "why": [
+        "inside the app's folder"
+      ]
+    },
+    {
+      "level": "Note",
+      "text": "3 Windows background changes hidden (idiff show --all)",
+      "items": [],
+      "why": []
+    }
+  ],
+  "unknown": [
+    {
+      "level": "Note",
+      "text": "Added service \"Foo Service\"",
+      "items": [
+        "foosvc"
+      ],
+      "why": [
+        "no rule matched"
+      ]
+    }
+  ],
+  "hidden": [
+    {
+      "level": "Note",
+      "text": "Added driver \"mpkslabc123\"",
+      "items": [
+        "mpkslabc123"
+      ],
+      "why": [
+        "Windows background change: Microsoft Defender's per-update driver"
+      ]
+    },
+    {
+      "level": "Note",
+      "text": "Added scheduled task \"MicrosoftEdgeUpdateTaskMachineUA\"",
+      "items": [
+        "\\microsoftedgeupdatetaskmachineua"
+      ],
+      "why": [
+        "Windows background change: Microsoft Edge updating itself"
+      ]
+    },
+    {
+      "level": "Note",
+      "text": "Added firewall rule \"hxoutlook.exe\"",
+      "items": [
+        "udp query user{8c3a1f5e-2b7d-4e9a-9f1c-0d2e3f4a5b6c}c:\\program files\\windowsapps\\microsoft.windowscommunicationsapps_16005.14326.22342.0_x64__8wekyb3d8bbwe\\hxoutlook.exe"
+      ],
+      "why": [
+        "Windows background change: a Store app's firewall rule"
+      ]
+    }
+  ]
+}
