@@ -129,7 +129,8 @@ fn commands_not_built_yet_say_so() {
 fn snapshot_writes_a_file_that_loads() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("a.json");
-    let out = idiff(&["snapshot", "-o", &path.to_string_lossy()]);
+    // --no-elevate: a test must never show a UAC prompt.
+    let out = idiff(&["snapshot", "--no-elevate", "-o", &path.to_string_lossy()]);
     assert!(out.status.success(), "{}", stderr(&out));
     assert!(stdout(&out).is_empty());
     let s = Snapshot::load(&std::fs::read_to_string(&path).unwrap()).unwrap();
@@ -138,10 +139,29 @@ fn snapshot_writes_a_file_that_loads() {
     assert!(programs.ok && !programs.items.is_empty(), "{:?}", programs.error);
 }
 
+/// The elevated helper's entry, run here unelevated: it needs no UAC to write its file.
+#[cfg(windows)]
+#[test]
+fn helper_mode_writes_only_its_file() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = idiff::elevate::helper_path(dir.path(), 9, 0xabc);
+    let path_arg = path.to_string_lossy();
+    let out = idiff(&["--helper", &path_arg, "--only", "Defender"]);
+    assert!(out.status.success(), "{}", stderr(&out));
+    assert!(stdout(&out).is_empty());
+    let s = Snapshot::load(&std::fs::read_to_string(&path).unwrap()).unwrap();
+    assert_eq!(s.sources.keys().collect::<Vec<_>>(), [&SourceKind::Defender]);
+
+    let refused = idiff(&["--helper", &path_arg, "--only", "Programs"]);
+    assert_eq!(refused.status.code(), Some(1));
+    let again = idiff(&["--helper", &path_arg, "--only", "Defender"]);
+    assert_eq!(again.status.code(), Some(1), "an existing file is never overwritten");
+}
+
 #[cfg(windows)]
 #[test]
 fn snapshot_without_output_prints_it() {
-    let out = idiff(&["snapshot"]);
+    let out = idiff(&["snapshot", "--no-elevate"]);
     assert!(out.status.success(), "{}", stderr(&out));
     assert!(Snapshot::load(&stdout(&out)).is_ok());
 }
