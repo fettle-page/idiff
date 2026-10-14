@@ -160,7 +160,6 @@ pub const LEVEL_BAD: &str = "Problem:";
 pub const FIRST_RUN: &str = "Open {app} once, then close it and press Enter. (Type s and Enter to skip.)";
 /// Who `FIRST_RUN` asks to open when nothing names the app yet.
 pub const THE_APP: &str = "the app";
-pub const SESSION_UNFINISHED: &str = "This session didn't finish.";
 pub const RUN_BEFORE: &str = "Reading this PC before the install...";
 pub const RUN_STARTING: &str = "Running: {command}";
 pub const RUN_SETTLING: &str = "Waiting {n} seconds for the app to settle...";
