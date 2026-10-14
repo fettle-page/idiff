@@ -19,6 +19,7 @@ use windows::Win32::Security::WinTrust::{
     WTD_UI_NONE, WTHelperGetProvCertFromChain, WTHelperGetProvSignerFromChain, WTHelperProvDataFromStateData,
     WinVerifyTrust,
 };
+use windows::Win32::Storage::FileSystem::{GetFileVersionInfoSizeW, GetFileVersionInfoW, VerQueryValueW};
 use windows::core::{HSTRING, PCWSTR, w};
 
 /// The signer of Windows' own files, which carry no signature of their own but are listed in a
@@ -35,10 +36,73 @@ pub fn signer_of(path: &Path) -> Option<String> {
     embedded_signer(path).or_else(|| catalog_signer(path))
 }
 
-/// Adds `signer` to the added and modified items whose target is a file, and `bytes` and
-/// `files` to added folders. Each path is looked at once, however many items point at it.
+/// The company the file at `path` names in its version details (`CompanyName`), trimmed. None
+/// when it has no version details, names no company, or is missing. Only reads the file.
+pub fn company_of(path: &Path) -> Option<String> {
+    if !path.is_file() {
+        return None;
+    }
+    let wide = HSTRING::from(path);
+    let size = unsafe { GetFileVersionInfoSizeW(&wide, None) };
+    if size == 0 {
+        return None;
+    }
+    let mut data = vec![0u8; size as usize];
+    unsafe { GetFileVersionInfoW(&wide, None, size, data.as_mut_ptr().cast()) }.ok()?;
+
+    // The languages and code pages the strings are in, then the usual US English ones in case
+    // the file doesn't list its own.
+    let mut tables: Vec<(u16, u16)> = query(&data, r"\VarFileInfo\Translation")
+        .map(|bytes| {
+            bytes
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .map(|[a, b, c, d]| (u16::from_le_bytes([*a, *b]), u16::from_le_bytes([*c, *d])))
+                .collect()
+        })
+        .unwrap_or_default();
+    tables.extend([(0x0409, 0x04b0), (0x0409, 0x04e4), (0x0409, 0x0000)]);
+    tables.into_iter().find_map(|(lang, code_page)| {
+        let bytes = query(
+            &data,
+            &format!(r"\StringFileInfo\{lang:04x}{code_page:04x}\CompanyName"),
+        )?;
+        let units: Vec<u16> = bytes
+            .as_chunks::<2>()
+            .0
+            .iter()
+            .map(|&pair| u16::from_le_bytes(pair))
+            .collect();
+        let end = units.iter().position(|&u| u == 0).unwrap_or(units.len());
+        let company = String::from_utf16_lossy(&units[..end]).trim().to_string();
+        (!company.is_empty()).then_some(company)
+    })
+}
+
+/// The bytes of one value in a version resource, or None when it isn't there. String values
+/// come back as UTF-16 characters (`len` counts characters), everything else as bytes.
+fn query<'a>(data: &'a [u8], path: &str) -> Option<&'a [u8]> {
+    let mut ptr: *mut std::ffi::c_void = std::ptr::null_mut();
+    let mut len = 0u32;
+    let found = unsafe { VerQueryValueW(data.as_ptr().cast(), &HSTRING::from(path), &mut ptr, &mut len) }.as_bool();
+    if !found || ptr.is_null() || len == 0 {
+        return None;
+    }
+    let bytes = if path.starts_with(r"\StringFileInfo") {
+        len as usize * 2
+    } else {
+        len as usize
+    };
+    let start = ptr as usize - data.as_ptr() as usize;
+    data.get(start..start.checked_add(bytes)?)
+}
+
+/// Adds `signer` and `company` to the added and modified items whose target is a file, and
+/// `bytes` and `files` to added folders. Each path is looked at once, however many items point at it.
 pub fn enrich(delta: &mut Delta) {
-    let mut signers: HashMap<String, Option<String>> = HashMap::new();
+    // Signer and company per target path, so each file is looked at once.
+    let mut files: HashMap<String, (Option<String>, Option<String>)> = HashMap::new();
     for (kind, changes) in delta.sources.iter_mut() {
         for change in changes {
             let (item, added) = match change {
@@ -47,11 +111,15 @@ pub fn enrich(delta: &mut Delta) {
                 Change::Removed(_) => continue,
             };
             if let Some(target) = &item.target {
-                let signer = signers
-                    .entry(target.clone())
-                    .or_insert_with(|| signer_of(Path::new(target)));
+                let (signer, company) = files.entry(target.clone()).or_insert_with(|| {
+                    let path = Path::new(target);
+                    (signer_of(path), company_of(path))
+                });
                 if let Some(signer) = signer {
                     item.props.insert("signer".into(), signer.clone());
+                }
+                if let Some(company) = company {
+                    item.props.insert("company".into(), company.clone());
                 }
             }
             // Folder keys are unique paths, so each added folder is measured once.
