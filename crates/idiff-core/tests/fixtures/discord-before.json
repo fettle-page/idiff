@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "idiff_version": "0.1.0",
+  "taken_at_ms": 1791981296000,
+  "elevated": true,
+  "env": {
+    "SystemRoot": "C:\\Windows",
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramData": "C:\\ProgramData",
+    "LOCALAPPDATA": "C:\\Users\\a\\AppData\\Local",
+    "APPDATA": "C:\\Users\\a\\AppData\\Roaming",
+    "USERPROFILE": "C:\\Users\\a"
+  },
+  "sources": {
+    "Programs": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "hklm\\native\\7-zip",
+          "label": "7-Zip 24.08 (x64)",
+          "target": "c:\\program files\\7-zip",
+          "props": {
+            "version": "24.08",
+            "publisher": "Igor Pavlov"
+          }
+        }
+      ]
+    },
+    "Services": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "windefend",
+          "label": "Microsoft Defender Antivirus Service",
+          "target": "c:\\programdata\\microsoft\\windows defender\\platform\\4.18.25080.5-0\\msmpeng.exe",
+          "props": {
+            "account": "LocalSystem",
+            "start": "2",
+            "type": "16"
+          }
+        }
+      ]
+    },
+    "Drivers": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "mpkslold999",
+          "label": "mpkslold999",
+          "target": "c:\\programdata\\microsoft\\windows defender\\definition updates\\{1111}\\mpksldrv.sys",
+          "props": {
+            "account": "LocalSystem",
+            "start": "3",
+            "type": "1"
+          }
+        }
+      ]
+    },
+    "Tasks": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "\\microsoft\\windows\\defrag\\scheduleddefrag",
+          "label": "\\Microsoft\\Windows\\Defrag\\ScheduledDefrag",
+          "target": "c:\\windows\\system32\\defrag.exe",
+          "props": {
+            "enabled": "true",
+            "triggers": "Weekly",
+            "user": "S-1-5-18"
+          }
+        },
+        {
+          "key": "\\microsoftedgeupdatetaskmachinecore",
+          "label": "\\MicrosoftEdgeUpdateTaskMachineCore",
+          "target": "c:\\program files (x86)\\microsoft\\edgeupdate\\microsoftedgeupdate.exe",
+          "props": {
+            "enabled": "true",
+            "triggers": "Logon,Daily",
+            "user": "S-1-5-18"
+          }
+        }
+      ]
+    },
+    "Startup": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "run|hkcu|software\\microsoft\\windows\\currentversion\\run|onedrive",
+          "label": "OneDrive",
+          "target": "c:\\users\\a\\appdata\\local\\microsoft\\onedrive\\onedrive.exe",
+          "props": {
+            "command": "\"C:\\Users\\a\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe\" /background",
+            "enabled": "true"
+          }
+        }
+      ]
+    },
+    "Firewall": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "corenet-dhcp-in",
+          "label": "Core Networking - DHCP (DHCP-In)",
+          "target": "c:\\windows\\system32\\svchost.exe",
+          "props": {
+            "action": "allow",
+            "dir": "in",
+            "active": "true",
+            "svc": "dhcp"
+          }
+        }
+      ]
+    },
+    "Folders": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "c:\\users\\a\\appdata\\local\\microsoft",
+          "label": "AppData\\Local\\Microsoft",
+          "target": null,
+          "props": {
+            "root": "AppData\\Local"
+          }
+        }
+      ]
+    },
+    "Packaged": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "microsoft.windowsstore_8wekyb3d8bbwe",
+          "label": "Microsoft Store",
+          "target": "c:\\program files\\windowsapps\\microsoft.windowsstore_22409.1401.5.0_x64__8wekyb3d8bbwe",
+          "props": {
+            "version": "22409.1401.5.0",
+            "publisher": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          }
+        }
+      ]
+    }
+  }
+}

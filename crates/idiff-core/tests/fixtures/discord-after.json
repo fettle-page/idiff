@@ -1,0 +1,257 @@
+{
+  "schema": 1,
+  "idiff_version": "0.1.0",
+  "taken_at_ms": 1791981296000,
+  "elevated": true,
+  "env": {
+    "SystemRoot": "C:\\Windows",
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramData": "C:\\ProgramData",
+    "LOCALAPPDATA": "C:\\Users\\a\\AppData\\Local",
+    "APPDATA": "C:\\Users\\a\\AppData\\Roaming",
+    "USERPROFILE": "C:\\Users\\a"
+  },
+  "sources": {
+    "Programs": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "hkcu\\native\\discord",
+          "label": "Discord",
+          "target": "c:\\users\\a\\appdata\\local\\discord",
+          "props": {
+            "version": "1.0.9170",
+            "publisher": "Discord Inc.",
+            "size_kb": "412000",
+            "install_location": "%LOCALAPPDATA%\\Discord"
+          }
+        },
+        {
+          "key": "hklm\\native\\7-zip",
+          "label": "7-Zip 24.08 (x64)",
+          "target": "c:\\program files\\7-zip",
+          "props": {
+            "version": "24.08",
+            "publisher": "Igor Pavlov"
+          }
+        }
+      ]
+    },
+    "Services": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "foosvc",
+          "label": "Foo Service",
+          "target": "c:\\tools\\foo\\foo.exe",
+          "props": {
+            "account": "LocalSystem",
+            "start": "3",
+            "type": "16"
+          }
+        },
+        {
+          "key": "windefend",
+          "label": "Microsoft Defender Antivirus Service",
+          "target": "c:\\programdata\\microsoft\\windows defender\\platform\\4.18.25080.5-0\\msmpeng.exe",
+          "props": {
+            "account": "LocalSystem",
+            "start": "2",
+            "type": "16"
+          }
+        }
+      ]
+    },
+    "Drivers": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "mpkslabc123",
+          "label": "mpkslabc123",
+          "target": "c:\\programdata\\microsoft\\windows defender\\definition updates\\{2222}\\mpksldrv.sys",
+          "props": {
+            "account": "LocalSystem",
+            "start": "3",
+            "type": "1"
+          }
+        },
+        {
+          "key": "mpkslold999",
+          "label": "mpkslold999",
+          "target": "c:\\programdata\\microsoft\\windows defender\\definition updates\\{1111}\\mpksldrv.sys",
+          "props": {
+            "account": "LocalSystem",
+            "start": "3",
+            "type": "1"
+          }
+        }
+      ]
+    },
+    "Tasks": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "\\discordupdate",
+          "label": "\\DiscordUpdate",
+          "target": "c:\\users\\a\\appdata\\local\\discord\\update.exe",
+          "props": {
+            "args": "--processStart Discord.exe",
+            "enabled": "true",
+            "triggers": "Daily",
+            "user": "S-1-5-21-1000-1000-1000-1001"
+          }
+        },
+        {
+          "key": "\\microsoft\\windows\\defrag\\scheduleddefrag",
+          "label": "\\Microsoft\\Windows\\Defrag\\ScheduledDefrag",
+          "target": "c:\\windows\\system32\\defrag.exe",
+          "props": {
+            "enabled": "true",
+            "triggers": "Weekly",
+            "user": "S-1-5-18"
+          }
+        },
+        {
+          "key": "\\microsoftedgeupdatetaskmachinecore",
+          "label": "\\MicrosoftEdgeUpdateTaskMachineCore",
+          "target": "c:\\program files (x86)\\microsoft\\edgeupdate\\microsoftedgeupdate.exe",
+          "props": {
+            "enabled": "true",
+            "triggers": "Logon,Daily",
+            "user": "S-1-5-18"
+          }
+        },
+        {
+          "key": "\\microsoftedgeupdatetaskmachineua",
+          "label": "\\MicrosoftEdgeUpdateTaskMachineUA",
+          "target": "c:\\program files (x86)\\microsoft\\edgeupdate\\microsoftedgeupdate.exe",
+          "props": {
+            "enabled": "true",
+            "triggers": "Time",
+            "user": "S-1-5-18"
+          }
+        }
+      ]
+    },
+    "Startup": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "run|hkcu|software\\microsoft\\windows\\currentversion\\run|discord",
+          "label": "Discord",
+          "target": "c:\\users\\a\\appdata\\local\\discord\\update.exe",
+          "props": {
+            "command": "\"C:\\Users\\a\\AppData\\Local\\Discord\\Update.exe\" --processStart Discord.exe",
+            "enabled": "true"
+          }
+        },
+        {
+          "key": "run|hkcu|software\\microsoft\\windows\\currentversion\\run|onedrive",
+          "label": "OneDrive",
+          "target": "c:\\users\\a\\appdata\\local\\microsoft\\onedrive\\onedrive.exe",
+          "props": {
+            "command": "\"C:\\Users\\a\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe\" /background",
+            "enabled": "true"
+          }
+        }
+      ]
+    },
+    "Firewall": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "corenet-dhcp-in",
+          "label": "Core Networking - DHCP (DHCP-In)",
+          "target": "c:\\windows\\system32\\svchost.exe",
+          "props": {
+            "action": "allow",
+            "dir": "in",
+            "active": "true",
+            "svc": "dhcp"
+          }
+        },
+        {
+          "key": "udp query user{8c3a1f5e-2b7d-4e9a-9f1c-0d2e3f4a5b6c}c:\\program files\\windowsapps\\microsoft.windowscommunicationsapps_16005.14326.22342.0_x64__8wekyb3d8bbwe\\hxoutlook.exe",
+          "label": "hxoutlook.exe",
+          "target": "c:\\program files\\windowsapps\\microsoft.windowscommunicationsapps_16005.14326.22342.0_x64__8wekyb3d8bbwe\\hxoutlook.exe",
+          "props": {
+            "action": "allow",
+            "dir": "out",
+            "active": "true"
+          }
+        }
+      ]
+    },
+    "Folders": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "c:\\users\\a\\appdata\\local\\discord",
+          "label": "AppData\\Local\\Discord",
+          "target": null,
+          "props": {
+            "root": "AppData\\Local",
+            "bytes": "432013312",
+            "files": "1210"
+          }
+        },
+        {
+          "key": "c:\\users\\a\\appdata\\local\\microsoft",
+          "label": "AppData\\Local\\Microsoft",
+          "target": null,
+          "props": {
+            "root": "AppData\\Local"
+          }
+        },
+        {
+          "key": "c:\\users\\a\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\discord inc\\discord.lnk",
+          "label": "Start menu\\Discord Inc\\Discord.lnk",
+          "target": "c:\\users\\a\\appdata\\local\\discord\\update.exe",
+          "props": {
+            "root": "Start menu",
+            "kind": "shortcut"
+          }
+        }
+      ]
+    },
+    "Packaged": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "microsoft.windowsstore_8wekyb3d8bbwe",
+          "label": "Microsoft Store",
+          "target": "c:\\program files\\windowsapps\\microsoft.windowsstore_22410.1401.3.0_x64__8wekyb3d8bbwe",
+          "props": {
+            "version": "22410.1401.3.0",
+            "publisher": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          }
+        }
+      ]
+    }
+  }
+}

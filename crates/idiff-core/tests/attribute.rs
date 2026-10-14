@@ -1,0 +1,421 @@
+use idiff_core::attribute::{Attributed, Owner, Reason, attribute};
+use idiff_core::copy;
+use idiff_core::diff::{Change, Delta, diff};
+use idiff_core::model::{Item, Snapshot, SourceKind};
+use idiff_core::noise::NoiseList;
+use idiff_core::publisher::{is_microsoft, normalize, same};
+use idiff_core::subject::{Subject, find_subject, winget_id};
+use std::collections::BTreeMap;
+
+fn load(json: &str) -> Snapshot {
+    Snapshot::load(json).unwrap()
+}
+
+fn discord() -> (Snapshot, Snapshot) {
+    (
+        load(include_str!("fixtures/discord-before.json")),
+        load(include_str!("fixtures/discord-after.json")),
+    )
+}
+
+fn vlc() -> (Snapshot, Snapshot) {
+    (
+        load(include_str!("fixtures/vlc-before.json")),
+        load(include_str!("fixtures/vlc-after.json")),
+    )
+}
+
+fn s<const N: usize>(words: [&str; N]) -> Vec<String> {
+    words.iter().map(|w| w.to_string()).collect()
+}
+
+fn find<'a>(r: &'a [Attributed], key: &str) -> &'a Attributed {
+    r.iter()
+        .find(|a| a.change.item().key.contains(key))
+        .unwrap_or_else(|| panic!("no change with a key containing {key:?}"))
+}
+
+fn item(key: &str, target: Option<&str>, props: &[(&str, &str)]) -> Item {
+    Item {
+        key: key.into(),
+        label: key.into(),
+        target: target.map(String::from),
+        props: props.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect(),
+    }
+}
+
+fn added(kind: SourceKind, items: Vec<Item>) -> Delta {
+    Delta {
+        sources: BTreeMap::from([(kind, items.into_iter().map(Change::Added).collect())]),
+        notes: BTreeMap::new(),
+    }
+}
+
+#[test]
+fn discord_changes_are_split_correctly() {
+    let (before, after) = discord();
+    let d = diff(&before, &after);
+    let r = attribute(&d, &find_subject(&d, None, &[]), &NoiseList::builtin(), &after.env);
+    let owner = |key: &str| find(&r, key).owner;
+    assert_eq!(owner("discordupdate"), Owner::App);
+    assert_eq!(owner("|discord"), Owner::App); // startup run value
+    assert_eq!(owner("mpkslabc123"), Owner::Windows);
+    assert_eq!(owner("microsoftedgeupdatetask"), Owner::Windows);
+    assert_eq!(owner("windowsapps"), Owner::Windows);
+    assert_eq!(owner("foosvc"), Owner::Unknown);
+
+    assert_eq!(owner(r"hkcu\native\discord"), Owner::App);
+    assert_eq!(owner(r"appdata\local\discord"), Owner::App);
+    assert_eq!(owner("discord.lnk"), Owner::App);
+    // The Store updated itself meanwhile: a Microsoft package that only changed version.
+    assert_eq!(owner("microsoft.windowsstore"), Owner::Windows);
+    assert_eq!(r.len(), 10, "{r:#?}");
+}
+
+#[test]
+fn reasons_say_which_rule_matched() {
+    let (before, after) = discord();
+    let d = diff(&before, &after);
+    let r = attribute(&d, &find_subject(&d, None, &[]), &NoiseList::builtin(), &after.env);
+    assert_eq!(find(&r, "discordupdate").reason, Reason::TargetInInstallDir);
+    assert_eq!(find(&r, r"appdata\local\discord").reason, Reason::ItemInInstallDir);
+    assert_eq!(find(&r, r"hkcu\native\discord").reason, Reason::SubjectEntry);
+    assert_eq!(find(&r, "foosvc").reason, Reason::Unattributed);
+    assert_eq!(
+        find(&r, "mpkslabc123").reason,
+        Reason::Noise("Microsoft Defender's per-update driver".into())
+    );
+    assert!(Reason::NameMatches.text().contains("name matches"));
+    for reason in [
+        Reason::Noise("x".into()),
+        Reason::SubjectEntry,
+        Reason::TargetInInstallDir,
+        Reason::SignerMatchesPublisher,
+        Reason::ItemInInstallDir,
+        Reason::WindowsComponent,
+        Reason::NameMatches,
+        Reason::Unattributed,
+    ] {
+        assert!(!reason.text().is_empty());
+    }
+    assert_eq!(Reason::Noise("x".into()).owner(), Owner::Windows);
+    assert_eq!(Reason::NameMatches.owner(), Owner::App);
+    assert_eq!(Reason::Unattributed.owner(), Owner::Unknown);
+}
+
+#[test]
+fn subject_comes_from_the_new_program_entry() {
+    let (before, after) = discord();
+    let subject = find_subject(&diff(&before, &after), None, &[]);
+    assert_eq!(subject.name, "Discord");
+    assert_eq!(subject.version.as_deref(), Some("1.0.9170"));
+    assert_eq!(subject.publisher.as_deref(), Some("Discord Inc."));
+    assert_eq!(subject.previous_version, None);
+    assert_eq!(subject.install_dirs, [r"c:\users\a\appdata\local\discord"]);
+    assert!(subject.also_installed.is_empty());
+}
+
+#[test]
+fn app_flag_wins_over_programs() {
+    let (before, after) = discord();
+    let subject = find_subject(
+        &diff(&before, &after),
+        Some("Steam"),
+        &s(["winget", "install", "Valve.Steam"]),
+    );
+    assert_eq!(subject.name, "Steam");
+}
+
+#[test]
+fn several_new_programs_pick_the_largest() {
+    let d = added(
+        SourceKind::Programs,
+        vec![
+            item(
+                r"hklm\native\redist",
+                None,
+                &[("size_kb", "20000"), ("version", "14.4")],
+            ),
+            item(
+                r"hklm\native\game",
+                Some(r"c:\games\game"),
+                &[("size_kb", "9000000"), ("version", "2.0")],
+            ),
+            item(
+                r"hklm\native\hidden",
+                None,
+                &[("size_kb", "99999999"), ("system_component", "1")],
+            ),
+        ],
+    );
+    let subject = find_subject(&d, None, &[]);
+    assert_eq!(subject.name, r"hklm\native\game");
+    assert_eq!(subject.also_installed, [r"hklm\native\redist"]);
+    assert_eq!(subject.install_dirs, [r"c:\games\game"]);
+}
+
+#[test]
+fn a_too_broad_install_location_is_ignored() {
+    // Some installers write their parent folder as InstallLocation; it mustn't claim everything in it.
+    for broad in [r"c:\program files", r"c:\users\a\appdata\local", r"c:\users\a", r"c:\"] {
+        let d = added(
+            SourceKind::Programs,
+            vec![item(r"hklm\native\tool", Some(broad), &[("version", "1")])],
+        );
+        assert!(find_subject(&d, None, &[]).install_dirs.is_empty(), "{broad}");
+    }
+}
+
+#[test]
+fn packaged_and_winget_and_unknown_subjects() {
+    let store_app = added(
+        SourceKind::Packaged,
+        vec![Item {
+            key: "spotifyab.spotifymusic_zpdnekdrzrea0".into(),
+            label: "Spotify Music".into(),
+            target: Some(r"c:\program files\windowsapps\spotifyab.spotifymusic_1.2.0.0_x64__zpdnekdrzrea0".into()),
+            props: BTreeMap::from([
+                ("version".into(), "1.2.0.0".into()),
+                (
+                    "publisher".into(),
+                    "CN=Spotify AB, O=Spotify AB, L=Stockholm, C=SE".into(),
+                ),
+            ]),
+        }],
+    );
+    let subject = find_subject(&store_app, None, &[]);
+    assert_eq!(subject.name, "Spotify Music");
+    assert_eq!(subject.publisher.as_deref(), Some("Spotify AB"));
+    assert_eq!(subject.install_dirs.len(), 1);
+
+    let winget = find_subject(
+        &Delta::default(),
+        None,
+        &s(["winget", "install", "--id", "Valve.Steam"]),
+    );
+    assert_eq!(winget.name, "Valve.Steam");
+
+    let unknown = find_subject(&Delta::default(), None, &s(["setup.exe", "/S"]));
+    assert_eq!(unknown.name, copy::UNKNOWN_APP);
+    assert!(unknown.install_dirs.is_empty());
+}
+
+#[test]
+fn upgrade_sets_previous_version() {
+    let (_, after) = discord();
+    let mut base = after.clone();
+    // Discord was already installed; the update changed its version.
+    let programs = &mut base.sources.get_mut(&SourceKind::Programs).unwrap().items;
+    let entry = programs.iter_mut().find(|i| i.key == r"hkcu\native\discord").unwrap();
+    entry.props.insert("version".into(), "1.0.9100".into());
+    let d = diff(&base, &after);
+    let subject = find_subject(&d, None, &[]);
+    assert_eq!(subject.name, "Discord");
+    assert_eq!(subject.version.as_deref(), Some("1.0.9170"));
+    assert_eq!(subject.previous_version.as_deref(), Some("1.0.9100"));
+    let r = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
+    assert_eq!(find(&r, r"hkcu\native\discord").owner, Owner::App);
+}
+
+#[test]
+fn removed_changes_use_the_same_rules() {
+    let (before, after) = discord();
+    let install = diff(&before, &after);
+    let subject = find_subject(&install, None, &[]);
+    // As after an uninstall: everything the install added is gone again.
+    let r = attribute(&diff(&after, &before), &subject, &NoiseList::builtin(), &after.env);
+    let task = find(&r, "discordupdate");
+    assert!(matches!(task.change, Change::Removed(_)));
+    assert_eq!(task.owner, Owner::App);
+    assert_eq!(find(&r, "mpkslabc123").owner, Owner::Windows);
+    assert_eq!(find(&r, "foosvc").owner, Owner::Unknown);
+}
+
+#[test]
+fn vlc_runner_install_is_attributed() {
+    let (before, after) = vlc();
+    let d = diff(&before, &after);
+    let subject = find_subject(&d, None, &s(["winget", "install", "--id", "VideoLAN.VLC", "--exact"]));
+    assert_eq!(subject.name, "VLC media player");
+    assert_eq!(subject.version.as_deref(), Some("3.0.24"));
+    assert_eq!(subject.publisher.as_deref(), Some("VideoLAN"));
+    assert!(
+        subject
+            .install_dirs
+            .contains(&r"c:\program files\videolan\vlc".to_string())
+    );
+    assert!(subject.install_dirs.contains(&r"c:\program files\videolan".to_string()));
+    assert!(!subject.install_dirs.iter().any(|d| d.contains("peerdistrepub")));
+
+    let r = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
+    for verb in ["directory|verb|playwithvlc", "directory|verb|addtoplaylistvlc"] {
+        assert_eq!(find(&r, verb).owner, Owner::App);
+        assert_eq!(find(&r, verb).reason, Reason::TargetInInstallDir);
+    }
+    assert_eq!(find(&r, r"c:\program files\videolan").owner, Owner::App);
+    assert_eq!(find(&r, r"public\desktop\vlc media player.lnk").owner, Owner::App);
+    assert_eq!(find(&r, "vlc media player skinned.lnk").owner, Owner::App);
+    assert_ne!(find(&r, "peerdistrepub").owner, Owner::App);
+    assert_eq!(find(&r, "microsoft.winget.source").owner, Owner::Windows);
+    // BITS and the Program Compatibility Assistant changed their start type meanwhile.
+    assert_eq!(find(&r, "bits").owner, Owner::Windows);
+    assert_eq!(find(&r, "bits").reason, Reason::WindowsComponent);
+    assert_eq!(find(&r, "pcasvc").owner, Owner::Windows);
+    assert!(!r.iter().any(|a| a.owner == Owner::Unknown), "{r:#?}");
+}
+
+#[test]
+fn unrelated_new_folder_is_not_an_install_dir() {
+    // Without the noise list, BranchCache's folder must still not count as VLC's.
+    let (before, after) = vlc();
+    let d = diff(&before, &after);
+    let subject = find_subject(&d, None, &[]);
+    let r = attribute(&d, &subject, &NoiseList::parse("").unwrap(), &after.env);
+    assert_eq!(find(&r, "peerdistrepub").owner, Owner::Unknown);
+}
+
+#[test]
+fn an_unknown_app_claims_nothing_by_name() {
+    let (before, after) = vlc();
+    let d = diff(&before, &after);
+    let unknown = find_subject(&Delta::default(), None, &[]);
+    let r = attribute(&d, &unknown, &NoiseList::builtin(), &after.env);
+    assert!(!r.iter().any(|a| a.owner == Owner::App), "{r:#?}");
+    assert_eq!(find(&r, "directory|verb|playwithvlc").owner, Owner::Unknown);
+}
+
+#[test]
+fn name_matches_are_whole_words() {
+    let subject = Subject {
+        name: "Notion".into(),
+        ..Default::default()
+    };
+    let d = added(
+        SourceKind::Tasks,
+        vec![
+            item(r"\notion update", None, &[]),
+            item(r"\notionally unrelated", None, &[]),
+        ],
+    );
+    let r = attribute(&d, &subject, &NoiseList::parse("").unwrap(), &BTreeMap::new());
+    assert_eq!(find(&r, r"\notion update").reason, Reason::NameMatches);
+    assert_eq!(find(&r, "notionally").owner, Owner::Unknown);
+}
+
+#[test]
+fn signer_rules_use_the_publisher() {
+    let subject = Subject {
+        name: "Zoom Workplace".into(),
+        publisher: Some("Zoom Video Communications, Inc.".into()),
+        ..Default::default()
+    };
+    let env = BTreeMap::from([("SystemRoot".to_string(), r"C:\Windows".to_string())]);
+    let d = added(
+        SourceKind::Services,
+        vec![
+            item(
+                "zoomsvc",
+                Some(r"c:\program files\common files\z\svc.exe"),
+                &[("signer", "Zoom Video Communications, Inc")],
+            ),
+            item(
+                "mssvc",
+                Some(r"c:\program files\x\y.exe"),
+                &[("signer", "Microsoft Windows")],
+            ),
+            item("winsvc", Some(r"c:\windows\system32\svchost.exe"), &[]),
+        ],
+    );
+    let r = attribute(&d, &subject, &NoiseList::parse("").unwrap(), &env);
+    assert_eq!(find(&r, "zoomsvc").reason, Reason::SignerMatchesPublisher);
+    assert_eq!(find(&r, "mssvc").reason, Reason::WindowsComponent);
+    assert_eq!(find(&r, "winsvc").reason, Reason::WindowsComponent);
+
+    // A Microsoft app's own Windows-folder and Microsoft-signed changes aren't hidden as Windows'.
+    let teams = Subject {
+        name: "Microsoft Teams".into(),
+        publisher: Some("Microsoft Corporation".into()),
+        ..Default::default()
+    };
+    let r = attribute(&d, &teams, &NoiseList::parse("").unwrap(), &env);
+    assert_eq!(find(&r, "mssvc").owner, Owner::App);
+    assert_ne!(find(&r, "winsvc").owner, Owner::Windows);
+}
+
+#[test]
+fn winget_id_is_read_from_the_command() {
+    assert_eq!(
+        winget_id(&s(["winget", "install", "--id", "Discord.Discord", "--silent"])),
+        Some("Discord.Discord".into())
+    );
+    assert_eq!(
+        winget_id(&s(["winget", "install", "Valve.Steam"])),
+        Some("Valve.Steam".into())
+    );
+    assert_eq!(
+        winget_id(&s([
+            r"C:\Users\a\AppData\Local\Microsoft\WindowsApps\winget.exe",
+            "upgrade",
+            "--id=Zoom.Zoom"
+        ])),
+        Some("Zoom.Zoom".into())
+    );
+    assert_eq!(
+        winget_id(&s([
+            "winget", "install", "--source", "winget", "--scope", "user", "-e", "Git.Git"
+        ])),
+        Some("Git.Git".into())
+    );
+    assert_eq!(winget_id(&s(["winget", "install", "-q", "vlc"])), Some("vlc".into()));
+    assert_eq!(winget_id(&s(["winget", "search", "vlc"])), None);
+    assert_eq!(winget_id(&s(["msiexec", "/i", "x.msi"])), None);
+    assert_eq!(winget_id(&[]), None);
+}
+
+#[test]
+fn publisher_suffixes_are_ignored() {
+    assert!(same("Discord Inc.", "Discord, Inc"));
+    assert!(!same("Microsoft Corporation", "Discord Inc."));
+    assert!(same("Mozilla Corporation", "MOZILLA CORP."));
+    assert!(same("Foo GmbH", "foo"));
+    assert!(same("Bar S.r.l.", "Bar"));
+    assert!(same("CN=Spotify AB, O=Spotify AB, L=Stockholm, C=SE", "Spotify AB"));
+    assert!(!same("", ""));
+    assert_eq!(
+        normalize("Zoom Video Communications, Inc."),
+        "zoom video communications"
+    );
+    assert!(is_microsoft("Microsoft Corporation"));
+    assert!(is_microsoft("Microsoft Windows"));
+    assert!(is_microsoft(
+        "CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+    ));
+    assert!(!is_microsoft("Discord Inc."));
+    assert!(!is_microsoft("Not Microsoft Tools Ltd"));
+}
+
+#[test]
+fn microsoft_rule_is_skipped_for_microsoft_apps() {
+    let d = added(
+        SourceKind::Tasks,
+        vec![item(
+            r"\microsoft\office\office automatic updates 2.0",
+            Some(r"c:\program files\common files\microsoft shared\clicktorun\officec2rclient.exe"),
+            &[],
+        )],
+    );
+    let office = Subject {
+        name: "Microsoft 365 Apps for enterprise".into(),
+        publisher: Some("Microsoft Corporation".into()),
+        ..Default::default()
+    };
+    let discord = Subject {
+        name: "Discord".into(),
+        publisher: Some("Discord Inc.".into()),
+        ..Default::default()
+    };
+    let noise = NoiseList::builtin();
+    let env = BTreeMap::new();
+    assert_ne!(attribute(&d, &office, &noise, &env)[0].owner, Owner::Windows);
+    assert_eq!(attribute(&d, &discord, &noise, &env)[0].owner, Owner::Windows);
+}

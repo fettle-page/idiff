@@ -1,0 +1,195 @@
+{
+  "schema": 1,
+  "idiff_version": "0.1.0",
+  "taken_at_ms": 1791981296000,
+  "elevated": true,
+  "env": {
+    "SystemRoot": "C:\\Windows",
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramData": "C:\\ProgramData",
+    "LOCALAPPDATA": "C:\\Users\\runneradmin\\AppData\\Local",
+    "APPDATA": "C:\\Users\\runneradmin\\AppData\\Roaming",
+    "USERPROFILE": "C:\\Users\\runneradmin"
+  },
+  "sources": {
+    "Programs": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "hklm\\native\\vlc media player",
+          "label": "VLC media player",
+          "target": "c:\\program files\\videolan\\vlc",
+          "props": {
+            "version": "3.0.24",
+            "publisher": "VideoLAN",
+            "install_location": "C:\\Program Files\\VideoLAN\\VLC"
+          }
+        }
+      ]
+    },
+    "Services": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "bits",
+          "label": "BITS",
+          "target": "c:\\windows\\system32\\svchost.exe",
+          "props": {
+            "account": "LocalSystem",
+            "start": "3",
+            "type": "32"
+          }
+        },
+        {
+          "key": "pcasvc",
+          "label": "PcaSvc",
+          "target": "c:\\windows\\system32\\svchost.exe",
+          "props": {
+            "account": "LocalSystem",
+            "start": "2",
+            "type": "32"
+          }
+        }
+      ]
+    },
+    "ShellExt": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "directory|verb|addtoplaylistvlc",
+          "label": "AddToPlaylistVLC",
+          "target": "c:\\program files\\videolan\\vlc\\vlc.exe",
+          "props": {}
+        },
+        {
+          "key": "directory|verb|playwithvlc",
+          "label": "PlayWithVLC",
+          "target": "c:\\program files\\videolan\\vlc\\vlc.exe",
+          "props": {}
+        }
+      ]
+    },
+    "Folders": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "c:\\program files\\videolan",
+          "label": "Program Files\\VideoLAN",
+          "target": null,
+          "props": {
+            "root": "Program Files"
+          }
+        },
+        {
+          "key": "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\documentation.lnk",
+          "label": "Start menu (all users)\\VideoLAN\\Documentation.lnk",
+          "target": "c:\\program files\\videolan\\vlc\\documentation.url",
+          "props": {
+            "root": "Start menu (all users)",
+            "kind": "shortcut"
+          }
+        },
+        {
+          "key": "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\release notes.lnk",
+          "label": "Start menu (all users)\\VideoLAN\\Release Notes.lnk",
+          "target": "c:\\program files\\videolan\\vlc\\news.txt",
+          "props": {
+            "root": "Start menu (all users)",
+            "kind": "shortcut"
+          }
+        },
+        {
+          "key": "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\videolan website.lnk",
+          "label": "Start menu (all users)\\VideoLAN\\VideoLAN Website.lnk",
+          "target": "c:\\program files\\videolan\\vlc\\videolan website.url",
+          "props": {
+            "root": "Start menu (all users)",
+            "kind": "shortcut"
+          }
+        },
+        {
+          "key": "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\vlc media player - reset preferences and cache files.lnk",
+          "label": "Start menu (all users)\\VideoLAN\\VLC media player - reset preferences and cache files.lnk",
+          "target": "c:\\program files\\videolan\\vlc\\vlc.exe",
+          "props": {
+            "root": "Start menu (all users)",
+            "kind": "shortcut"
+          }
+        },
+        {
+          "key": "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\vlc media player skinned.lnk",
+          "label": "Start menu (all users)\\VideoLAN\\VLC media player skinned.lnk",
+          "target": "c:\\program files\\videolan\\vlc\\vlc.exe",
+          "props": {
+            "root": "Start menu (all users)",
+            "kind": "shortcut"
+          }
+        },
+        {
+          "key": "c:\\programdata\\microsoft\\windows\\start menu\\programs\\videolan\\vlc media player.lnk",
+          "label": "Start menu (all users)\\VideoLAN\\VLC media player.lnk",
+          "target": "c:\\program files\\videolan\\vlc\\vlc.exe",
+          "props": {
+            "root": "Start menu (all users)",
+            "kind": "shortcut"
+          }
+        },
+        {
+          "key": "c:\\users\\public\\desktop\\vlc media player.lnk",
+          "label": "Public Desktop\\VLC media player.lnk",
+          "target": "c:\\program files\\videolan\\vlc\\vlc.exe",
+          "props": {
+            "root": "Public Desktop",
+            "kind": "shortcut"
+          }
+        },
+        {
+          "key": "c:\\users\\runneradmin\\appdata\\local\\microsoft",
+          "label": "AppData\\Local\\Microsoft",
+          "target": null,
+          "props": {
+            "root": "AppData\\Local"
+          }
+        },
+        {
+          "key": "c:\\users\\runneradmin\\appdata\\local\\peerdistrepub",
+          "label": "AppData\\Local\\PeerDistRepub",
+          "target": null,
+          "props": {
+            "root": "AppData\\Local"
+          }
+        }
+      ]
+    },
+    "Packaged": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "microsoft.winget.source_8wekyb3d8bbwe",
+          "label": "Microsoft.Winget.Source",
+          "target": null,
+          "props": {
+            "version": "2026.1014.1958.44",
+            "publisher": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          }
+        }
+      ]
+    }
+  }
+}
