@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <Triggers>
+    <LogonTrigger>
+      <Enabled>true</Enabled>
+    </LogonTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Users">
+      <GroupId>S-1-5-32-545</GroupId>
+      <RunLevel>LeastPrivilege</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <Enabled>false</Enabled>
+  </Settings>
+  <Actions Context="Users">
+    <ComHandler>
+      <ClassId>{A6BA00FE-40E8-477C-B713-C64A14F18ADB}</ClassId>
+      <Data><![CDATA[logon]]></Data>
+    </ComHandler>
+  </Actions>
+</Task>

@@ -3,6 +3,7 @@
 
 pub mod programs;
 pub mod services;
+pub mod tasks;
 
 #[cfg(windows)]
 use crate::SourceOutput;
@@ -16,6 +17,7 @@ pub fn source(kind: SourceKind) -> crate::runner::Source {
         SourceKind::Programs => programs::read,
         SourceKind::Services => services::read_services,
         SourceKind::Drivers => services::read_drivers,
+        SourceKind::Tasks => tasks::read,
         _ => || Err("not built yet".into()),
     };
     Box::new(move || read().and_then(|out| serde_json::to_value(out).map_err(|e| e.to_string())))
