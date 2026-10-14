@@ -67,6 +67,8 @@ pub const INSTALLERS_QUIET: std::time::Duration = std::time::Duration::from_secs
 /// from a temp folder, where uninstallers copy themselves (NSIS's `Un_A.exe`) so they can delete
 /// their own folder. `msiexec.exe` in session 0 is the Windows Installer service and its custom
 /// action hosts, which linger for minutes after any install; `wait_for_msi_idle` covers their work.
+const WINDOWS_TEMP_HELPERS: &[&str] = &["dismhost.exe", "mpsigstub.exe", "mpam-fe.exe"];
+
 pub fn is_installer(name: &str, image: Option<&str>, service_session: bool, temp_dirs: &[String]) -> bool {
     let from_temp = image.is_some_and(|image| {
         let image = image.to_lowercase();
@@ -75,6 +77,11 @@ pub fn is_installer(name: &str, image: Option<&str>, service_session: bool, temp
             .any(|temp| image.starts_with(&format!("{}\\", temp.trim_end_matches('\\').to_lowercase())))
     });
     let name = name.to_lowercase();
+    // Windows' own helpers that run from a temp folder (servicing, Defender's signature updates)
+    // aren't installers: one that lingered would make every wait run to its deadline.
+    if WINDOWS_TEMP_HELPERS.contains(&name.as_str()) {
+        return false;
+    }
     let Some(stem) = name.strip_suffix(".exe") else {
         return from_temp;
     };

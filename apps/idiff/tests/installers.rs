@@ -175,3 +175,18 @@ mod windows_only {
         stop("Un_T.exe");
     }
 }
+
+#[test]
+fn windows_helpers_in_its_temp_folder_are_not_installers() {
+    let temps = vec![r"C:\Windows\Temp".to_string()];
+    for name in ["DismHost.exe", "MpSigStub.exe", "mpam-fe.exe"] {
+        let image = format!(r"C:\Windows\Temp\{{5B1A}}\{name}");
+        assert!(!idiff::run::is_installer(name, Some(&image), true, &temps), "{name}");
+    }
+    assert!(idiff::run::is_installer(
+        "x.exe",
+        Some(r"C:\Windows\Temp\{5B1A}\x.exe"),
+        true,
+        &temps
+    ));
+}
