@@ -91,6 +91,7 @@ pub fn is_installer(name: &str, image: Option<&str>, service_session: bool, temp
         || (stem.contains("install") && stem != "trustedinstaller")
         || stem.starts_with("unins")
         || stem == "au_"
+        || stem == "un"
         || (stem.starts_with("un_") && stem.chars().count() == 4)
         || stem == "update"
 }
@@ -114,6 +115,7 @@ mod windows_impl {
     use std::io;
     use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
     use windows::Win32::Foundation::{CloseHandle, ERROR_FILE_NOT_FOUND, ERROR_PATH_NOT_FOUND, HANDLE, WAIT_OBJECT_0};
+    use windows::Win32::Storage::FileSystem::GetLongPathNameW;
     use windows::Win32::System::Diagnostics::ToolHelp::{
         CreateToolhelp32Snapshot, PROCESSENTRY32W, Process32FirstW, Process32NextW, TH32CS_SNAPPROCESS,
     };
@@ -127,7 +129,7 @@ mod windows_impl {
         PROCESS_INFORMATION, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION, QueryFullProcessImageNameW,
         ResumeThread, STARTUPINFOW, SYNCHRONIZATION_SYNCHRONIZE, WaitForSingleObject,
     };
-    use windows::core::{PCWSTR, PWSTR, w};
+    use windows::core::{HSTRING, PCWSTR, PWSTR, w};
 
     const POLL: Duration = Duration::from_millis(500);
 
@@ -272,19 +274,28 @@ mod windows_impl {
         UNIX_EPOCH_AS_FILETIME + (since_unix.as_nanos() / 100) as u64
     }
 
-    /// The temp folders as full long paths, the form process image paths come in.
+    /// The temp folders, each as written and as its full long path. %TEMP% is often in 8.3 form
+    /// (`C:\Users\RUNNER~1\…`), and a process started from there reports its path that way.
     fn temp_dirs() -> Vec<String> {
-        let mut dirs: Vec<String> = temp_dir_candidates(|name| std::env::var(name).ok())
-            .into_iter()
-            .filter_map(|p| std::fs::canonicalize(p).ok())
-            .map(|p| {
-                let p = p.to_string_lossy().into_owned();
-                p.strip_prefix(r"\\?\").map(str::to_string).unwrap_or(p)
-            })
-            .collect();
+        let mut dirs = Vec::new();
+        for dir in temp_dir_candidates(|name| std::env::var(name).ok()) {
+            if let Ok(full) = std::fs::canonicalize(&dir) {
+                let full = full.to_string_lossy().into_owned();
+                dirs.push(full.strip_prefix(r"\\?\").map(str::to_string).unwrap_or(full));
+            }
+            dirs.push(dir);
+        }
         dirs.sort();
         dirs.dedup();
         dirs
+    }
+
+    /// `path` with every 8.3 part spelled out, or None when Windows can't say (it's gone).
+    fn long_path(path: &str) -> Option<String> {
+        let wide = HSTRING::from(path);
+        let mut buf = [0u16; 1024];
+        let n = unsafe { GetLongPathNameW(&wide, Some(&mut buf)) } as usize;
+        (n > 0 && n < buf.len()).then(|| String::from_utf16_lossy(&buf[..n]))
     }
 
     /// Any installer process that started at or after `since`, other than idiff itself. Only
@@ -314,7 +325,12 @@ mod windows_impl {
                 {
                     let mut session = 0u32;
                     let service = unsafe { ProcessIdToSessionId(pid, &mut session) }.is_ok() && session == 0;
-                    if is_installer(&name, image.as_deref(), service, temps) {
+                    // The path as reported (maybe 8.3) and spelled out in full, against both forms
+                    // of each temp folder.
+                    let long = image.as_deref().and_then(long_path);
+                    if is_installer(&name, image.as_deref(), service, temps)
+                        || long.is_some_and(|long| is_installer(&name, Some(&long), service, temps))
+                    {
                         return true;
                     }
                 }

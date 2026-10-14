@@ -127,7 +127,7 @@ try {
         $meta.failed = $installFailed ?? 'leftovers: didn''t finish'
         Save-Meta
         $code = Invoke-Idiff -Log 'leftovers.log' -Minutes 15 -IdiffArgs @(
-            'leftovers', 'last', '--yes', '--settle', '30', '--',
+            'leftovers', 'last', '--yes', '--settle', '30', '--timeout', '12', '--',
             'winget', 'uninstall', '--id', $Id, '--exact', '--silent',
             '--accept-source-agreements', '--disable-interactivity')
         Save-Receipts

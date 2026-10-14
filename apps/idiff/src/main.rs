@@ -53,17 +53,18 @@ fn main() -> ExitCode {
             session,
             yes,
             settle,
+            timeout,
             no_elevate,
             command,
-        } => idiff::cmd::leftovers::run(
-            &session,
-            yes,
-            settle,
-            no_elevate,
-            &command,
-            &noise(),
-            &text_options(false, false),
-        ),
+        } => {
+            let options = idiff::cmd::leftovers::Options {
+                yes,
+                settle,
+                timeout_mins: timeout,
+                no_elevate,
+            };
+            idiff::cmd::leftovers::run(&session, &options, &command, &noise(), &text_options(false, false))
+        }
         Command::Export {
             session,
             format,
@@ -242,14 +243,17 @@ fn cmd_run(
     eprintln!("{}", copy::RUN_STARTING.replace("{command}", &quote_args(command)));
     let deadline = Instant::now() + Duration::from_secs(timeout_mins * 60);
     let started = SystemTime::now();
-    let outcome = run_in_job(command, Duration::from_secs(timeout_mins * 60)).map_err(|e| e.to_string())?;
+    let mut outcome = run_in_job(command, Duration::from_secs(timeout_mins * 60)).map_err(|e| e.to_string())?;
     eprintln!("{}", copy::WAITING_FOR_INSTALLER);
     // Installers that relaunch themselves outside the job keep working after the command returns.
-    wait_for_installers(
+    // One still at work when time runs out counts as the command running out of time.
+    if !wait_for_installers(
         started,
         INSTALLERS_QUIET,
         deadline.saturating_duration_since(Instant::now()),
-    );
+    ) {
+        outcome.timed_out = true;
+    }
     wait_for_msi_idle(deadline.saturating_duration_since(Instant::now()));
 
     let app_name = named.unwrap_or_else(|| copy::THE_APP.to_string());

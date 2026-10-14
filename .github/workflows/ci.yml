@@ -39,8 +39,9 @@ jobs:
       # Rust's own lints: any warning fails the run.
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
 
-  # A real install on a fresh runner: `idiff run` with VLC, checked against what VLC is known to
-  # add. Installs only ever happen here, never on a developer's PC.
+  # Real installs on a fresh runner: `idiff run` with VLC, checked against what VLC is known to
+  # add, and PuTTY installed and uninstalled for `idiff leftovers`. Installs only ever happen
+  # here, never on a developer's PC.
   smoke:
     runs-on: windows-2025
     permissions:
@@ -75,43 +76,52 @@ jobs:
           $texts
           if ('Adds right-click menu entries' -notin $texts) { throw 'No "Adds right-click menu entries" line' }
           if (-not ($texts | Where-Object { $_.StartsWith('Files in Program Files (') })) { throw 'No "Files in Program Files (" line' }
-      - name: Save the install receipt
+      - name: Save the VLC receipt
         if: always()
         shell: pwsh
         run: |
           [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
-          target\release\idiff.exe show last --all --why | Out-File -Encoding utf8 smoke-receipt.txt
-      # The exit code is the uninstall command's; what VLC leaves behind is on the receipt.
-      - name: idiff leftovers after uninstalling VLC
+          target\release\idiff.exe show last --all --why | Out-File -Encoding utf8 smoke-vlc.txt
+          target\release\idiff.exe export last --format json --no-redact -o smoke-vlc.json
+      # VLC isn't uninstalled here: its uninstaller hangs on runners (at a dialog nobody can click).
+      # PuTTY's MSI uninstalls silently, so it checks `leftovers` against a real, finished uninstall.
+      - name: idiff run with PuTTY
         shell: pwsh
         run: |
-          target\release\idiff.exe leftovers last --yes -- winget uninstall --id VideoLAN.VLC --exact --silent --disable-interactivity
+          target\release\idiff.exe run --yes --settle 5 --app PuTTY -- winget install --id PuTTY.PuTTY --exact --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      # Exit 2 means the uninstall failed or was still running after 10 minutes.
+      - name: idiff leftovers after uninstalling PuTTY
+        shell: pwsh
+        run: |
+          target\release\idiff.exe leftovers last --yes --timeout 10 -- winget uninstall --id PuTTY.PuTTY --exact --silent --accept-source-agreements --disable-interactivity
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       # `show --json` is the install receipt only; the export has both.
-      - name: The export has the leftovers receipt
+      - name: The export has PuTTY's leftovers receipt
         shell: pwsh
         run: |
-          target\release\idiff.exe export last --format json --no-redact -o smoke-export.json
+          target\release\idiff.exe export last --format json --no-redact -o smoke-putty.json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $export = Get-Content -Raw -Encoding utf8 smoke-export.json | ConvertFrom-Json
+          $export = Get-Content -Raw -Encoding utf8 smoke-putty.json | ConvertFrom-Json
           $export.leftovers.title
           if (-not $export.leftovers -or $export.leftovers.title -notlike '*after uninstall*') { throw 'No leftovers receipt in the export' }
-          # A real uninstall removes VLC's own program entry. If it's still listed, idiff looked
-          # before the uninstaller (which restarts itself from %TEMP%) had finished.
-          $still = @($export.leftovers.lines | Where-Object { $_.text.StartsWith('Program "VLC media player"') })
-          if ($still) { $still.text; throw 'VLC''s program entry is still there: the leftovers snapshot came too early' }
-      - name: Add the leftovers to the saved receipt
+          # A finished uninstall removes PuTTY's own program entry. If it's still listed, idiff
+          # looked before the uninstaller had finished.
+          $still = @($export.leftovers.lines | Where-Object { $_.text.StartsWith('Program "PuTTY') })
+          if ($still) { $still.text; throw 'PuTTY''s program entry is still there: the leftovers snapshot came too early' }
+      - name: Save the PuTTY receipts
         if: always()
         shell: pwsh
         run: |
           [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
-          "`n==== after idiff leftovers ====`n" | Out-File -Encoding utf8 -Append smoke-receipt.txt
-          target\release\idiff.exe show last --all --why | Out-File -Encoding utf8 -Append smoke-receipt.txt
+          target\release\idiff.exe show last --all --why | Out-File -Encoding utf8 smoke-putty.txt
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
-          name: smoke-receipt
+          name: smoke-receipts
           path: |
-            smoke-receipt.txt
-            smoke-export.json
+            smoke-vlc.txt
+            smoke-vlc.json
+            smoke-putty.txt
+            smoke-putty.json
           if-no-files-found: warn

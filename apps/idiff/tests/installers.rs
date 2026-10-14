@@ -12,6 +12,7 @@ fn installer(name: &str, image: Option<&str>) -> bool {
 fn installers_are_known_by_name_or_by_running_from_temp() {
     for name in [
         "Un_A.exe",
+        "Un.exe",
         "un_b.EXE",
         "Au_.exe",
         "msiexec.exe",
@@ -173,6 +174,49 @@ mod windows_only {
         ));
         assert!(t.elapsed() < Duration::from_secs(5), "took {:?}", t.elapsed());
         stop("Un_T.exe");
+    }
+
+    /// A path in the other form: 8.3 (`C:\Users\RUNNER~1\…`) when `long` is true it's the long
+    /// one, and the reverse. None when Windows can't say.
+    fn path_form(path: &Path, long: bool) -> Option<std::path::PathBuf> {
+        use windows::Win32::Storage::FileSystem::{GetLongPathNameW, GetShortPathNameW};
+        use windows::core::HSTRING;
+        let wide = HSTRING::from(path);
+        let mut buf = [0u16; 1024];
+        let n = unsafe {
+            if long {
+                GetLongPathNameW(&wide, Some(&mut buf))
+            } else {
+                GetShortPathNameW(&wide, Some(&mut buf))
+            }
+        } as usize;
+        (n > 0 && n < buf.len()).then(|| String::from_utf16_lossy(&buf[..n]).into())
+    }
+
+    /// Uninstallers started from the 8.3 form of %TEMP% (as on GitHub's runners, where TEMP is
+    /// `C:\Users\RUNNER~1\…`) report their path in that form too. A name no rule knows, so only
+    /// the temp folder can match it.
+    #[test]
+    fn waits_for_a_process_started_from_the_short_temp_path() {
+        let _turn = one_at_a_time();
+        let dir = tempfile::tempdir().unwrap();
+        let (Some(short), Some(long)) = (path_form(dir.path(), false), path_form(dir.path(), true)) else {
+            panic!("Windows gave no short or long form for {}", dir.path().display());
+        };
+        if short == long {
+            eprintln!("skipped: this volume has no 8.3 names");
+            return;
+        }
+        let started = SystemTime::now();
+        start_detached_uninstaller(&short, "probe.exe", 4);
+        let t = Instant::now();
+        assert!(wait_for_installers(
+            started,
+            Duration::from_secs(1),
+            Duration::from_secs(30)
+        ));
+        assert!(t.elapsed() >= Duration::from_secs(2), "took {:?}", t.elapsed());
+        stop("probe.exe");
     }
 }
 
