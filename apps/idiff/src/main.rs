@@ -215,10 +215,10 @@ fn cmd_run(
     no_elevate: bool,
     command: &[String],
 ) -> Result<u8, String> {
-    use idiff::run::{exit_status, quote_args, run_in_job, wait_for_msi_idle};
+    use idiff::run::{INSTALLERS_QUIET, exit_status, quote_args, run_in_job, wait_for_installers, wait_for_msi_idle};
     use idiff::session::SessionMeta;
     use idiff_core::subject::winget_id;
-    use std::time::{Duration, Instant};
+    use std::time::{Duration, Instant, SystemTime};
 
     // Before anything runs, so a broken local noise list can't cost an install.
     let noise = noise();
@@ -241,7 +241,14 @@ fn cmd_run(
 
     eprintln!("{}", copy::RUN_STARTING.replace("{command}", &quote_args(command)));
     let deadline = Instant::now() + Duration::from_secs(timeout_mins * 60);
+    let started = SystemTime::now();
     let outcome = run_in_job(command, Duration::from_secs(timeout_mins * 60)).map_err(|e| e.to_string())?;
+    // Installers that relaunch themselves outside the job keep working after the command returns.
+    wait_for_installers(
+        started,
+        INSTALLERS_QUIET,
+        deadline.saturating_duration_since(Instant::now()),
+    );
     wait_for_msi_idle(deadline.saturating_duration_since(Instant::now()));
 
     let app_name = named.unwrap_or_else(|| copy::THE_APP.to_string());

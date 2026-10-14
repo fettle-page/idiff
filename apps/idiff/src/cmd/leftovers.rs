@@ -19,13 +19,13 @@ pub fn run(
     use super::{app_name, fill};
     use crate::elevate::snapshot_for_run;
     use crate::leftovers::leftovers_from_files;
-    use crate::run::{exit_status, run_in_job, wait_for_msi_idle};
+    use crate::run::{INSTALLERS_QUIET, exit_status, run_in_job, wait_for_installers, wait_for_msi_idle};
     use crate::session::{self, SessionMeta};
     use idiff_collect::sources::folders::folder_size;
     use idiff_core::copy;
     use idiff_core::render;
     use std::path::Path;
-    use std::time::Duration;
+    use std::time::{Duration, Instant, SystemTime};
 
     let s = session::open(target)?;
     // Checked before anything runs: without the install's after snapshot there's nothing to compare.
@@ -36,7 +36,17 @@ pub fn run(
 
     let mut status = 0;
     if !command.is_empty() {
-        let outcome = run_in_job(command, Duration::from_secs(30 * 60)).map_err(|e| e.to_string())?;
+        let timeout = Duration::from_secs(30 * 60);
+        let deadline = Instant::now() + timeout;
+        let started = SystemTime::now();
+        let outcome = run_in_job(command, timeout).map_err(|e| e.to_string())?;
+        // Uninstallers often copy themselves to %TEMP% and restart from there, outside the job,
+        // so the command (winget included) reports success while they're still at work.
+        wait_for_installers(
+            started,
+            INSTALLERS_QUIET,
+            deadline.saturating_duration_since(Instant::now()),
+        );
         wait_for_msi_idle(Duration::from_secs(10 * 60));
         std::thread::sleep(Duration::from_secs(settle));
         status = exit_status(&outcome);
