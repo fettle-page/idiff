@@ -171,6 +171,8 @@ pub const RUN_SETTLING: &str = "Waiting {n} seconds for the app to settle...";
 pub const WAITING_FOR_INSTALLER: &str = "Waiting for the installer to finish...";
 pub const RUN_AFTER: &str = "Reading this PC again...";
 pub const RUN_TIMED_OUT: &str = "The install command was still running after {n} minutes";
+pub const UNINSTALL_TIMED_OUT: &str =
+    "The uninstall was still running after {n} minutes, so this list may include things it would have removed";
 // leftovers, export, calibrate, list
 pub const UNINSTALL_NOW: &str = "Uninstall {app} now, then press Enter.";
 pub const NOT_REDACTED: &str = "Not redacted: this file contains your user and PC names.";

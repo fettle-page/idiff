@@ -60,6 +60,9 @@ pub enum Command {
         /// After the uninstall command, wait this long for anything it left running in the background
         #[arg(long, value_name = "SECS", default_value_t = 5)]
         settle: u64,
+        /// Give up waiting for the uninstall after this long; the receipt then says so
+        #[arg(long, value_name = "MINS", default_value_t = 30)]
+        timeout: u64,
         #[arg(long)]
         no_elevate: bool,
         #[arg(last = true, value_name = "UNINSTALL COMMAND")]

@@ -170,6 +170,40 @@ mod leftovers {
         assert!(stdout(&out).contains("after uninstall"), "{}", stdout(&out));
     }
 
+    /// An uninstaller that hangs (at a dialog nobody can click) must not pass for a finished one:
+    /// the receipt says the list may hold things it would have removed, and idiff exits 2.
+    #[test]
+    fn a_hung_uninstall_gives_an_honest_receipt() {
+        let home = tempfile::tempdir().unwrap();
+        let dir = finished_nothing_session(home.path());
+        // --timeout 0: the stand-in "uninstaller" (a short ping) is still running when time is up.
+        let out = idiff_at(
+            home.path(),
+            &[
+                "leftovers",
+                "last",
+                "--yes",
+                "--no-elevate",
+                "--settle",
+                "0",
+                "--timeout",
+                "0",
+                "--",
+                "ping",
+                "-n",
+                "3",
+                "127.0.0.1",
+            ],
+        );
+        assert_eq!(out.status.code(), Some(2), "{}", stderr(&out));
+        let saved: Receipt =
+            serde_json::from_str(&std::fs::read_to_string(dir.join("leftovers.json")).unwrap()).unwrap();
+        let first = &saved.lines[0];
+        assert_eq!(first.level, Level::Warn);
+        assert_eq!(first.text, copy::UNINSTALL_TIMED_OUT.replace("{n}", "0"));
+        assert!(stdout(&out).contains(&first.text), "{}", stdout(&out));
+    }
+
     #[test]
     fn without_a_command_yes_just_takes_the_snapshot() {
         let home = tempfile::tempdir().unwrap();
