@@ -59,7 +59,10 @@ jobs:
       - working-directory: downloads
         run: sha256sum -c SHA256SUMS.txt
 
+      # GitHub keeps attestations for public repositories only (on this plan), so a release made
+      # while the repository is private has the checksums alone.
       - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        if: ${{ !github.event.repository.private }}
         with:
           subject-path: downloads/idiff-*-x64.zip
 
