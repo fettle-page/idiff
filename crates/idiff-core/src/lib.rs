@@ -2,4 +2,5 @@
 //! change, the verdict and the receipt. Tested anywhere with JSON fixtures.
 
 pub mod copy;
+pub mod diff;
 pub mod model;

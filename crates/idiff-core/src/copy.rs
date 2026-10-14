@@ -2,6 +2,8 @@
 
 pub const SNAPSHOT_TOO_NEW: &str = "This snapshot was made by a newer idiff. Update idiff to read it.";
 pub const SNAPSHOT_UNREADABLE: &str = "This snapshot file is damaged or isn't an idiff snapshot";
+/// Why a source couldn't be compared when no error was recorded, as in "Couldn't check {source}: …".
+pub const SOURCE_NOT_READ: &str = "it wasn't read in both snapshots";
 
 pub const SOURCE_PROGRAMS: &str = "installed programs";
 pub const SOURCE_SERVICES: &str = "services";
