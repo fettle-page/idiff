@@ -1,7 +1,9 @@
 #![cfg(windows)]
 
 use idiff_collect::{SnapshotOptions, snapshot};
+use idiff_core::copy;
 use idiff_core::model::{SCHEMA, SourceKind};
+use std::time::{Duration, Instant};
 
 #[test]
 fn real_snapshot_has_programs() {
@@ -17,15 +19,29 @@ fn real_snapshot_has_programs() {
     assert!(s.env.contains_key("SystemRoot"));
 }
 
+/// Sources still to be written. Remove each one as it's added; drop this list when it's empty.
+const NOT_BUILT_YET: &[SourceKind] = &[SourceKind::Services, SourceKind::Drivers, SourceKind::Tasks];
+
 #[test]
-fn sources_not_built_yet_are_failed_not_empty() {
-    let s = snapshot(&SnapshotOptions {
-        only: Some(vec![SourceKind::Services]),
-        ..Default::default()
-    });
-    let services = &s.sources[&SourceKind::Services];
-    assert!(!services.ok && services.items.is_empty());
-    assert_eq!(services.error.as_deref(), Some("not built yet"));
+fn a_full_snapshot_reads_every_source_in_time() {
+    let start = Instant::now();
+    let s = snapshot(&SnapshotOptions::default());
+    let took = start.elapsed();
+    assert!(took < Duration::from_secs(15), "took {took:?}");
+    assert_eq!(s.sources.keys().copied().collect::<Vec<_>>(), SourceKind::ALL);
+    for (kind, snap) in &s.sources {
+        if NOT_BUILT_YET.contains(kind) {
+            assert!(!snap.ok && snap.items.is_empty(), "{kind:?}");
+            assert_eq!(snap.error.as_deref(), Some(copy::NOT_BUILT_YET), "{kind:?}");
+        } else if *kind == SourceKind::Defender {
+            // Only administrators can read it: anyone else gets an error, never an empty list.
+            if !s.elevated {
+                assert!(!snap.ok && snap.error.is_some() && snap.items.is_empty(), "{snap:?}");
+            }
+        } else {
+            assert!(snap.ok, "{kind:?}: {:?}", snap.error);
+        }
+    }
 }
 
 fn read_one(kind: SourceKind) -> idiff_core::model::SourceSnap {
