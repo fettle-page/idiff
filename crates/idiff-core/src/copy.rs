@@ -31,6 +31,7 @@ pub const WHY_NOISE: &str = "Windows background change";
 pub const WHY_SUBJECT_ENTRY: &str = "the installed program's own entry";
 pub const WHY_TARGET_IN_INSTALL_DIR: &str = "runs from the app's folder";
 pub const WHY_SIGNER_MATCHES: &str = "signed by the app's publisher";
+pub const WHY_COMPANY_MATCHES: &str = "made by the app's publisher, by the file's details";
 pub const WHY_ITEM_IN_INSTALL_DIR: &str = "inside the app's folder";
 pub const WHY_WINDOWS_COMPONENT: &str = "part of Windows";
 pub const WHY_NAME_MATCHES: &str = "name matches the app (a weak sign)";

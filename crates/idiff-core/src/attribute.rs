@@ -25,6 +25,9 @@ pub enum Reason {
     TargetInInstallDir,
     /// R3
     SignerMatchesPublisher,
+    /// R3, from the file's own details when its signature doesn't name a company: unsigned, or
+    /// signed by Microsoft for its maker (WHQL drivers).
+    CompanyMatchesPublisher,
     /// R4
     ItemInInstallDir,
     /// R5
@@ -51,6 +54,7 @@ impl Reason {
             Reason::SubjectEntry => copy::WHY_SUBJECT_ENTRY.into(),
             Reason::TargetInInstallDir => copy::WHY_TARGET_IN_INSTALL_DIR.into(),
             Reason::SignerMatchesPublisher => copy::WHY_SIGNER_MATCHES.into(),
+            Reason::CompanyMatchesPublisher => copy::WHY_COMPANY_MATCHES.into(),
             Reason::ItemInInstallDir => copy::WHY_ITEM_IN_INSTALL_DIR.into(),
             Reason::WindowsComponent => copy::WHY_WINDOWS_COMPONENT.into(),
             Reason::NameMatches => copy::WHY_NAME_MATCHES.into(),
@@ -124,6 +128,9 @@ impl Rules<'_> {
         {
             return Reason::SignerMatchesPublisher;
         }
+        if company_matches(signer, item.props.get("company"), self.subject.publisher.as_deref()) {
+            return Reason::CompanyMatchesPublisher;
+        }
         if item_path(kind, item).is_some_and(|p| self.in_install_dir(p)) {
             return Reason::ItemInInstallDir;
         }
@@ -162,6 +169,17 @@ fn is_windows_component(
             windows_signed || target.zip(system_root).is_some_and(|(t, root)| is_under(t, root))
         }
     }
+}
+
+/// R3's fallback: the company in the file's version details, asked only when the signature names
+/// no company of its own. That's an unsigned file, or one Microsoft signed for its maker
+/// ("Microsoft Windows Hardware Compatibility Publisher"); Windows' own signers are R5's.
+fn company_matches(signer: Option<&str>, company: Option<&String>, publisher: Option<&str>) -> bool {
+    let signer_names_nobody = signer.is_none_or(|s| publisher::is_microsoft(s) && !publisher::is_windows_signer(s));
+    signer_names_nobody
+        && company
+            .zip(publisher)
+            .is_some_and(|(company, publisher)| publisher::same(company, publisher))
 }
 
 /// Where the item itself is, for items that are places: folders, shortcuts and PATH entries.

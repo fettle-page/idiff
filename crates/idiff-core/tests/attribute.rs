@@ -554,3 +554,72 @@ mod kill_test {
         assert_eq!(removed.reason, Reason::WindowsComponent);
     }
 }
+
+/// Drivers Microsoft signs for other companies (WHQL, attestation) say whose they are in the
+/// file's own details: Malwarebytes' three drivers and Google Drive's file-system driver.
+mod company_fallback {
+    use super::*;
+
+    const WHQL: &str = "Microsoft Windows Hardware Compatibility Publisher";
+
+    fn subject(publisher: &str) -> Subject {
+        Subject {
+            name: "Malwarebytes".into(),
+            publisher: Some(publisher.into()),
+            ..Default::default()
+        }
+    }
+
+    fn driver(signer: Option<&str>, company: &str) -> Item {
+        let mut props = vec![("company", company)];
+        if let Some(signer) = signer {
+            props.push(("signer", signer));
+        }
+        item(
+            "mbamswissarmy",
+            Some(r"c:\windows\system32\drivers\mbamswissarmy.sys"),
+            &props,
+        )
+    }
+
+    fn one(item: Item, subject: &Subject) -> Attributed {
+        attribute(
+            &added(SourceKind::Drivers, vec![item]),
+            subject,
+            &NoiseList::builtin(),
+            &BTreeMap::new(),
+        )
+        .remove(0)
+    }
+
+    #[test]
+    fn a_whql_signed_driver_is_the_app_s_by_its_company() {
+        let a = one(driver(Some(WHQL), "Malwarebytes"), &subject("Malwarebytes Inc."));
+        assert_eq!(
+            (a.owner, a.reason.clone()),
+            (Owner::App, Reason::CompanyMatchesPublisher)
+        );
+        assert_eq!(a.reason.text(), copy::WHY_COMPANY_MATCHES);
+        // No signature at all: the company still says whose it is.
+        assert_eq!(
+            one(driver(None, "Malwarebytes Corporation"), &subject("Malwarebytes")).reason,
+            Reason::CompanyMatchesPublisher
+        );
+    }
+
+    #[test]
+    fn a_microsoft_company_on_another_app_s_driver_stays_unknown() {
+        let a = one(driver(Some(WHQL), "Microsoft Corporation"), &subject("Malwarebytes"));
+        assert_eq!(a.owner, Owner::Unknown, "{:?}", a.reason);
+    }
+
+    #[test]
+    fn a_vendor_signature_wins_over_the_company() {
+        // Signed by someone else: the signature is the stronger evidence, so the company isn't asked.
+        let a = one(
+            driver(Some("Other Vendor Ltd"), "Malwarebytes"),
+            &subject("Malwarebytes"),
+        );
+        assert_eq!(a.owner, Owner::Unknown, "{:?}", a.reason);
+    }
+}

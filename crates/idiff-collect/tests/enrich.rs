@@ -1,6 +1,6 @@
 #![cfg(windows)]
 
-use idiff_collect::enrich::{enrich, signer_of};
+use idiff_collect::enrich::{company_of, enrich, signer_of};
 use idiff_core::diff::{Change, Delta};
 use idiff_core::model::{Item, SourceKind};
 use std::collections::BTreeMap;
@@ -44,6 +44,22 @@ fn an_unsigned_file_has_no_signer() {
 }
 
 #[test]
+fn company_comes_from_the_file_s_version_details() {
+    for file in ["notepad.exe", "kernel32.dll", r"drivers\tcpip.sys"] {
+        assert_eq!(
+            company_of(&system32(file)).as_deref(),
+            Some("Microsoft Corporation"),
+            "{file}"
+        );
+    }
+    // No version resource, or no file at all: no company, and no error.
+    let dir = tempfile::tempdir().unwrap();
+    let plain = file_of(dir.path(), 64, ".exe");
+    assert_eq!(company_of(&plain), None);
+    assert_eq!(company_of(&dir.path().join("missing.exe")), None);
+}
+
+#[test]
 fn enrich_sets_signer_and_size() {
     let dir = tempfile::tempdir().unwrap();
     let added_folder = tempfile::tempdir_in(dir.path()).unwrap();
@@ -76,6 +92,7 @@ fn enrich_sets_signer_and_size() {
 
     let svc = delta.sources[&SourceKind::Services][0].item();
     assert!(svc.props["signer"].contains("Microsoft"), "{svc:?}");
+    assert_eq!(svc.props["company"], "Microsoft Corporation");
     let folders = &delta.sources[&SourceKind::Folders];
     let folder = folders[0].item();
     assert_eq!(
