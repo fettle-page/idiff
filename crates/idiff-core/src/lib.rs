@@ -8,5 +8,6 @@ pub mod diff;
 pub mod model;
 pub mod noise;
 pub mod publisher;
+pub mod redact;
 pub mod subject;
 pub mod verdict;
