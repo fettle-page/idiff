@@ -16,6 +16,22 @@ pub const TASKS_PARTIAL: &str = "some tasks are only visible to administrators";
 /// Why a source that only administrators can read wasn't read, as in "Couldn't check {source}: …".
 pub const NEEDS_ADMIN: &str = "needs administrator";
 
+/// The subject when nothing says which app was installed.
+pub const UNKNOWN_APP: &str = "Unknown app";
+/// The note on noise rules that `idiff calibrate --save` writes.
+pub const NOTE_CALIBRATE: &str = "calibrate";
+
+// Why a change was given to its owner (`idiff show --why`).
+/// Followed by the noise rule's note.
+pub const WHY_NOISE: &str = "Windows background change";
+pub const WHY_SUBJECT_ENTRY: &str = "the installed program's own entry";
+pub const WHY_TARGET_IN_INSTALL_DIR: &str = "runs from the app's folder";
+pub const WHY_SIGNER_MATCHES: &str = "signed by the app's publisher";
+pub const WHY_ITEM_IN_INSTALL_DIR: &str = "inside the app's folder";
+pub const WHY_WINDOWS_COMPONENT: &str = "part of Windows";
+pub const WHY_NAME_MATCHES: &str = "name matches the app (a weak sign)";
+pub const WHY_UNATTRIBUTED: &str = "no rule matched";
+
 pub const SOURCE_PROGRAMS: &str = "installed programs";
 pub const SOURCE_SERVICES: &str = "services";
 pub const SOURCE_DRIVERS: &str = "drivers";

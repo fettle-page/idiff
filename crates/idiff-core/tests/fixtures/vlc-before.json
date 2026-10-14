@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "idiff_version": "0.1.0",
+  "taken_at_ms": 1791981296000,
+  "elevated": true,
+  "env": {
+    "SystemRoot": "C:\\Windows",
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramData": "C:\\ProgramData",
+    "LOCALAPPDATA": "C:\\Users\\runneradmin\\AppData\\Local",
+    "APPDATA": "C:\\Users\\runneradmin\\AppData\\Roaming",
+    "USERPROFILE": "C:\\Users\\runneradmin"
+  },
+  "sources": {
+    "Programs": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": []
+    },
+    "Services": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "bits",
+          "label": "BITS",
+          "target": "c:\\windows\\system32\\svchost.exe",
+          "props": {
+            "account": "LocalSystem",
+            "start": "2",
+            "type": "32"
+          }
+        },
+        {
+          "key": "pcasvc",
+          "label": "PcaSvc",
+          "target": "c:\\windows\\system32\\svchost.exe",
+          "props": {
+            "account": "LocalSystem",
+            "start": "3",
+            "type": "32"
+          }
+        }
+      ]
+    },
+    "ShellExt": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": []
+    },
+    "Folders": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": [
+        {
+          "key": "c:\\users\\runneradmin\\appdata\\local\\microsoft",
+          "label": "AppData\\Local\\Microsoft",
+          "target": null,
+          "props": {
+            "root": "AppData\\Local"
+          }
+        }
+      ]
+    },
+    "Packaged": {
+      "ok": true,
+      "error": null,
+      "note": null,
+      "ms": 5,
+      "items": []
+    }
+  }
+}

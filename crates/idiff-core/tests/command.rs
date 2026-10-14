@@ -57,6 +57,18 @@ fn launchers_give_the_file_they_run() {
         (r"powershell.exe -Command Get-Date", Some("powershell.exe")),
         (r"wscript.exe //B //Nologo C:\X\hide.vbs", Some(r"c:\x\hide.vbs")),
         (r"rundll32.exe", Some("rundll32.exe")),
+        (
+            r#"conhost.exe --headless powershell.exe -NoProfile -File "C:\Users\a\Raycast\wake.ps1""#,
+            Some(r"c:\users\a\raycast\wake.ps1"),
+        ),
+        (
+            r"C:\Windows\System32\conhost.exe cmd /c C:\X\a.bat",
+            Some(r"c:\x\a.bat"),
+        ),
+        (r"conhost.exe --headless C:\X\tool.exe --flag", Some(r"c:\x\tool.exe")),
+        // How Windows itself starts a console host: nothing inside to run.
+        (r"conhost.exe 0xffffffff -ForceV1", Some("conhost.exe")),
+        (r"conhost.exe --headless", Some("conhost.exe")),
     ] {
         assert_eq!(extract_exe(input, &env).as_deref(), want, "{input}");
     }

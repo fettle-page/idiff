@@ -1,0 +1,122 @@
+# Changes Windows makes by itself, so they're never shown as the app's (rule R1).
+#
+# Each [[rule]] has a `source` and at least one of:
+#   key     regex on the item key (keys are lowercase, paths expanded)
+#   target  regex on the item's target path
+#   props   regexes on item props, e.g. props = { pfn = '_8wekyb3d8bbwe$' }
+# All given parts must match; regexes ignore case. Optional:
+#   unless_publisher  the rule doesn't apply when the app's publisher is this one
+#   only_changed      the rule applies only to an item that was modified, and only in these fields
+# `note` says why, and is shown with `idiff show --why`.
+#
+# A local list in %LOCALAPPDATA%\idiff\noise.local.toml uses the same format and adds to this one.
+
+# ---------- Scheduled tasks ----------
+
+[[rule]]
+source = "Tasks"
+key = '^\\microsoft\\windows\\'
+note = "Windows' own scheduled tasks"
+
+[[rule]]
+source = "Tasks"
+key = '^\\microsoft\\office\\'
+unless_publisher = "Microsoft"
+note = "Office's own scheduled tasks"
+
+[[rule]]
+source = "Tasks"
+key = '^\\microsoftedgeupdatetask'
+note = "Microsoft Edge updating itself"
+
+[[rule]]
+source = "Tasks"
+key = '^\\onedrive .*update task-s-1-5-21-'
+note = "OneDrive updating itself"
+
+# ---------- Services and drivers ----------
+# Per-user service instances (CDPUserSvc_1a2b3) are left out when they're read, so need no rule.
+
+[[rule]]
+source = "Services"
+key = '^(windefend|wdnissvc|mdcoresvc|sense|securityhealthservice)$'
+note = "Microsoft Defender updating itself"
+
+[[rule]]
+source = "Drivers"
+key = '^mpksl'
+note = "Microsoft Defender's per-update driver"
+
+[[rule]]
+source = "Drivers"
+key = '^(wdboot|wdfilter|wdnisdrv)$'
+note = "Microsoft Defender updating itself"
+
+# ---------- Firewall ----------
+
+[[rule]]
+source = "Firewall"
+target = '^[a-z]:\\program files\\windowsapps\\'
+note = "a Store app's firewall rule"
+
+[[rule]]
+source = "Firewall"
+target = '^[a-z]:\\windows\\'
+note = "a Windows firewall rule"
+
+[[rule]]
+source = "Firewall"
+props = { pfn = '_(8wekyb3d8bbwe|cw5n1h2txyewy)$' }
+note = "a Microsoft Store app's firewall rule"
+
+# ---------- Store apps ----------
+
+[[rule]]
+source = "Packaged"
+props = { publisher = '\bo=microsoft corporation\b' }
+only_changed = ["version", "target"]
+note = "a Microsoft Store app updated itself"
+
+[[rule]]
+source = "Packaged"
+key = '^microsoft\.winget\.source_'
+note = "winget refreshing its package list"
+
+# ---------- Folders (top-level entries) ----------
+
+[[rule]]
+source = "Folders"
+key = '^[a-z]:\\programdata\\microsoft$'
+note = "Windows' own data folder"
+
+[[rule]]
+source = "Folders"
+key = '\\appdata\\local\\(microsoft|temp|packages|d3dscache)$'
+note = "Windows' own data folder"
+
+[[rule]]
+source = "Folders"
+key = '\\appdata\\roaming\\microsoft$'
+note = "Windows' own data folder"
+
+[[rule]]
+source = "Folders"
+key = '\\appdata\\local\\peerdistrepub$'
+note = "BranchCache, Windows' download cache"
+
+# ---------- Startup ----------
+
+[[rule]]
+source = "Startup"
+key = '^run\|.*\|onedrive$'
+note = "OneDrive starting with Windows"
+
+[[rule]]
+source = "Startup"
+key = '^run\|.*\|microsoftedgeautolaunch_'
+note = "Microsoft Edge starting with Windows"
+
+[[rule]]
+source = "Startup"
+key = '^run\|.*\|securityhealth$'
+note = "Windows Security starting with Windows"
