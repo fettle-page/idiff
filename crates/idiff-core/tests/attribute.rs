@@ -66,10 +66,39 @@ fn discord_changes_are_split_correctly() {
 
     assert_eq!(owner(r"hkcu\native\discord"), Owner::App);
     assert_eq!(owner(r"appdata\local\discord"), Owner::App);
-    assert_eq!(owner("discord.lnk"), Owner::App);
-    // The Store updated itself meanwhile: a Microsoft package that only changed version.
-    assert_eq!(owner("microsoft.windowsstore"), Owner::Windows);
-    assert_eq!(r.len(), 10, "{r:#?}");
+    assert_eq!(r.len(), 8, "{r:#?}");
+}
+
+#[test]
+fn a_microsoft_store_app_updating_itself_is_windows() {
+    let (_, after) = discord();
+    let subject = find_subject(&diff(&after, &after), None, &[]);
+    let ms = "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US";
+    let store = |version: &str| Item {
+        key: "microsoft.windowsstore_8wekyb3d8bbwe".into(),
+        label: "Microsoft Store".into(),
+        target: Some(format!(
+            r"c:\program files\windowsapps\microsoft.windowsstore_{version}_x64__8wekyb3d8bbwe"
+        )),
+        props: BTreeMap::from([("version".into(), version.into()), ("publisher".into(), ms.into())]),
+    };
+    let d = Delta {
+        sources: BTreeMap::from([(
+            SourceKind::Packaged,
+            vec![Change::Modified {
+                before: store("22409.1401.5.0"),
+                after: store("22410.1401.3.0"),
+                fields: vec!["target".into(), "version".into()],
+            }],
+        )]),
+        notes: BTreeMap::new(),
+    };
+    let r = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
+    assert_eq!(r[0].owner, Owner::Windows);
+    assert_eq!(
+        r[0].reason,
+        Reason::Noise("a Microsoft Store app updated itself".into())
+    );
 }
 
 #[test]

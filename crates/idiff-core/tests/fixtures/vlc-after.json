@@ -90,7 +90,8 @@
           "label": "Program Files\\VideoLAN",
           "target": null,
           "props": {
-            "root": "Program Files"
+            "root": "Program Files",
+            "kind": "folder"
           }
         },
         {
@@ -161,7 +162,8 @@
           "label": "AppData\\Local\\Microsoft",
           "target": null,
           "props": {
-            "root": "AppData\\Local"
+            "root": "AppData\\Local",
+            "kind": "folder"
           }
         },
         {
@@ -169,7 +171,8 @@
           "label": "AppData\\Local\\PeerDistRepub",
           "target": null,
           "props": {
-            "root": "AppData\\Local"
+            "root": "AppData\\Local",
+            "kind": "folder"
           }
         }
       ]

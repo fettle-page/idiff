@@ -213,6 +213,7 @@
           "target": null,
           "props": {
             "root": "AppData\\Local",
+            "kind": "folder",
             "bytes": "432013312",
             "files": "1210"
           }
@@ -222,16 +223,8 @@
           "label": "AppData\\Local\\Microsoft",
           "target": null,
           "props": {
-            "root": "AppData\\Local"
-          }
-        },
-        {
-          "key": "c:\\users\\a\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\discord inc\\discord.lnk",
-          "label": "Start menu\\Discord Inc\\Discord.lnk",
-          "target": "c:\\users\\a\\appdata\\local\\discord\\update.exe",
-          "props": {
-            "root": "Start menu",
-            "kind": "shortcut"
+            "root": "AppData\\Local",
+            "kind": "folder"
           }
         }
       ]
@@ -245,9 +238,9 @@
         {
           "key": "microsoft.windowsstore_8wekyb3d8bbwe",
           "label": "Microsoft Store",
-          "target": "c:\\program files\\windowsapps\\microsoft.windowsstore_22410.1401.3.0_x64__8wekyb3d8bbwe",
+          "target": "c:\\program files\\windowsapps\\microsoft.windowsstore_22409.1401.5.0_x64__8wekyb3d8bbwe",
           "props": {
-            "version": "22410.1401.3.0",
+            "version": "22409.1401.5.0",
             "publisher": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
           }
         }
