@@ -48,6 +48,7 @@ fn added(kind: SourceKind, items: Vec<Item>) -> Delta {
     Delta {
         sources: BTreeMap::from([(kind, items.into_iter().map(Change::Added).collect())]),
         notes: BTreeMap::new(),
+        partial: Default::default(),
     }
 }
 
@@ -92,6 +93,7 @@ fn a_microsoft_store_app_updating_itself_is_windows() {
             }],
         )]),
         notes: BTreeMap::new(),
+        partial: Default::default(),
     };
     let r = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
     assert_eq!(r[0].owner, Owner::Windows);
@@ -472,6 +474,7 @@ mod kill_test {
         let d = Delta {
             sources: BTreeMap::from([(kind, vec![change])]),
             notes: BTreeMap::new(),
+            partial: Default::default(),
         };
         attribute(&d, subject, &NoiseList::builtin(), &env()).remove(0)
     }

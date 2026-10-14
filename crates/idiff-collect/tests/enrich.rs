@@ -70,6 +70,7 @@ fn enrich_sets_signer_and_size() {
             ),
         ]),
         notes: BTreeMap::new(),
+        partial: Default::default(),
     };
     enrich(&mut delta);
 
@@ -107,6 +108,7 @@ fn modified_items_are_enriched_and_removed_ones_are_not() {
             ],
         )]),
         notes: BTreeMap::new(),
+        partial: Default::default(),
     };
     enrich(&mut delta);
     let changes = &delta.sources[&SourceKind::Services];
@@ -128,6 +130,7 @@ fn a_missing_target_gets_no_signer_and_no_error() {
             ],
         )]),
         notes: BTreeMap::new(),
+        partial: Default::default(),
     };
     enrich(&mut delta);
     assert!(

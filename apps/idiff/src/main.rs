@@ -126,7 +126,7 @@ fn cmd_diff(before: &Path, after: &Path, app: Option<&str>, all: bool, why: bool
     let delta = diff(&before, &after);
     let subject = find_subject(&delta, app, &[]);
     let attributed = attribute(&delta, &subject, &noise()?, &after.env);
-    let mut receipt = install_receipt(&subject, &attributed, &delta.notes, None, &after.env);
+    let mut receipt = install_receipt(&subject, &attributed, &delta.notes, &delta.partial, None, &after.env);
     receipt.lines.push(Line {
         level: Level::Note,
         text: copy::DIFF_NOT_ENRICHED.to_string(),

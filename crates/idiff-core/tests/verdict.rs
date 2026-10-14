@@ -4,7 +4,7 @@ use idiff_core::model::{Env, Item, Snapshot, SourceKind};
 use idiff_core::noise::NoiseList;
 use idiff_core::subject::{Subject, find_subject};
 use idiff_core::verdict::{Level, Mode, Receipt, format_size, install_receipt, leftovers_receipt, trigger_summary};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 fn load(json: &str) -> Snapshot {
     Snapshot::load(json).unwrap()
@@ -45,7 +45,14 @@ fn app_added(kind: SourceKind, item: Item) -> Attributed {
 #[test]
 fn discord_receipt_matches_spec() {
     let (_, after, subject, attributed) = discord();
-    let r = install_receipt(&subject, &attributed, &BTreeMap::new(), Some(0), &after.env);
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &after.env,
+    );
     assert_eq!(r.mode, Mode::Install);
     assert_eq!(r.title, "Discord 1.0.9170: installed");
     assert_eq!(
@@ -72,13 +79,34 @@ fn discord_receipt_matches_spec() {
 fn restart_exit_codes_are_not_failures() {
     let (_, after, subject, attributed) = discord();
     for code in [3010, 1641] {
-        let r = install_receipt(&subject, &attributed, &BTreeMap::new(), Some(code), &after.env);
+        let r = install_receipt(
+            &subject,
+            &attributed,
+            &BTreeMap::new(),
+            &BTreeSet::new(),
+            Some(code),
+            &after.env,
+        );
         assert_eq!(texts(&r)[0], (Level::Note, "Needs a restart to finish"), "{code}");
         assert!(!r.lines.iter().any(|l| l.text.contains("exited with code")));
     }
-    let r = install_receipt(&subject, &attributed, &BTreeMap::new(), Some(1), &after.env);
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(1),
+        &after.env,
+    );
     assert_eq!(texts(&r)[0], (Level::Warn, "The install command exited with code 1"));
-    let r = install_receipt(&subject, &attributed, &BTreeMap::new(), None, &after.env);
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        None,
+        &after.env,
+    );
     assert_eq!(texts(&r)[0].1, "1 scheduled task: runs an updater every day");
 }
 
@@ -98,7 +126,14 @@ fn upgrade_titles_and_modified_items() {
     let d = diff(&base, &after);
     let subject = find_subject(&d, None, &[]);
     let attributed = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
-    let r = install_receipt(&subject, &attributed, &BTreeMap::new(), Some(0), &after.env);
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &after.env,
+    );
     assert_eq!(r.title, "Discord: updated from 1.0.9100 to 1.0.9170");
     assert!(
         texts(&r).contains(&(Level::Note, "Changes scheduled task \"DiscordUpdate\"")),
@@ -115,7 +150,14 @@ fn root_certificate_is_bad_and_first() {
         SourceKind::Certs,
         item("lm|abc123", "Evil CA", None, &[("issuer", "Evil CA")]),
     ));
-    let r = install_receipt(&subject, &attributed, &BTreeMap::new(), Some(0), &after.env);
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &after.env,
+    );
     assert_eq!(
         texts(&r)[0],
         (Level::Bad, "Adds a trusted root certificate: \"Evil CA\"")
@@ -126,7 +168,7 @@ fn root_certificate_is_bad_and_first() {
 fn incomplete_sources_are_listed() {
     let (_, after, subject, attributed) = discord();
     let notes = BTreeMap::from([(SourceKind::Defender, "needs administrator".to_string())]);
-    let r = install_receipt(&subject, &attributed, &notes, Some(0), &after.env);
+    let r = install_receipt(&subject, &attributed, &notes, &BTreeSet::new(), Some(0), &after.env);
     let lines = texts(&r);
     let at = lines
         .iter()
@@ -139,7 +181,7 @@ fn incomplete_sources_are_listed() {
 #[test]
 fn nothing_found_says_so() {
     let (_, after, subject, _) = discord();
-    let r = install_receipt(&subject, &[], &BTreeMap::new(), Some(0), &after.env);
+    let r = install_receipt(&subject, &[], &BTreeMap::new(), &BTreeSet::new(), Some(0), &after.env);
     assert_eq!(texts(&r), [(Level::Good, "No lasting changes found")]);
     assert!(r.unknown.is_empty() && r.hidden.is_empty());
 }
@@ -420,7 +462,14 @@ fn every_finding_in_spec_order_and_words() {
         owner: Owner::Windows,
         reason: Reason::Noise("Microsoft Defender's per-update driver".into()),
     });
-    let r = install_receipt(&subject, &attributed, &BTreeMap::new(), Some(0), &Env::new());
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &Env::new(),
+    );
     assert_eq!(r.title, "Zoom Workplace 6.2.0: installed");
     assert_eq!(
         texts(&r),
@@ -465,7 +514,14 @@ fn the_none_line_names_only_what_is_absent() {
             &[("start", "3"), ("account", r"NT AUTHORITY\LocalService")],
         ),
     );
-    let r = install_receipt(&subject, &[svc], &BTreeMap::new(), Some(0), &Env::new());
+    let r = install_receipt(
+        &subject,
+        &[svc],
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &Env::new(),
+    );
     assert_eq!(
         texts(&r),
         [
@@ -478,7 +534,69 @@ fn the_none_line_names_only_what_is_absent() {
 #[test]
 fn receipts_round_trip_as_json() {
     let (_, after, subject, attributed) = discord();
-    let r = install_receipt(&subject, &attributed, &BTreeMap::new(), Some(3010), &after.env);
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(3010),
+        &after.env,
+    );
     let json = serde_json::to_string(&r).unwrap();
     assert_eq!(serde_json::from_str::<Receipt>(&json).unwrap(), r);
+}
+
+#[test]
+fn partial_reads_are_worded_apart_from_failed_ones() {
+    let (_, after, subject, attributed) = discord();
+    let notes = BTreeMap::from([
+        (
+            SourceKind::Tasks,
+            "some tasks are only visible to administrators".to_string(),
+        ),
+        (SourceKind::Defender, "needs administrator".to_string()),
+    ]);
+    let partial = BTreeSet::from([SourceKind::Tasks]);
+    let r = install_receipt(&subject, &attributed, &notes, &partial, Some(0), &after.env);
+    let lines = texts(&r);
+    assert!(lines.contains(&(
+        Level::Note,
+        "Only partly checked scheduled tasks: some tasks are only visible to administrators"
+    )));
+    assert!(lines.contains(&(Level::Note, "Couldn't check antivirus exclusions: needs administrator")));
+}
+
+#[test]
+fn no_subject_and_nothing_found_is_no_install() {
+    let (_, after, _, attributed) = discord();
+    let nobody = find_subject(&idiff_core::diff::Delta::default(), None, &[]);
+    let r = install_receipt(&nobody, &[], &BTreeMap::new(), &BTreeSet::new(), Some(0), &after.env);
+    assert_eq!(r.title, "No install found");
+    assert_eq!(texts(&r), [(Level::Good, "No lasting changes found")]);
+    // Something changed that nobody could place: still an unknown app's install.
+    let unknown: Vec<Attributed> = attributed.into_iter().filter(|a| a.owner == Owner::Unknown).collect();
+    let r = install_receipt(
+        &nobody,
+        &unknown,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &after.env,
+    );
+    assert_eq!(r.title, "Unknown app: installed");
+}
+
+#[test]
+fn leftovers_in_a_partly_read_source_are_not_claimed_gone() {
+    let (before, _, subject, install) = discord();
+    let mut uninstalled = before.clone();
+    uninstalled.sources.get_mut(&SourceKind::Tasks).unwrap().note =
+        Some("some tasks are only visible to administrators".into());
+    let r = leftovers_receipt(&subject, &install, &uninstalled, &[], &BTreeMap::new());
+    assert!(texts(&r).contains(&(
+        Level::Note,
+        "Only partly checked scheduled tasks: some tasks are only visible to administrators"
+    )));
+    assert!(!texts(&r).contains(&(Level::Good, "Nothing left behind")));
+    assert_eq!(r.title, "Discord 1.0.9170: after uninstall, no leftovers found");
 }

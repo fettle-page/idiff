@@ -6,7 +6,7 @@ use crate::diff::Change;
 use crate::model::{Env, Item, Snapshot, SourceKind};
 use crate::subject::Subject;
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Level {
@@ -269,6 +269,7 @@ pub fn install_receipt(
     subject: &Subject,
     attributed: &[Attributed],
     notes: &BTreeMap<SourceKind, String>,
+    partial: &BTreeSet<SourceKind>,
     exit_code: Option<i32>,
     env: &Env,
 ) -> Receipt {
@@ -523,8 +524,7 @@ pub fn install_receipt(
         lines.push(plain(Level::Good, copy::NOTHING_FOUND));
     }
     for (kind, reason) in notes {
-        let text = fill(copy::COULDNT_CHECK, &[("source", kind.label()), ("reason", reason)]);
-        lines.push(plain(Level::Note, text));
+        lines.push(check_line(*kind, reason, partial.contains(kind)));
     }
     let hidden: Vec<Line> = owned_by(attributed, Owner::Windows);
     if !hidden.is_empty() {
@@ -534,13 +534,33 @@ pub fn install_receipt(
         ));
     }
 
+    let unknown = owned_by(attributed, Owner::Unknown);
+    // Nothing named the app and nothing changed that could be one: no install to speak of.
+    let title = if !subject.is_known() && app.is_empty() && unknown.is_empty() {
+        copy::TITLE_NO_INSTALL.to_string()
+    } else {
+        title(subject)
+    };
     Receipt {
         mode: Mode::Install,
-        title: title(subject),
+        title,
         lines,
-        unknown: owned_by(attributed, Owner::Unknown),
+        unknown,
         hidden,
     }
+}
+
+/// "Couldn't check …" for a source that wasn't read, "Only partly checked …" for one read in part.
+fn check_line(kind: SourceKind, reason: &str, partial: bool) -> Line {
+    let template = if partial {
+        copy::ONLY_PARTLY_CHECKED
+    } else {
+        copy::COULDNT_CHECK
+    };
+    plain(
+        Level::Note,
+        fill(template, &[("source", kind.label()), ("reason", reason)]),
+    )
 }
 
 fn owned_by(attributed: &[Attributed], owner: Owner) -> Vec<Line> {
@@ -561,7 +581,8 @@ pub fn leftovers_receipt(
     sizes: &BTreeMap<String, u64>,
 ) -> Receipt {
     let mut lines = Vec::new();
-    let mut unchecked: BTreeMap<SourceKind, String> = BTreeMap::new();
+    // Sources the leftovers couldn't be fully checked in: (reason, read in part).
+    let mut unchecked: BTreeMap<SourceKind, (String, bool)> = BTreeMap::new();
     let mut left = 0;
     for a in install
         .iter()
@@ -569,13 +590,20 @@ pub fn leftovers_receipt(
     {
         let item = a.change.item();
         let present = match uninstalled.sources.get(&a.kind) {
-            Some(source) if source.ok => source.items.iter().any(|i| i.key == item.key),
+            Some(source) if source.ok => {
+                let found = source.items.iter().any(|i| i.key == item.key);
+                // Read in part: not finding it doesn't mean it's gone.
+                if let (false, Some(note)) = (found, &source.note) {
+                    unchecked.entry(a.kind).or_insert((note.clone(), true));
+                }
+                found
+            }
             // Couldn't be read: neither gone nor left, so say it wasn't checked.
             source => {
                 let reason = source
                     .and_then(|s| s.error.clone())
                     .unwrap_or_else(|| copy::SOURCE_NOT_READ.to_string());
-                unchecked.entry(a.kind).or_insert(reason);
+                unchecked.entry(a.kind).or_insert((reason, false));
                 continue;
             }
         };
@@ -618,9 +646,8 @@ pub fn leftovers_receipt(
     if left == 0 && unchecked.is_empty() {
         lines.push(plain(Level::Good, copy::NOTHING_LEFT));
     }
-    for (kind, reason) in &unchecked {
-        let text = fill(copy::COULDNT_CHECK, &[("source", kind.label()), ("reason", reason)]);
-        lines.push(plain(Level::Note, text));
+    for (kind, (reason, partial)) in &unchecked {
+        lines.push(check_line(*kind, reason, *partial));
     }
 
     let name = name_and_version(subject);

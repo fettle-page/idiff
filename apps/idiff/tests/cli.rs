@@ -107,7 +107,7 @@ fn diff_of_identical_snapshots_finds_nothing() {
     assert!(out.status.success());
     assert_eq!(
         stdout(&out).lines().take(2).collect::<Vec<_>>(),
-        ["Unknown app: installed", "✓ No lasting changes found"]
+        ["No install found", "✓ No lasting changes found"]
     );
 }
 

@@ -10,7 +10,8 @@ use crate::verdict::{Level, Line, Receipt};
 pub struct TextOptions {
     /// ANSI colours. The CLI turns them on for a terminal when `NO_COLOR` isn't set.
     pub color: bool,
-    /// Also list Windows' own changes.
+    /// Also list Windows' own changes. Unknown changes don't wait for this: spec D8 says nothing
+    /// is hidden silently, and they aren't counted anywhere else.
     pub all: bool,
     /// Under each line, the items it's about and why each counted.
     pub why: bool,
