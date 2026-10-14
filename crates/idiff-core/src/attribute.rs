@@ -127,10 +127,8 @@ impl Rules<'_> {
         if item_path(kind, item).is_some_and(|p| self.in_install_dir(p)) {
             return Reason::ItemInInstallDir;
         }
-        let in_windows = target
-            .zip(self.system_root.as_deref())
-            .is_some_and(|(t, root)| is_under(t, root));
-        if !self.subject_is_microsoft && (in_windows || signer.is_some_and(publisher::is_microsoft)) {
+        if !self.subject_is_microsoft && is_windows_component(kind, change, target, signer, self.system_root.as_deref())
+        {
             return Reason::WindowsComponent;
         }
         if let Some(token) = &self.token
@@ -143,6 +141,26 @@ impl Rules<'_> {
 
     fn in_install_dir(&self, path: &str) -> bool {
         self.subject.install_dirs.iter().any(|dir| is_under(path, dir))
+    }
+}
+
+/// R5. A change to something that already existed is Windows' if it runs from the Windows folder
+/// or is signed as Windows. Something new needs Windows' own signature: apps put drivers and
+/// services in System32 too (Malwarebytes, Dropbox), and their uninstall shortcuts point at
+/// msiexec, so a new folder or shortcut is never Windows' by this rule.
+fn is_windows_component(
+    kind: SourceKind,
+    change: &Change,
+    target: Option<&str>,
+    signer: Option<&str>,
+    system_root: Option<&str>,
+) -> bool {
+    let windows_signed = signer.is_some_and(publisher::is_windows_signer);
+    match change {
+        Change::Added(_) => kind != SourceKind::Folders && windows_signed,
+        Change::Modified { .. } | Change::Removed(_) => {
+            windows_signed || target.zip(system_root).is_some_and(|(t, root)| is_under(t, root))
+        }
     }
 }
 

@@ -38,6 +38,14 @@ pub fn is_microsoft(s: &str) -> bool {
     normalize(s).split(' ').next() == Some("microsoft")
 }
 
+/// Signed as part of Windows itself. Exact names only: Microsoft also signs other vendors'
+/// drivers and anti-malware ("Microsoft Windows Hardware Compatibility Publisher", "Microsoft
+/// Windows Early Launch Anti-malware Publisher"), and those are the vendor's.
+pub fn is_windows_signer(signer: &str) -> bool {
+    let signer = signer.trim();
+    signer.eq_ignore_ascii_case("Microsoft Windows") || signer.eq_ignore_ascii_case("Microsoft Corporation")
+}
+
 /// `KEY=value` parts of a certificate-style name, or nothing if `s` isn't one. Quoted values may
 /// contain commas.
 fn dn_fields(s: &str) -> Vec<(String, String)> {
