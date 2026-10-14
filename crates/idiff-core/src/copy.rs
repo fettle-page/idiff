@@ -9,7 +9,6 @@ pub const NO_SESSIONS: &str = "No sessions yet. Run: idiff run -- <install comma
 pub const NO_SUCH_SESSION: &str = "There's no session with that id. See them with: idiff list";
 /// Followed by the file's path and the system's reason.
 pub const CANT_READ_FILE: &str = "Couldn't read";
-pub const NO_CHANGES: &str = "No changes";
 pub const NOT_BUILT_YET: &str = "not built yet";
 /// Why the scheduled tasks list is partial without administrator rights.
 pub const TASKS_PARTIAL: &str = "some tasks are only visible to administrators";
@@ -136,3 +135,14 @@ pub const WHEN_OTHER: &str = "on a schedule";
 pub const AS_SYSTEM: &str = ", as SYSTEM";
 /// Joins the last two absent things in `NONE_OF`; the others are joined with ", ".
 pub const NONE_LAST_JOIN: &str = " or ";
+
+// Rendering.
+pub const HIDDEN_HEADING: &str = "Hidden: Windows background changes";
+pub const FOOTER: &str = "Made with idiff {version} · it only reads, never changes anything";
+/// `idiff diff` works from two files, with nothing to look up on this PC.
+pub const DIFF_NOT_ENRICHED: &str = "Compared from files, so signers and folder sizes weren't checked";
+// What each icon means, for screen readers in the HTML receipt.
+pub const LEVEL_GOOD: &str = "Good:";
+pub const LEVEL_NOTE: &str = "Note:";
+pub const LEVEL_WARN: &str = "Warning:";
+pub const LEVEL_BAD: &str = "Problem:";

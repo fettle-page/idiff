@@ -12,5 +12,8 @@ clap.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 
+[target.'cfg(windows)'.dependencies]
+windows = { workspace = true, features = ["Win32_System_Console"] }
+
 [dev-dependencies]
 tempfile.workspace = true
