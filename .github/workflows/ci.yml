@@ -96,6 +96,10 @@ jobs:
           $export = Get-Content -Raw -Encoding utf8 smoke-export.json | ConvertFrom-Json
           $export.leftovers.title
           if (-not $export.leftovers -or $export.leftovers.title -notlike '*after uninstall*') { throw 'No leftovers receipt in the export' }
+          # A real uninstall removes VLC's own program entry. If it's still listed, idiff looked
+          # before the uninstaller (which restarts itself from %TEMP%) had finished.
+          $still = @($export.leftovers.lines | Where-Object { $_.text.StartsWith('Program "VLC media player"') })
+          if ($still) { $still.text; throw 'VLC''s program entry is still there: the leftovers snapshot came too early' }
       - name: Add the leftovers to the saved receipt
         if: always()
         shell: pwsh

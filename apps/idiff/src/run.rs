@@ -60,23 +60,56 @@ pub fn exit_status(outcome: &RunOutcome) -> u8 {
     }
 }
 
+/// How long no installer may run before an install or uninstall counts as done.
+pub const INSTALLERS_QUIET: std::time::Duration = std::time::Duration::from_secs(10);
+
+/// Whether a process is an installer or uninstaller at work: by its file name, or because it runs
+/// from a temp folder, where uninstallers copy themselves (NSIS's `Un_A.exe`) so they can delete
+/// their own folder. `msiexec.exe` in session 0 is the Windows Installer service and its custom
+/// action hosts, which linger for minutes after any install; `wait_for_msi_idle` covers their work.
+pub fn is_installer(name: &str, image: Option<&str>, service_session: bool, temp_dirs: &[String]) -> bool {
+    let from_temp = image.is_some_and(|image| {
+        let image = image.to_lowercase();
+        temp_dirs
+            .iter()
+            .any(|temp| image.starts_with(&format!("{}\\", temp.trim_end_matches('\\').to_lowercase())))
+    });
+    let name = name.to_lowercase();
+    let Some(stem) = name.strip_suffix(".exe") else {
+        return from_temp;
+    };
+    from_temp
+        || (stem == "msiexec" && !service_session)
+        || stem.starts_with("setup")
+        || (stem.contains("install") && stem != "trustedinstaller")
+        || stem.starts_with("unins")
+        || stem == "au_"
+        || (stem.starts_with("un_") && stem.chars().count() == 4)
+        || stem == "update"
+}
+
 #[cfg(windows)]
-pub use windows_impl::{run_in_job, wait_for_msi_idle};
+pub use windows_impl::{run_in_job, wait_for_installers, wait_for_msi_idle};
 
 #[cfg(windows)]
 mod windows_impl {
-    use super::{RunOutcome, quote_args};
+    use super::{RunOutcome, is_installer, quote_args};
     use idiff_core::copy;
     use std::io;
-    use std::time::{Duration, Instant};
+    use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
     use windows::Win32::Foundation::{CloseHandle, ERROR_FILE_NOT_FOUND, ERROR_PATH_NOT_FOUND, HANDLE, WAIT_OBJECT_0};
+    use windows::Win32::System::Diagnostics::ToolHelp::{
+        CreateToolhelp32Snapshot, PROCESSENTRY32W, Process32FirstW, Process32NextW, TH32CS_SNAPPROCESS,
+    };
     use windows::Win32::System::JobObjects::{
         AssignProcessToJobObject, CreateJobObjectW, JOBOBJECT_BASIC_ACCOUNTING_INFORMATION,
         JobObjectBasicAccountingInformation, QueryInformationJobObject,
     };
+    use windows::Win32::System::RemoteDesktop::ProcessIdToSessionId;
     use windows::Win32::System::Threading::{
-        CREATE_SUSPENDED, CreateProcessW, GetExitCodeProcess, OpenMutexW, PROCESS_INFORMATION, ResumeThread,
-        STARTUPINFOW, SYNCHRONIZATION_SYNCHRONIZE, WaitForSingleObject,
+        CREATE_SUSPENDED, CreateProcessW, GetExitCodeProcess, GetProcessTimes, OpenMutexW, OpenProcess,
+        PROCESS_INFORMATION, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION, QueryFullProcessImageNameW,
+        ResumeThread, STARTUPINFOW, SYNCHRONIZATION_SYNCHRONIZE, WaitForSingleObject,
     };
     use windows::core::{PCWSTR, PWSTR, w};
 
@@ -190,5 +223,104 @@ mod windows_impl {
             }
             std::thread::sleep(Duration::from_secs(1));
         }
+    }
+
+    /// Waits until no installer process (`is_installer`) that started after `started_after` has
+    /// been running for `quiet` in a row, at most `timeout`. True once it's quiet.
+    ///
+    /// The job object doesn't cover these: an uninstaller that copies itself to %TEMP% and
+    /// restarts from there, or anything winget starts through its App Execution Alias, runs
+    /// outside the job, and the command returns while they're still working.
+    pub fn wait_for_installers(started_after: SystemTime, quiet: Duration, timeout: Duration) -> bool {
+        let deadline = Instant::now() + timeout;
+        let since = filetime(started_after);
+        let temps = temp_dirs();
+        let mut quiet_since = Instant::now();
+        loop {
+            if installer_running(since, &temps) {
+                quiet_since = Instant::now();
+            } else if quiet_since.elapsed() >= quiet {
+                return true;
+            }
+            if Instant::now() >= deadline {
+                return false;
+            }
+            std::thread::sleep(POLL);
+        }
+    }
+
+    /// 100-nanosecond ticks since 1601, as process start times are given.
+    fn filetime(t: SystemTime) -> u64 {
+        const UNIX_EPOCH_AS_FILETIME: u64 = 116_444_736_000_000_000;
+        let since_unix = t.duration_since(UNIX_EPOCH).unwrap_or_default();
+        UNIX_EPOCH_AS_FILETIME + (since_unix.as_nanos() / 100) as u64
+    }
+
+    /// %TEMP% and %TMP% as full long paths, the form process image paths come in.
+    fn temp_dirs() -> Vec<String> {
+        let mut dirs: Vec<String> = ["TEMP", "TMP"]
+            .iter()
+            .filter_map(std::env::var_os)
+            .filter_map(|p| std::fs::canonicalize(p).ok())
+            .map(|p| {
+                let p = p.to_string_lossy().into_owned();
+                p.strip_prefix(r"\\?\").map(str::to_string).unwrap_or(p)
+            })
+            .collect();
+        dirs.sort();
+        dirs.dedup();
+        dirs
+    }
+
+    /// Any installer process that started at or after `since`, other than idiff itself. Only
+    /// reads: the process list, and each process's start time, path and session.
+    fn installer_running(since: u64, temps: &[String]) -> bool {
+        let Ok(snapshot) = (unsafe { CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0) }) else {
+            return false;
+        };
+        let snapshot = Owned(snapshot);
+        let me = std::process::id();
+        let mut entry = PROCESSENTRY32W {
+            dwSize: size_of::<PROCESSENTRY32W>() as u32,
+            ..Default::default()
+        };
+        let mut more = unsafe { Process32FirstW(snapshot.0, &mut entry) }.is_ok();
+        while more {
+            let pid = entry.th32ProcessID;
+            if pid != me && pid != 0 {
+                let len = entry
+                    .szExeFile
+                    .iter()
+                    .position(|&c| c == 0)
+                    .unwrap_or(entry.szExeFile.len());
+                let name = String::from_utf16_lossy(&entry.szExeFile[..len]);
+                if let Some((started, image)) = start_and_image(pid)
+                    && started >= since
+                {
+                    let mut session = 0u32;
+                    let service = unsafe { ProcessIdToSessionId(pid, &mut session) }.is_ok() && session == 0;
+                    if is_installer(&name, image.as_deref(), service, temps) {
+                        return true;
+                    }
+                }
+            }
+            more = unsafe { Process32NextW(snapshot.0, &mut entry) }.is_ok();
+        }
+        false
+    }
+
+    /// When the process started, and its full path if Windows tells us.
+    fn start_and_image(pid: u32) -> Option<(u64, Option<String>)> {
+        let process = Owned(unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid) }.ok()?);
+        let (mut created, mut exited, mut kernel, mut user) = Default::default();
+        unsafe { GetProcessTimes(process.0, &mut created, &mut exited, &mut kernel, &mut user) }.ok()?;
+        let started = (u64::from(created.dwHighDateTime) << 32) | u64::from(created.dwLowDateTime);
+        let mut buf = [0u16; 1024];
+        let mut len = buf.len() as u32;
+        let image =
+            unsafe { QueryFullProcessImageNameW(process.0, PROCESS_NAME_WIN32, PWSTR(buf.as_mut_ptr()), &mut len) }
+                .ok()
+                .map(|()| String::from_utf16_lossy(&buf[..len as usize]));
+        Some((started, image))
     }
 }
