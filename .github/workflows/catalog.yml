@@ -249,4 +249,8 @@ jobs:
           # The token is used for this push and the pull request only, never stored in the checkout.
           gh auth setup-git
           git push origin "$branch"
-          gh pr create --head "$branch" --title "Receipts: ${date}" --body-file summary.md
+          # The fettle-page organization may not let Actions open pull requests. The branch is
+          # pushed either way; then the pull request is opened by hand.
+          if ! gh pr create --head "$branch" --title "Receipts: ${date}" --body-file summary.md; then
+            echo "::warning::Pushed $branch but couldn't open the pull request (the organization may not allow Actions to). Open it from that branch."
+          fi
