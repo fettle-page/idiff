@@ -3,5 +3,6 @@
 pub mod cli;
 pub mod elevate;
 pub mod leftovers;
+pub mod noise;
 pub mod run;
 pub mod session;

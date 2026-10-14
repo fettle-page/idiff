@@ -8,6 +8,8 @@ pub const SOURCE_NOT_READ: &str = "it wasn't read in both snapshots";
 pub const NO_SESSIONS: &str = "No sessions yet. Run: idiff run -- <install command>";
 pub const NO_SUCH_SESSION: &str = "There's no session with that id. See them with: idiff list";
 pub const SESSION_UNFINISHED: &str = "This session didn't finish.";
+/// Followed by the file's path and what's wrong with it.
+pub const NOISE_LOCAL_BAD: &str = "Your local noise list has a mistake, so only the built-in one is used";
 /// Followed by the file's path and the system's reason.
 pub const CANT_READ_FILE: &str = "Couldn't read";
 pub const NO_CHANGES: &str = "No changes";
