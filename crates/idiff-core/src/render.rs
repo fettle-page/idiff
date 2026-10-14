@@ -106,12 +106,7 @@ pub fn markdown(r: &Receipt, all: bool) -> String {
 /// Several receipts in one Markdown file (an install, then its leftovers), with one footer.
 pub fn markdown_receipts(receipts: &[&Receipt], all: bool) -> String {
     let sections: Vec<String> = receipts.iter().map(|r| markdown_section(r, all, 2)).collect();
-    format!("{}
----
-
-{}
-", sections.join("
-"), md_escape(&footer()))
+    format!("{}\n---\n\n{}\n", sections.join("\n"), md_escape(&footer()))
 }
 
 /// The receipt without the footer, its title a heading of `level` (`##` for 2), for pages that
@@ -120,20 +115,34 @@ pub fn markdown_section(r: &Receipt, all: bool, level: usize) -> String {
     let list = |lines: &[Line]| -> String {
         lines
             .iter()
-            .map(|l| format!("- {} {}
-", icon(l.level), md_escape(&l.text)))
+            .map(|l| {
+                format!(
+                    "- {} {}
+",
+                    icon(l.level),
+                    md_escape(&l.text)
+                )
+            })
             .collect()
     };
     let (title, sub) = ("#".repeat(level), "#".repeat(level + 1));
-    let mut out = format!("{title} {}
+    let mut out = format!(
+        "{title} {}
 
-{}", md_escape(&r.title), list(&r.lines));
+{}",
+        md_escape(&r.title),
+        list(&r.lines)
+    );
     let mut section = |heading: &str, lines: &[Line]| {
         if !lines.is_empty() {
-            out.push_str(&format!("
+            out.push_str(&format!(
+                "
 {sub} {}
 
-{}", md_escape(heading), list(lines)));
+{}",
+                md_escape(heading),
+                list(lines)
+            ));
         }
     };
     section(copy::ALSO_CHANGED, &r.unknown);

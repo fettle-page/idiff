@@ -332,3 +332,21 @@ fn the_tool_prints_the_summary_for_the_pr() {
         "{md}"
     );
 }
+
+#[test]
+fn library_pages_list_what_was_hidden() {
+    let receipts = tempfile::tempdir().unwrap();
+    apply(&fixture("discord-1.0.9170"), receipts.path()).unwrap();
+    let page = read(receipts.path().join("discord.discord/1.0.9170.md"));
+    // A library reader has no session to run `idiff show --all` on, so the list is on the page.
+    assert!(
+        page.contains(r"- · 3 Windows background changes hidden \(listed below\)"),
+        "{page}"
+    );
+    assert!(!page.contains("idiff show --all"), "{page}");
+    assert!(page.contains("### Hidden: Windows background changes"), "{page}");
+    assert!(page.contains("Added driver \"mpkslabc123\""), "{page}");
+    // The stored receipt is the one idiff made, word for word.
+    let record = read(receipts.path().join("discord.discord/1.0.9170.json"));
+    assert!(record.contains("3 Windows background changes hidden (idiff show --all)"));
+}

@@ -118,6 +118,9 @@ pub const COULDNT_CHECK: &str = "Couldn't check {source}: {reason}";
 pub const ONLY_PARTLY_CHECKED: &str = "Only partly checked {source}: {reason}";
 pub const HIDDEN_ONE: &str = "1 Windows background change hidden (idiff show --all)";
 pub const HIDDEN_MANY: &str = "{n} Windows background changes hidden (idiff show --all)";
+/// The same count on pages that list the hidden changes themselves (the Receipts Library).
+pub const HIDDEN_LISTED_BELOW_ONE: &str = "1 Windows background change hidden (listed below)";
+pub const HIDDEN_LISTED_BELOW: &str = "{n} Windows background changes hidden (listed below)";
 pub const ALSO_CHANGED: &str = "Also changed while installing (couldn't tell if it was this app)";
 pub const CHANGE_ADDED: &str = "Added {kind} \"{label}\"";
 pub const CHANGE_REMOVED: &str = "Removed {kind} \"{label}\"";

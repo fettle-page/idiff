@@ -528,10 +528,7 @@ pub fn install_receipt(
     }
     let hidden: Vec<Line> = owned_by(attributed, Owner::Windows);
     if !hidden.is_empty() {
-        lines.push(plain(
-            Level::Note,
-            counted(hidden.len(), copy::HIDDEN_ONE, copy::HIDDEN_MANY),
-        ));
+        lines.push(plain(Level::Note, hidden_count_text(hidden.len(), false)));
     }
 
     let unknown = owned_by(attributed, Owner::Unknown);
@@ -561,6 +558,16 @@ fn check_line(kind: SourceKind, reason: &str, partial: bool) -> Line {
         Level::Note,
         fill(template, &[("source", kind.label()), ("reason", reason)]),
     )
+}
+
+/// "3 Windows background changes hidden", with the hint to `idiff show --all`, or with "listed
+/// below" where the page shows them.
+pub fn hidden_count_text(n: usize, listed: bool) -> String {
+    if listed {
+        counted(n, copy::HIDDEN_LISTED_BELOW_ONE, copy::HIDDEN_LISTED_BELOW)
+    } else {
+        counted(n, copy::HIDDEN_ONE, copy::HIDDEN_MANY)
+    }
 }
 
 fn owned_by(attributed: &[Attributed], owner: Owner) -> Vec<Line> {

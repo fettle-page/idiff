@@ -6,7 +6,7 @@
 
 use idiff_core::copy;
 use idiff_core::render::{markdown_section, md_escape};
-use idiff_core::verdict::{Level, Receipt};
+use idiff_core::verdict::{Level, Receipt, hidden_count_text};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -125,17 +125,33 @@ fn safe_run_url(url: &str) -> Option<&str> {
     (url.starts_with("https://github.com/") && url.chars().all(allowed)).then_some(url)
 }
 
+/// A library reader has no session for `idiff show --all`, so pages list the hidden changes and
+/// the count line says so. Only the rendered page changes; the stored receipt stays as idiff made it.
+fn listing_hidden(receipt: &Receipt) -> Receipt {
+    let mut shown = receipt.clone();
+    let (cli, page) = (
+        hidden_count_text(receipt.hidden.len(), false),
+        hidden_count_text(receipt.hidden.len(), true),
+    );
+    for line in &mut shown.lines {
+        if line.text == cli {
+            line.text.clone_from(&page);
+        }
+    }
+    shown
+}
+
 pub fn version_page(meta: &Meta, receipt: &Receipt, leftovers: Option<&Receipt>, changes: &[String]) -> String {
     let mut page = format!(
         "# {} {}\n\n{}",
         md_escape(&meta.name),
         md_escape(&meta.version),
-        markdown_section(receipt, false, 2)
+        markdown_section(&listing_hidden(receipt), true, 2)
     );
     if let Some(leftovers) = leftovers {
         page.push_str(&format!(
             "\n## After uninstall\n\n{}",
-            markdown_section(leftovers, false, 3)
+            markdown_section(&listing_hidden(leftovers), true, 3)
         ));
     }
     if !changes.is_empty() {
