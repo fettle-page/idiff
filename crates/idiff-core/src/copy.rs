@@ -34,6 +34,7 @@ pub const WHY_SIGNER_MATCHES: &str = "signed by the app's publisher";
 pub const WHY_ITEM_IN_INSTALL_DIR: &str = "inside the app's folder";
 pub const WHY_WINDOWS_COMPONENT: &str = "part of Windows";
 pub const WHY_NAME_MATCHES: &str = "name matches the app (a weak sign)";
+pub const WHY_HOLDS_APP_PROGRAM: &str = "holds one of the app's programs";
 pub const WHY_UNATTRIBUTED: &str = "no rule matched";
 
 pub const SOURCE_PROGRAMS: &str = "installed programs";

@@ -33,6 +33,9 @@ pub enum Reason {
     NameMatches,
     /// R7
     Unattributed,
+    /// After R1–R7: a new folder nothing else placed holds a program already given to the app
+    /// by R2–R4.
+    HoldsAppProgram,
 }
 
 impl Reason {
@@ -54,6 +57,7 @@ impl Reason {
             Reason::ItemInInstallDir => copy::WHY_ITEM_IN_INSTALL_DIR.into(),
             Reason::WindowsComponent => copy::WHY_WINDOWS_COMPONENT.into(),
             Reason::NameMatches => copy::WHY_NAME_MATCHES.into(),
+            Reason::HoldsAppProgram => copy::WHY_HOLDS_APP_PROGRAM.into(),
             Reason::Unattributed => copy::WHY_UNATTRIBUTED.into(),
         }
     }
@@ -80,7 +84,7 @@ pub fn attribute(delta: &Delta, subject: &Subject, noise: &NoiseList, env: &Env)
         subject_is_microsoft: subject.publisher.as_deref().is_some_and(publisher::is_microsoft),
         token: subject.name_token(),
     };
-    delta
+    let mut attributed: Vec<Attributed> = delta
         .sources
         .iter()
         .flat_map(|(kind, changes)| {
@@ -94,7 +98,40 @@ pub fn attribute(delta: &Delta, subject: &Subject, noise: &NoiseList, env: &Env)
                 }
             })
         })
-        .collect()
+        .collect();
+    claim_folders_holding_app_programs(&mut attributed);
+    attributed
+}
+
+/// A new top-level folder that no rule placed, but that holds a program R2–R4 gave to the app,
+/// is the app's too: Logitech G HUB's service is signed by Logitech, but its `Program Files\LGHUB`
+/// isn't named after "Logitech". One pass is enough: a folder doesn't make another one the app's.
+fn claim_folders_holding_app_programs(attributed: &mut [Attributed]) {
+    let programs: Vec<String> = attributed
+        .iter()
+        .filter(|a| {
+            matches!(
+                a.reason,
+                Reason::TargetInInstallDir | Reason::SignerMatchesPublisher | Reason::ItemInInstallDir
+            )
+        })
+        .filter_map(|a| a.change.item().target.clone())
+        .collect();
+    for a in attributed.iter_mut() {
+        let item = a.change.item();
+        let is_new_folder = a.kind == SourceKind::Folders
+            && matches!(a.change, Change::Added(_))
+            && item.props.get("kind").map(String::as_str) != Some("shortcut")
+            && !item.key.ends_with(".lnk");
+        if a.owner == Owner::Unknown
+            && is_new_folder
+            && !crate::subject::is_too_broad(&item.key)
+            && programs.iter().any(|p| is_under(p, &item.key))
+        {
+            a.reason = Reason::HoldsAppProgram;
+            a.owner = Owner::App;
+        }
+    }
 }
 
 struct Rules<'a> {
