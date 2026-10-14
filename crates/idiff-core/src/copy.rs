@@ -5,6 +5,13 @@ pub const SNAPSHOT_UNREADABLE: &str = "This snapshot file is damaged or isn't an
 /// Why a source couldn't be compared when no error was recorded, as in "Couldn't check {source}: …".
 pub const SOURCE_NOT_READ: &str = "it wasn't read in both snapshots";
 
+pub const NO_SESSIONS: &str = "No sessions yet. Run: idiff run -- <install command>";
+pub const NO_SUCH_SESSION: &str = "There's no session with that id. See them with: idiff list";
+/// Followed by the file's path and the system's reason.
+pub const CANT_READ_FILE: &str = "Couldn't read";
+pub const NO_CHANGES: &str = "No changes";
+pub const NOT_BUILT_YET: &str = "not built yet";
+
 pub const SOURCE_PROGRAMS: &str = "installed programs";
 pub const SOURCE_SERVICES: &str = "services";
 pub const SOURCE_DRIVERS: &str = "drivers";
