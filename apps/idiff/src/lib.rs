@@ -2,5 +2,6 @@
 
 pub mod cli;
 pub mod elevate;
+pub mod leftovers;
 pub mod run;
 pub mod session;

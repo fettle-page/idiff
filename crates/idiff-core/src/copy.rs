@@ -7,6 +7,7 @@ pub const SOURCE_NOT_READ: &str = "it wasn't read in both snapshots";
 
 pub const NO_SESSIONS: &str = "No sessions yet. Run: idiff run -- <install command>";
 pub const NO_SUCH_SESSION: &str = "There's no session with that id. See them with: idiff list";
+pub const SESSION_UNFINISHED: &str = "This session didn't finish.";
 /// Followed by the file's path and the system's reason.
 pub const CANT_READ_FILE: &str = "Couldn't read";
 pub const NO_CHANGES: &str = "No changes";
