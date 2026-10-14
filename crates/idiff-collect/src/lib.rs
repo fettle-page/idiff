@@ -10,6 +10,8 @@ mod elevation;
 #[cfg(windows)]
 pub mod enrich;
 #[cfg(windows)]
+pub mod names;
+#[cfg(windows)]
 pub mod reg;
 pub mod runner;
 #[cfg(windows)]
