@@ -11,6 +11,7 @@ const PROPS: &[(&str, &str)] = &[
     ("Protocol", "protocol"),
     ("LPort", "lport"),
     ("Svc", "svc"),
+    ("PFN", "pfn"),
 ];
 
 /// One rule. The data is `v2.33|Field=value|Field=value|…`; a field that appears more than once
@@ -96,5 +97,15 @@ mod tests {
                 .is_some_and(|t| t.ends_with(r"\system32\svchost.exe"))
         );
         assert_eq!(parse_rule("x", "v2.10|Action=Block|Dir=Out|").target, None);
+    }
+
+    #[test]
+    fn store_app_rules_keep_their_package_family() {
+        let item = parse_rule(
+            "5319275A.WhatsAppDesktop-Out-Allow-AllCapabilities",
+            "v2.33|Action=Allow|Active=TRUE|Dir=Out|PFN=5319275A.WhatsAppDesktop_cv1g1gvanyjgm|Name=WhatsApp|",
+        );
+        assert_eq!(item.target, None);
+        assert_eq!(item.props["pfn"], "5319275a.whatsappdesktop_cv1g1gvanyjgm");
     }
 }

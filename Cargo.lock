@@ -163,6 +163,7 @@ dependencies = [
  "roxmltree",
  "serde",
  "serde_json",
+ "tempfile",
  "windows",
  "winreg",
 ]

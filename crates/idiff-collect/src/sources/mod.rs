@@ -1,8 +1,12 @@
 //! One module per source. Each has pure functions from what Windows stores to `Item`s, and a
 //! `pub fn read() -> Result<SourceOutput, String>` that does the reading.
 
+pub mod certs;
+pub mod defender;
 pub mod firewall;
+pub mod folders;
 pub mod network;
+pub mod packaged;
 pub mod path;
 pub mod programs;
 pub mod services;
@@ -28,7 +32,10 @@ pub fn source(kind: SourceKind) -> crate::runner::Source {
         SourceKind::ShellExt => shellext::read,
         SourceKind::Firewall => firewall::read,
         SourceKind::Network => network::read,
-        _ => || Err("not built yet".into()),
+        SourceKind::Folders => folders::read,
+        SourceKind::Packaged => packaged::read,
+        SourceKind::Certs => certs::read,
+        SourceKind::Defender => defender::read,
     };
     Box::new(move || read().and_then(|out| serde_json::to_value(out).map_err(|e| e.to_string())))
 }

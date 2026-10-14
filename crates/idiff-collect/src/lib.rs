@@ -4,10 +4,14 @@
 //! has pure functions that turn what Windows stores into `Item`s, plus a thin `read()`.
 
 #[cfg(windows)]
+pub mod com;
+#[cfg(windows)]
 mod elevation;
 #[cfg(windows)]
 pub mod reg;
 pub mod runner;
+#[cfg(windows)]
+pub mod shortcut;
 pub mod sources;
 
 pub use runner::{Raw, Source, SourceResult, run_all, run_all_with};

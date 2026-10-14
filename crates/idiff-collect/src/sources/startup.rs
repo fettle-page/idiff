@@ -54,8 +54,8 @@ pub fn run_item(hive: &str, key_path: &str, name: &str, command: &str, approved:
     }
 }
 
-/// A file in the user's (`user`) or everyone's (`common`) Startup folder. A shortcut's target
-/// isn't resolved here, so only other files (scripts, programs) get one.
+/// A file in the user's (`user`) or everyone's (`common`) Startup folder. Other files (scripts,
+/// programs) are their own target; a shortcut's target is filled in by `read()`.
 pub fn folder_item(scope: &str, file: &str, path: &str, approved: &[Approved]) -> Item {
     let hive = if scope == "user" { "HKCU" } else { "HKLM" };
     let is_shortcut = file.to_ascii_lowercase().ends_with(".lnk");
@@ -77,7 +77,9 @@ pub use reader::read;
 mod reader {
     use super::{Approved, folder_item, run_item, startup_approved_state};
     use crate::SourceOutput;
+    use crate::com::Com;
     use crate::reg::open_error;
+    use crate::shortcut;
     use std::path::PathBuf;
     use winreg::enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
     use winreg::{HKEY, RegKey};
@@ -118,6 +120,7 @@ mod reader {
     const APPROVED_SUBKEYS: &[&str] = &["Run", "Run32", "StartupFolder"];
 
     pub fn read() -> Result<SourceOutput, String> {
+        let _com = Com::sta();
         let mut errors = Vec::new();
         let approved = startup_approved(&mut errors);
         let mut items = Vec::new();
@@ -159,7 +162,11 @@ mod reader {
             for entry in entries.flatten() {
                 let file = entry.file_name().to_string_lossy().into_owned();
                 if !file.eq_ignore_ascii_case("desktop.ini") {
-                    items.push(folder_item(scope, &file, &entry.path().to_string_lossy(), &approved));
+                    let mut item = folder_item(scope, &file, &entry.path().to_string_lossy(), &approved);
+                    if item.target.is_none() {
+                        item.target = shortcut::resolve(&entry.path());
+                    }
+                    items.push(item);
                 }
             }
         }

@@ -13,6 +13,8 @@ pub const NO_CHANGES: &str = "No changes";
 pub const NOT_BUILT_YET: &str = "not built yet";
 /// Why the scheduled tasks list is partial without administrator rights.
 pub const TASKS_PARTIAL: &str = "some tasks are only visible to administrators";
+/// Why a source that only administrators can read wasn't read, as in "Couldn't check {source}: …".
+pub const NEEDS_ADMIN: &str = "needs administrator";
 
 pub const SOURCE_PROGRAMS: &str = "installed programs";
 pub const SOURCE_SERVICES: &str = "services";

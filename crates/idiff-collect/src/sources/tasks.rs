@@ -107,29 +107,15 @@ mod reader {
     use crate::SourceOutput;
     use idiff_core::copy;
     use idiff_core::model::Item;
-    use windows::Win32::System::Com::{
-        CLSCTX_INPROC_SERVER, COINIT_MULTITHREADED, CoCreateInstance, CoInitializeEx, CoUninitialize,
-    };
+    use windows::Win32::System::Com::{CLSCTX_INPROC_SERVER, CoCreateInstance};
     use windows::Win32::System::TaskScheduler::{ITaskFolder, ITaskService, TASK_ENUM_HIDDEN, TaskScheduler};
     use windows::Win32::System::Variant::VARIANT;
     use windows::core::BSTR;
 
-    /// Undoes this thread's CoInitializeEx when the read ends, however it ends.
-    struct Com;
-
-    impl Drop for Com {
-        fn drop(&mut self) {
-            unsafe { CoUninitialize() };
-        }
-    }
-
     /// Every task in every folder, hidden ones included. Without administrator rights some
     /// folders and tasks can't be seen, so the list is marked partial.
     pub fn read() -> Result<SourceOutput, String> {
-        let _com = unsafe { CoInitializeEx(None, COINIT_MULTITHREADED) }
-            .ok()
-            .map(|()| Com)
-            .map_err(|e| format!("COM: {e}"))?;
+        let _com = crate::com::Com::mta();
         let scheduler = |e: windows::core::Error| format!("Task Scheduler: {e}");
         let service: ITaskService =
             unsafe { CoCreateInstance(&TaskScheduler, None, CLSCTX_INPROC_SERVER) }.map_err(scheduler)?;

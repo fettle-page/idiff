@@ -2,6 +2,7 @@
 
 use idiff_collect::{SnapshotOptions, snapshot};
 use idiff_core::model::{SCHEMA, SourceKind};
+use std::time::{Duration, Instant};
 
 #[test]
 fn real_snapshot_has_programs() {
@@ -18,14 +19,22 @@ fn real_snapshot_has_programs() {
 }
 
 #[test]
-fn sources_not_built_yet_are_failed_not_empty() {
-    let s = snapshot(&SnapshotOptions {
-        only: Some(vec![SourceKind::Packaged]),
-        ..Default::default()
-    });
-    let packaged = &s.sources[&SourceKind::Packaged];
-    assert!(!packaged.ok && packaged.items.is_empty());
-    assert_eq!(packaged.error.as_deref(), Some("not built yet"));
+fn a_full_snapshot_reads_every_source_in_time() {
+    let start = Instant::now();
+    let s = snapshot(&SnapshotOptions::default());
+    let took = start.elapsed();
+    assert!(took < Duration::from_secs(15), "took {took:?}");
+    assert_eq!(s.sources.keys().copied().collect::<Vec<_>>(), SourceKind::ALL);
+    for (kind, snap) in &s.sources {
+        if *kind == SourceKind::Defender {
+            // Only administrators can read it: anyone else gets an error, never an empty list.
+            if !s.elevated {
+                assert!(!snap.ok && snap.error.is_some() && snap.items.is_empty(), "{snap:?}");
+            }
+        } else {
+            assert!(snap.ok, "{kind:?}: {:?}", snap.error);
+        }
+    }
 }
 
 fn read_one(kind: SourceKind) -> idiff_core::model::SourceSnap {
@@ -37,8 +46,13 @@ fn read_one(kind: SourceKind) -> idiff_core::model::SourceSnap {
 }
 
 #[test]
-fn real_snapshot_has_startup_path_and_shell_extensions() {
-    for kind in [SourceKind::Startup, SourceKind::Path, SourceKind::ShellExt] {
+fn real_snapshot_has_startup_path_shell_extensions_and_folders() {
+    for kind in [
+        SourceKind::Startup,
+        SourceKind::Path,
+        SourceKind::ShellExt,
+        SourceKind::Folders,
+    ] {
         let snap = read_one(kind);
         assert!(snap.ok, "{kind:?}: {:?}", snap.error);
         assert!(!snap.items.is_empty(), "{kind:?} has no items");
@@ -84,5 +98,36 @@ fn real_snapshot_has_tasks() {
     assert!(tasks.items.iter().any(|i| i.key.starts_with(r"\microsoft\windows\")));
     if !s.elevated {
         assert_eq!(tasks.note.as_deref(), Some(idiff_core::copy::TASKS_PARTIAL));
+    }
+}
+
+#[test]
+fn real_snapshot_has_packaged_apps() {
+    let packaged = read_one(SourceKind::Packaged);
+    assert!(packaged.ok, "{:?}", packaged.error);
+}
+
+#[test]
+fn real_snapshot_has_root_certificates() {
+    let certs = read_one(SourceKind::Certs);
+    assert!(certs.ok, "{:?}", certs.error);
+    assert!(!certs.items.is_empty());
+}
+
+/// Scheduled tasks, startup shortcuts and Store apps each use COM on their own thread. Read
+/// together, a Store app read that hadn't joined COM itself crashed the whole process.
+#[test]
+fn sources_using_com_can_read_together() {
+    for _ in 0..5 {
+        let s = snapshot(&SnapshotOptions {
+            only: Some(vec![
+                SourceKind::Tasks,
+                SourceKind::Startup,
+                SourceKind::Packaged,
+                SourceKind::Folders,
+            ]),
+            ..Default::default()
+        });
+        assert!(s.sources.values().all(|v| v.ok), "{:?}", s.sources);
     }
 }
