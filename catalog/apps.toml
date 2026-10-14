@@ -1,0 +1,209 @@
+# The apps the Receipts Library installs on fresh GitHub runners, one [[app]] per winget id.
+# `name` is passed to `idiff run --app`, so it's the name the app calls itself.
+#
+# Not listed: apps the windows-2025 runner image already has (7-Zip, Git, Python, Node.js,
+# Chrome, Firefox, Edge, Docker, Java), which would be upgrades, not installs. Also not listed:
+# apps that can't install on Windows Server as administrator (Battle.net, CCleaner, Spotify) or
+# whose installer hangs there (Ubisoft Connect).
+
+# Tested in the kill test.
+[[app]]
+id = "Discord.Discord"
+name = "Discord"
+
+[[app]]
+id = "Valve.Steam"
+name = "Steam"
+
+[[app]]
+id = "Zoom.Zoom"
+name = "Zoom Workplace"
+
+[[app]]
+id = "SlackTechnologies.Slack"
+name = "Slack"
+
+[[app]]
+id = "Brave.Brave"
+name = "Brave"
+
+[[app]]
+id = "Opera.Opera"
+name = "Opera"
+
+[[app]]
+id = "Vivaldi.Vivaldi"
+name = "Vivaldi"
+
+[[app]]
+id = "VideoLAN.VLC"
+name = "VLC"
+
+[[app]]
+id = "Notepad++.Notepad++"
+name = "Notepad++"
+
+[[app]]
+id = "Microsoft.VisualStudioCode"
+name = "Visual Studio Code"
+
+[[app]]
+id = "Telegram.TelegramDesktop"
+name = "Telegram Desktop"
+
+[[app]]
+id = "Audacity.Audacity"
+name = "Audacity"
+
+[[app]]
+id = "qBittorrent.qBittorrent"
+name = "qBittorrent"
+
+[[app]]
+id = "WireGuard.WireGuard"
+name = "WireGuard"
+
+[[app]]
+id = "EpicGames.EpicGamesLauncher"
+name = "Epic Games Launcher"
+
+[[app]]
+id = "ElectronicArts.EADesktop"
+name = "EA app"
+
+[[app]]
+id = "Nvidia.GeForceNow"
+name = "GeForce NOW"
+
+[[app]]
+id = "Logitech.GHUB"
+name = "Logitech G HUB"
+
+[[app]]
+id = "Dropbox.Dropbox"
+name = "Dropbox"
+
+[[app]]
+id = "Google.GoogleDrive"
+name = "Google Drive"
+
+[[app]]
+id = "Adobe.Acrobat.Reader.64-bit"
+name = "Adobe Acrobat Reader"
+
+[[app]]
+id = "RARLab.WinRAR"
+name = "WinRAR"
+
+[[app]]
+id = "TeamViewer.TeamViewer"
+name = "TeamViewer"
+
+[[app]]
+id = "AnyDesk.AnyDesk"
+name = "AnyDesk"
+
+[[app]]
+id = "OBSProject.OBSStudio"
+name = "OBS Studio"
+
+[[app]]
+id = "Malwarebytes.Malwarebytes"
+name = "Malwarebytes"
+
+# Added for the library.
+[[app]]
+id = "Mozilla.Thunderbird"
+name = "Thunderbird"
+
+[[app]]
+id = "OpenWhisperSystems.Signal"
+name = "Signal"
+
+[[app]]
+id = "Element.Element"
+name = "Element"
+
+[[app]]
+id = "LibreWolf.LibreWolf"
+name = "LibreWolf"
+
+[[app]]
+id = "GOG.Galaxy"
+name = "GOG Galaxy"
+
+[[app]]
+id = "JetBrains.Toolbox"
+name = "JetBrains Toolbox"
+
+[[app]]
+id = "Postman.Postman"
+name = "Postman"
+
+[[app]]
+id = "GitHub.GitHubDesktop"
+name = "GitHub Desktop"
+
+[[app]]
+id = "PuTTY.PuTTY"
+name = "PuTTY"
+
+[[app]]
+id = "WinSCP.WinSCP"
+name = "WinSCP"
+
+[[app]]
+id = "Microsoft.PowerToys"
+name = "PowerToys"
+
+[[app]]
+id = "voidtools.Everything"
+name = "Everything"
+
+[[app]]
+id = "ShareX.ShareX"
+name = "ShareX"
+
+[[app]]
+id = "Greenshot.Greenshot"
+name = "Greenshot"
+
+[[app]]
+id = "KeePassXCTeam.KeePassXC"
+name = "KeePassXC"
+
+[[app]]
+id = "Bitwarden.Bitwarden"
+name = "Bitwarden"
+
+[[app]]
+id = "AgileBits.1Password"
+name = "1Password"
+
+[[app]]
+id = "NordSecurity.NordVPN"
+name = "NordVPN"
+
+[[app]]
+id = "HandBrake.HandBrake"
+name = "HandBrake"
+
+[[app]]
+id = "GIMP.GIMP"
+name = "GIMP"
+
+[[app]]
+id = "Inkscape.Inkscape"
+name = "Inkscape"
+
+[[app]]
+id = "BlenderFoundation.Blender"
+name = "Blender"
+
+[[app]]
+id = "Obsidian.Obsidian"
+name = "Obsidian"
+
+[[app]]
+id = "Notion.Notion"
+name = "Notion"
