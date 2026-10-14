@@ -7,8 +7,20 @@ use std::path::Path;
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
+    // An elevated copy started as the helper takes this path, before the normal commands are parsed.
+    #[cfg(windows)]
+    {
+        let args: Vec<String> = std::env::args().skip(1).collect();
+        if args.first().is_some_and(|a| a == "--helper") {
+            let code = match idiff::elevate::parse_helper_args(&args) {
+                Some((path, only)) => idiff::elevate::run_helper(&path, &only),
+                None => 1,
+            };
+            return ExitCode::from(code as u8);
+        }
+    }
     let result = match Cli::parse().command {
-        Command::Snapshot { output, .. } => cmd_snapshot(output.as_deref()),
+        Command::Snapshot { output, no_elevate } => cmd_snapshot(output.as_deref(), no_elevate),
         Command::Diff { before, after, .. } => cmd_diff(&before, &after),
         _ => Err(copy::NOT_BUILT_YET.to_string()),
     };
@@ -27,10 +39,11 @@ fn load(path: &Path) -> Result<Snapshot, String> {
     Snapshot::load(&json).map_err(|e| format!("{}: {e}", path.display()))
 }
 
-/// To the file given with `-o`, else to stdout.
+/// To the file given with `-o`, else to stdout. Asks through UAC for the administrator-only
+/// sources unless `--no-elevate`.
 #[cfg(windows)]
-fn cmd_snapshot(output: Option<&Path>) -> Result<(), String> {
-    let json = idiff_collect::snapshot(&idiff_collect::SnapshotOptions::default()).to_json();
+fn cmd_snapshot(output: Option<&Path>, no_elevate: bool) -> Result<(), String> {
+    let json = idiff::elevate::snapshot_for_run(no_elevate).to_json();
     match output {
         Some(path) => std::fs::write(path, json).map_err(|e| format!("{}: {e}", path.display())),
         None => {
@@ -41,7 +54,7 @@ fn cmd_snapshot(output: Option<&Path>) -> Result<(), String> {
 }
 
 #[cfg(not(windows))]
-fn cmd_snapshot(_output: Option<&Path>) -> Result<(), String> {
+fn cmd_snapshot(_output: Option<&Path>, _no_elevate: bool) -> Result<(), String> {
     Err(copy::NOT_BUILT_YET.to_string())
 }
 
