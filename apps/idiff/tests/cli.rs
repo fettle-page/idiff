@@ -129,8 +129,7 @@ fn diff_of_a_damaged_file_is_an_idiff_error() {
 #[test]
 fn commands_not_built_yet_say_so() {
     for args in [
-        &["run", "--", "winget", "install", "x"][..],
-        &["leftovers", "last"],
+        &["leftovers", "last"][..],
         &["export", "last", "--format", "md"],
         &["calibrate", "--minutes", "5"],
         &["list"],
@@ -254,4 +253,92 @@ fn show_explains_what_to_do_first() {
     assert!(stderr(&out).contains(copy::NO_SESSIONS), "{}", stderr(&out));
     let out = idiff_at(home.path(), &["show", "nope"]);
     assert!(stderr(&out).contains(copy::NO_SUCH_SESSION), "{}", stderr(&out));
+}
+
+#[test]
+fn show_says_when_a_session_didnt_finish() {
+    let home = tempfile::tempdir().unwrap();
+    saved_session(home.path());
+    let dir = home.path().join("sessions").join("20261014-123456-discord");
+    std::fs::remove_file(dir.join("receipt.json")).unwrap();
+    let out = idiff_at(home.path(), &["show", "last"]);
+    assert_eq!(out.status.code(), Some(1));
+    assert!(stderr(&out).contains(copy::SESSION_UNFINISHED), "{}", stderr(&out));
+}
+
+/// `idiff run` with a harmless command: nothing is installed. Never elevated, never prompts.
+#[cfg(windows)]
+fn run_at(home: &std::path::Path, command: &[&str]) -> Output {
+    let mut args = vec!["run", "--yes", "--settle", "0", "--no-elevate", "--"];
+    args.extend(command);
+    idiff_at(home, &args)
+}
+
+#[cfg(windows)]
+fn only_session(home: &std::path::Path) -> std::path::PathBuf {
+    let sessions: Vec<_> = std::fs::read_dir(home.join("sessions"))
+        .unwrap()
+        .map(|e| e.unwrap().path())
+        .collect();
+    assert_eq!(sessions.len(), 1, "{sessions:?}");
+    sessions[0].clone()
+}
+
+#[cfg(windows)]
+#[test]
+fn run_records_every_step_and_prints_the_receipt() {
+    let home = tempfile::tempdir().unwrap();
+    let made = home.path().join("made-by-the-command");
+    let out = run_at(home.path(), &["cmd", "/c", "mkdir", &made.to_string_lossy()]);
+    assert_eq!(out.status.code(), Some(0), "{}", stderr(&out));
+    assert!(made.is_dir(), "the command ran");
+    let dir = only_session(home.path());
+    for file in ["session.json", "before.json", "after.json", "receipt.json"] {
+        assert!(dir.join(file).is_file(), "{file}");
+    }
+    let meta: SessionMeta = serde_json::from_str(&std::fs::read_to_string(dir.join("session.json")).unwrap()).unwrap();
+    assert_eq!(meta.command, ["cmd", "/c", "mkdir", &made.to_string_lossy()]);
+    assert_eq!(meta.exit_code, Some(0));
+    assert!(meta.finished_ms.is_some_and(|f| f >= meta.started_ms));
+    assert!(meta.subject.is_some());
+    let receipt: Receipt = serde_json::from_str(&std::fs::read_to_string(dir.join("receipt.json")).unwrap()).unwrap();
+    assert_eq!(stdout(&out).lines().next(), Some(receipt.title.as_str()));
+    // What `show` prints is the same receipt.
+    assert_eq!(stdout(&idiff_at(home.path(), &["show", "last"])), stdout(&out));
+}
+
+#[cfg(windows)]
+#[test]
+fn run_exit_codes_follow_the_command() {
+    let home = tempfile::tempdir().unwrap();
+    let out = run_at(home.path(), &["cmd", "/c", "exit", "3010"]);
+    assert_eq!(out.status.code(), Some(0), "{}", stderr(&out));
+    assert!(
+        stdout(&out).contains(&format!("· {}", copy::RESTART_NEEDED)),
+        "{}",
+        stdout(&out)
+    );
+
+    let home = tempfile::tempdir().unwrap();
+    let out = run_at(home.path(), &["cmd", "/c", "exit", "5"]);
+    assert_eq!(out.status.code(), Some(2), "{}", stderr(&out));
+    assert!(
+        stdout(&out).contains("⚠ The install command exited with code 5"),
+        "{}",
+        stdout(&out)
+    );
+}
+
+#[cfg(windows)]
+#[test]
+fn run_of_a_missing_command_leaves_an_unfinished_session() {
+    let home = tempfile::tempdir().unwrap();
+    let out = run_at(home.path(), &["no-such-installer-7d1f.exe", "/S"]);
+    assert_eq!(out.status.code(), Some(1));
+    assert!(stderr(&out).contains(copy::COMMAND_NOT_FOUND), "{}", stderr(&out));
+    let dir = only_session(home.path());
+    assert!(dir.join("before.json").is_file());
+    assert!(!dir.join("receipt.json").exists());
+    let show = idiff_at(home.path(), &["show", "last"]);
+    assert!(stderr(&show).contains(copy::SESSION_UNFINISHED), "{}", stderr(&show));
 }
