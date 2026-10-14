@@ -1,0 +1,38 @@
+# Every push and pull request: formatting, lints, all tests, and the check that the collector only reads.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+# A newer push to the same branch replaces an older run that's still going.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: windows-2025
+    # The exact Rust version for every cargo command here (rust-toolchain.toml says "stable" for local builds).
+    env:
+      RUSTUP_TOOLCHAIN: "1.99.0-x86_64-pc-windows-msvc"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Nothing here pushes, so the token needn't stay where cargo build scripts can read it.
+          persist-credentials: false
+      - run: rustup toolchain install 1.99.0-x86_64-pc-windows-msvc --profile minimal --component clippy,rustfmt
+      # idiff-collect never writes to the registry or the disk: any write call in it fails the run.
+      - name: idiff-collect only reads
+        shell: pwsh
+        run: |
+          $hits = git grep -nE "create_subkey|set_value|set_raw_value|delete_value|delete_subkey|remove_file|remove_dir|fs::write|File::create|OpenOptions" -- crates/idiff-collect
+          if ($hits) { $hits; exit 1 }
+      - run: cargo fmt --all --check
+      # Every test program runs, so one run shows every failure.
+      - run: cargo test --workspace --locked --no-fail-fast
+      # Rust's own lints: any warning fails the run.
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
