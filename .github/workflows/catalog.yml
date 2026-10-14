@@ -1,0 +1,252 @@
+# The Receipts Library: installs each app in catalog/apps.toml on its own fresh windows-2025
+# runner with `idiff run`, uninstalls it with `idiff leftovers`, and opens one pull request that
+# adds the new receipts to receipts/. Started by hand for now; a weekly schedule comes later.
+#
+#   gh workflow run catalog.yml -f only=VideoLAN.VLC,Discord.Discord   # a few apps
+#   gh workflow run catalog.yml                                         # the whole catalog
+#   gh workflow run catalog.yml -f idiff_tag=v1.0.0                     # a released idiff.exe
+#
+# Without idiff_tag, idiff.exe is built once from this commit. With it, that release's zip is
+# downloaded and checked against its SHA256SUMS.txt instead.
+#
+# Only `publish` can write, and it runs no build or install script: it gets the library tool
+# already built by the `library` job.
+name: Catalog
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: Comma-separated winget ids from catalog/apps.toml (empty = all of them)
+        required: false
+        default: ""
+      idiff_tag:
+        description: Release tag whose idiff.exe to use, e.g. v1.0.0 (empty = build this commit)
+        required: false
+        default: ""
+
+permissions: {}
+
+# One catalog at a time; a second one waits rather than cancelling the first.
+concurrency:
+  group: catalog
+  cancel-in-progress: false
+
+env:
+  WINDOWS_TOOLCHAIN: "1.99.0-x86_64-pc-windows-msvc"
+  LINUX_TOOLCHAIN: "1.99.0-x86_64-unknown-linux-gnu"
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      tag: ${{ steps.matrix.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: matrix
+        env:
+          ONLY: ${{ inputs.only }}
+          IDIFF_TAG: ${{ inputs.idiff_tag }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, sys, tomllib
+
+          def fail(message):
+              print(f"::error::{message}")
+              sys.exit(1)
+
+          # Ids and names reach command lines and artifact names: only these characters.
+          ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
+          NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 .+&()-]*$")
+          TAG = re.compile(r"^v\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$")
+
+          with open("catalog/apps.toml", "rb") as f:
+              apps = [{"id": a["id"], "name": a["name"]} for a in tomllib.load(f)["app"]]
+          for a in apps:
+              if not ID.match(a["id"]) or not NAME.match(a["name"]):
+                  fail(f"catalog/apps.toml: not a safe id or name: {a}")
+          ids = [a["id"] for a in apps]
+          if len(set(ids)) != len(ids):
+              fail("catalog/apps.toml lists an id twice")
+
+          only = [s.strip() for s in os.environ["ONLY"].split(",") if s.strip()]
+          unknown = [i for i in only if i not in ids]
+          if unknown:
+              fail(f"Not in catalog/apps.toml: {', '.join(unknown)}")
+          if only:
+              apps = [a for a in apps if a["id"] in only]
+
+          tag = os.environ["IDIFF_TAG"].strip()
+          if tag and not TAG.match(tag):
+              fail(f"Not a release tag: {tag}")
+
+          matrix = json.dumps({"app": apps}, separators=(",", ":"))
+          print(matrix)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"matrix={matrix}\ntag={tag}\n")
+          PY
+
+  # idiff.exe once for every run job: built from this commit, or the release given as idiff_tag.
+  idiff:
+    needs: plan
+    runs-on: windows-2025
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build idiff from this commit
+        if: needs.plan.outputs.tag == ''
+        env:
+          RUSTUP_TOOLCHAIN: ${{ env.WINDOWS_TOOLCHAIN }}
+        run: |
+          rustup toolchain install $env:RUSTUP_TOOLCHAIN --profile minimal
+          cargo build --release --locked -p idiff
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Force bin | Out-Null
+          Copy-Item target\release\idiff.exe bin\
+      - name: Download the release and check it
+        if: needs.plan.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IDIFF_TAG: ${{ needs.plan.outputs.tag }}
+        run: |
+          gh release download $env:IDIFF_TAG -R $env:GITHUB_REPOSITORY -p 'idiff-*-x64.zip' -p 'SHA256SUMS.txt' -D dl
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $zip = Get-ChildItem dl -Filter 'idiff-*-x64.zip' | Select-Object -First 1
+          $listed = Get-Content dl\SHA256SUMS.txt | Where-Object { $_ -match "^([0-9a-f]{64})  $([regex]::Escape($zip.Name))$" } | ForEach-Object { $Matches[1] }
+          $actual = (Get-FileHash -Algorithm SHA256 $zip.FullName).Hash.ToLowerInvariant()
+          if (-not $listed -or $listed -ne $actual) { throw "$($zip.Name) doesn't match SHA256SUMS.txt" }
+          Expand-Archive $zip.FullName -DestinationPath bin
+      - run: bin\idiff.exe --version
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: idiff-exe
+          path: bin/idiff.exe
+          if-no-files-found: error
+          retention-days: 3
+
+  # The library tool, built where nothing can write, for `publish` to run.
+  library:
+    needs: plan
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - env:
+          RUSTUP_TOOLCHAIN: ${{ env.LINUX_TOOLCHAIN }}
+        run: |
+          rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal
+          cargo build --release --locked -p library
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: library-tool
+          path: target/release/library
+          if-no-files-found: error
+          retention-days: 3
+
+  run:
+    needs: [plan, idiff]
+    name: ${{ matrix.app.id }}
+    runs-on: windows-2025
+    # Setup, then catalog-run.ps1's own limits: 25 minutes to install, 15 to uninstall.
+    timeout-minutes: 50
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: idiff-exe
+          path: bin
+      # The runner image has no winget, and Repair-WinGetPackageManager -AllUsers fails on Server 2025.
+      - name: Install winget
+        env:
+          # Only for the GitHub API's rate limit when the script looks up winget's latest release.
+          GH_TOKEN: ${{ github.token }}
+        run: ./scripts/install-winget.ps1
+      - name: Install, uninstall and keep the receipts
+        env:
+          APP_ID: ${{ matrix.app.id }}
+          APP_NAME: ${{ matrix.app.name }}
+        run: ./scripts/catalog-run.ps1 -Id $env:APP_ID -Name $env:APP_NAME -Out out -Idiff (Resolve-Path bin\idiff.exe).Path
+      # If the job ran out of time, catalog-run.ps1 never finished, but its meta.json says where it stopped.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: result-${{ matrix.app.id }}
+          # The session folder holds whole snapshots of the runner; the library needs none of it.
+          path: |
+            out/
+            !out/*/idiff-home/**
+          if-no-files-found: warn
+          retention-days: 14
+
+  publish:
+    needs: [plan, library, run]
+    # Failed and timed-out apps are part of the summary, so this runs whatever `run` did.
+    if: always() && needs.plan.result == 'success' && needs.library.result == 'success'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: library-tool
+          path: tool
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: result-*
+          merge-multiple: true
+          path: results
+      - name: Add the results to the library
+        run: |
+          mkdir -p results receipts
+          chmod +x tool/library
+          tool/library results receipts > summary.md
+          cat summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Open a pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain -- receipts)" ]; then
+            echo "Nothing changed in receipts/: no pull request." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          date=$(date -u +%F)
+          # The run id keeps a second run on the same day off the first one's branch.
+          branch="receipts/${date}-${GITHUB_RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add receipts
+          git commit -m "Receipts: ${date}"
+          # The token is used for this push and the pull request only, never stored in the checkout.
+          gh auth setup-git
+          git push origin "$branch"
+          gh pr create --head "$branch" --title "Receipts: ${date}" --body-file summary.md
