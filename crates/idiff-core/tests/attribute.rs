@@ -623,3 +623,54 @@ mod company_fallback {
         assert_eq!(a.owner, Owner::Unknown, "{:?}", a.reason);
     }
 }
+
+/// Logitech G HUB in the catalog: its service and drivers were the app's by signer, but its new
+/// folders weren't, because "lghub" doesn't contain "logitech".
+#[test]
+fn a_new_folder_holding_an_app_program_is_the_apps() {
+    let ghub = Subject {
+        name: "Logitech G HUB".into(),
+        publisher: Some("Logitech".into()),
+        install_dirs: vec![r"c:\program files\logitech".into()],
+        ..Default::default()
+    };
+    let folder = |key: &str, root: &str| item(key, None, &[("root", root), ("kind", "folder")]);
+    let d = Delta {
+        sources: BTreeMap::from([
+            (
+                SourceKind::Services,
+                vec![Change::Added(item(
+                    "lghub_updater",
+                    Some(r"c:\program files\lghub\lghub_updater.exe"),
+                    &[("signer", "Logitech")],
+                ))],
+            ),
+            (
+                SourceKind::Folders,
+                vec![
+                    Change::Added(folder(r"c:\program files\lghub", "Program Files")),
+                    Change::Added(folder(r"c:\users\a\appdata\local\sentry", r"AppData\Local")),
+                    // Too broad to be one app's, however it got on the list.
+                    Change::Added(folder(r"c:\program files", "Program Files")),
+                ],
+            ),
+        ]),
+        notes: BTreeMap::new(),
+        partial: Default::default(),
+    };
+    let r = attribute(&d, &ghub, &NoiseList::builtin(), &BTreeMap::new());
+    assert_eq!(find(&r, "lghub_updater").reason, Reason::SignerMatchesPublisher);
+    let lghub = r
+        .iter()
+        .find(|a| a.change.item().key == r"c:\program files\lghub")
+        .unwrap();
+    assert_eq!((lghub.owner, &lghub.reason), (Owner::App, &Reason::HoldsAppProgram));
+    assert!(
+        Reason::HoldsAppProgram
+            .text()
+            .contains("holds one of the app's programs")
+    );
+    assert_eq!(find(&r, "sentry").owner, Owner::Unknown);
+    let broad = r.iter().find(|a| a.change.item().key == r"c:\program files").unwrap();
+    assert_eq!(broad.owner, Owner::Unknown);
+}

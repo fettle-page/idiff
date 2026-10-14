@@ -43,8 +43,16 @@ pub struct Entry {
     pub warn: u32,
     pub bad: u32,
     pub leftovers: u32,
+    /// False when the uninstall didn't finish, so `leftovers` (then 0) means nothing. Added to
+    /// schema v1; older files without it read as checked.
+    #[serde(default = "checked")]
+    pub leftovers_checked: bool,
     pub changed: bool,
     pub path: String,
+}
+
+fn checked() -> bool {
+    true
 }
 
 /// What one version's `.json` file in the library holds.
@@ -64,6 +72,8 @@ pub struct Summary {
     pub skipped_same: Vec<String>,
     /// Winget id and why; their previous entry stays.
     pub failed: Vec<(String, String)>,
+    /// Winget ids in `added` whose uninstall didn't finish, so their leftovers aren't checked.
+    pub leftovers_unchecked: Vec<String>,
 }
 
 const INTRO: &str = "What popular Windows apps do to your PC when you install them, and what they leave behind. \
@@ -74,6 +84,11 @@ decides what belongs to the app.";
 /// From a version page in `receipts/<app>/` to the README's section on attribution.
 const HOW_IT_DECIDES: &str = "[How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)";
 const NO_META: &str = "no meta.json";
+/// Under "After uninstall" when the uninstall step failed but the install receipt is good.
+const UNINSTALL_UNFINISHED: &str =
+    "The uninstall didn't finish on the test machine, so these may include things it would have removed.";
+/// The index's Leftovers cell for those.
+const NOT_CHECKED: &str = "not checked";
 const NO_RECEIPT: &str = "no receipt.json (the run didn't finish)";
 
 /// A file name for a version: lowercase `[a-z0-9.-]`, anything else `-`, no dots or dashes at
@@ -148,11 +163,15 @@ pub fn version_page(meta: &Meta, receipt: &Receipt, leftovers: Option<&Receipt>,
         md_escape(&meta.version),
         markdown_section(&listing_hidden(receipt), true, 2)
     );
-    if let Some(leftovers) = leftovers {
-        page.push_str(&format!(
-            "\n## After uninstall\n\n{}",
-            markdown_section(&listing_hidden(leftovers), true, 3)
-        ));
+    let unfinished = uninstall_unfinished(meta);
+    if leftovers.is_some() || unfinished {
+        page.push_str("\n## After uninstall\n\n");
+        if unfinished {
+            page.push_str(&format!("{UNINSTALL_UNFINISHED}\n\n"));
+        }
+        if let Some(leftovers) = leftovers {
+            page.push_str(&markdown_section(&listing_hidden(leftovers), true, 3));
+        }
     }
     if !changes.is_empty() {
         page.push_str("\n## Changed since the previous version\n\n");
@@ -193,7 +212,11 @@ pub fn index_md(entries: &[Entry]) -> String {
             md_escape(&e.version),
             e.warn,
             e.bad,
-            e.leftovers,
+            if e.leftovers_checked {
+                e.leftovers.to_string()
+            } else {
+                NOT_CHECKED.to_string()
+            },
             if e.changed { "yes" } else { "" },
             md_escape(&e.date),
         ));
@@ -237,6 +260,13 @@ pub fn summary_markdown(s: &Summary, entries: &[Entry]) -> String {
     if !s.skipped_same.is_empty() {
         out.push_str("Same version as before, so not rewritten:\n\n");
         for id in &s.skipped_same {
+            out.push_str(&format!("- {}\n", md_escape(id)));
+        }
+        out.push('\n');
+    }
+    if !s.leftovers_unchecked.is_empty() {
+        out.push_str("Added without a leftovers check, because the uninstall didn't finish:\n\n");
+        for id in &s.leftovers_unchecked {
             out.push_str(&format!("- {}\n", md_escape(id)));
         }
         out.push('\n');
@@ -294,34 +324,54 @@ fn count(r: &Receipt, level: Level) -> u32 {
     r.lines.iter().filter(|l| l.level == level).count() as u32
 }
 
-/// One app's result into the library. Errors are the reasons it's listed as failed.
-fn apply_one(dir: &Path, receipts: &Path, entries: &mut Vec<Entry>) -> Result<(String, bool), (String, String)> {
+/// The catalog script names the step that failed. When only the uninstall check failed (most
+/// uninstallers wait on a dialog on a runner), the install receipt is still good.
+fn uninstall_unfinished(meta: &Meta) -> bool {
+    meta.failed.as_deref().is_some_and(|f| f.starts_with("leftovers:"))
+}
+
+/// One app's result into the library: `Some(leftovers unchecked)` when a page was written, `None`
+/// when that version was there already. Errors are the reasons it's listed as failed.
+fn apply_one(
+    dir: &Path,
+    receipts: &Path,
+    entries: &mut Vec<Entry>,
+) -> Result<(String, Option<bool>), (String, String)> {
     let dir_name = dir.file_name().unwrap_or_default().to_string_lossy().into_owned();
     let meta: Meta = read_json(&dir.join("meta.json"))
         .map_err(|e| (dir_name.clone(), e))?
         .ok_or_else(|| (dir_name.clone(), NO_META.to_string()))?;
     let id = if meta.id.is_empty() { dir_name } else { meta.id.clone() };
     let fail = |why: String| (id.clone(), why);
-    if let Some(why) = &meta.failed {
+    let unfinished = uninstall_unfinished(&meta);
+    if let Some(why) = meta.failed.as_ref().filter(|_| !unfinished) {
         return Err(fail(why.clone()));
     }
     // A hung or cancelled job can leave only meta.json.
     let receipt: Receipt = read_json(&dir.join("receipt.json"))
         .map_err(fail)?
-        .ok_or_else(|| fail(NO_RECEIPT.to_string()))?;
+        .ok_or_else(|| fail(meta.failed.clone().unwrap_or_else(|| NO_RECEIPT.to_string())))?;
     let leftovers: Option<Receipt> = read_json(&dir.join("leftovers.json")).map_err(fail)?;
 
     let app_dir = receipts.join(version_slug(&id));
-    let existing = records(&app_dir);
-    if existing.iter().any(|(_, r)| r.meta.version == meta.version) {
-        return Ok((id, false));
+    let mut existing = records(&app_dir);
+    // The same version is skipped, unless this run checked the leftovers that one couldn't.
+    let mut replacing = None;
+    if let Some((stem, same)) = existing.iter().find(|(_, r)| r.meta.version == meta.version) {
+        if !uninstall_unfinished(&same.meta) || unfinished {
+            return Ok((id, None));
+        }
+        replacing = Some(stem.clone());
     }
+    existing.retain(|(stem, _)| Some(stem) != replacing.as_ref());
     // Two versions can share a slug ("1.0+a", "1.0/a"): the later one gets a number.
     let base = version_slug(&meta.version);
-    let slug = std::iter::once(base.clone())
-        .chain((2..).map(|n| format!("{base}-{n}")))
-        .find(|s| !app_dir.join(format!("{s}.json")).exists())
-        .expect("some numbered name is free");
+    let slug = replacing.unwrap_or_else(|| {
+        std::iter::once(base.clone())
+            .chain((2..).map(|n| format!("{base}-{n}")))
+            .find(|s| !app_dir.join(format!("{s}.json")).exists())
+            .expect("some numbered name is free")
+    });
 
     let previous = existing.first().map(|(_, r)| r);
     let changes = previous
@@ -359,11 +409,15 @@ fn apply_one(dir: &Path, receipts: &Path, entries: &mut Vec<Entry>) -> Result<(S
         date: meta.date.clone(),
         warn: count(&receipt, Level::Warn),
         bad: count(&receipt, Level::Bad),
-        leftovers: leftovers.as_ref().map_or(0, |l| count(l, Level::Bad)),
+        leftovers: match unfinished {
+            true => 0,
+            false => leftovers.as_ref().map_or(0, |l| count(l, Level::Bad)),
+        },
+        leftovers_checked: !unfinished,
         changed: !changes.is_empty(),
         path: format!("{}/{slug}.md", version_slug(&id)),
     });
-    Ok((id, true))
+    Ok((id, Some(unfinished)))
 }
 
 /// Adds every app in `results_dir` (`<id>/meta.json`, `receipt.json`, `leftovers.json`) to the
@@ -383,8 +437,13 @@ pub fn apply(results_dir: &Path, receipts_dir: &Path) -> Result<Summary, String>
     let mut summary = Summary::default();
     for dir in &dirs {
         match apply_one(dir, receipts_dir, &mut entries) {
-            Ok((id, true)) => summary.added.push(id),
-            Ok((id, false)) => summary.skipped_same.push(id),
+            Ok((id, Some(unchecked))) => {
+                if unchecked {
+                    summary.leftovers_unchecked.push(id.clone());
+                }
+                summary.added.push(id);
+            }
+            Ok((id, None)) => summary.skipped_same.push(id),
             Err(failed) => summary.failed.push(failed),
         }
     }

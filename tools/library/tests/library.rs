@@ -48,6 +48,7 @@ fn new_app_gets_a_page_and_an_index_row() {
             warn: 2,
             bad: 0,
             leftovers: 2,
+            leftovers_checked: true,
             changed: false,
             path: "discord.discord/1.0.9170.md".into(),
         }]
@@ -282,6 +283,7 @@ fn labels_are_escaped_in_markdown() {
         warn: 1,
         bad: 0,
         leftovers: 0,
+        leftovers_checked: true,
         changed: true,
         path: "evil.app/1-2.md".into(),
     }]);
@@ -325,6 +327,7 @@ fn the_tool_prints_the_summary_for_the_pr() {
         added: vec!["A.B".into()],
         skipped_same: vec!["C.D".into()],
         failed: vec![("E.F".into(), "run: exit 2".into())],
+        ..Default::default()
     };
     let md = summary.to_markdown();
     assert!(
@@ -349,4 +352,81 @@ fn library_pages_list_what_was_hidden() {
     // The stored receipt is the one idiff made, word for word.
     let record = read(receipts.path().join("discord.discord/1.0.9170.json"));
     assert!(record.contains("3 Windows background changes hidden (idiff show --all)"));
+}
+
+/// A copy of a fixture's results with `meta.json` changed by `edit`.
+fn edited(name: &str, edit: impl Fn(&mut serde_json::Value)) -> tempfile::TempDir {
+    let results = tempfile::tempdir().unwrap();
+    for app in std::fs::read_dir(fixture(name)).unwrap() {
+        let src = app.unwrap().path();
+        let dst = results.path().join(src.file_name().unwrap());
+        std::fs::create_dir_all(&dst).unwrap();
+        for file in std::fs::read_dir(&src).unwrap() {
+            let file = file.unwrap().path();
+            std::fs::copy(&file, dst.join(file.file_name().unwrap())).unwrap();
+        }
+        let mut meta: serde_json::Value = serde_json::from_str(&read(dst.join("meta.json"))).unwrap();
+        edit(&mut meta);
+        std::fs::write(dst.join("meta.json"), meta.to_string()).unwrap();
+    }
+    results
+}
+
+#[test]
+fn a_hung_uninstall_still_publishes_the_install_receipt() {
+    // Real catalog data: VLC's uninstaller waited on a dialog until the step timed out.
+    let receipts = tempfile::tempdir().unwrap();
+    let summary = apply(&fixture("vlc-uninstall-unfinished"), receipts.path()).unwrap();
+    assert_eq!(summary.added, ["VideoLAN.VLC"]);
+    assert!(summary.failed.is_empty(), "{:?}", summary.failed);
+    assert_eq!(summary.leftovers_unchecked, ["VideoLAN.VLC"]);
+    let entry = &index(receipts.path())[0];
+    assert_eq!((entry.version.as_str(), entry.leftovers_checked), ("3.0.24", false));
+    let page = read(receipts.path().join("videolan.vlc/3.0.24.md"));
+    let fixed = "The uninstall didn't finish on the test machine, so these may include things it would have removed.";
+    assert!(page.contains(&format!("## After uninstall\n\n{fixed}\n")), "{page}");
+    // idiff's own honest leftovers receipt follows.
+    assert!(
+        page.contains("The uninstall was still running after 12 minutes"),
+        "{page}"
+    );
+    assert!(page.contains("- · Adds right-click menu entries"), "{page}");
+    let library = read(receipts.path().join("README.md"));
+    assert!(
+        library.contains("| [VLC](videolan.vlc/3.0.24.md) | 3.0.24 | 0 | 0 | not checked |  | 2026-10-14 |"),
+        "{library}"
+    );
+    assert!(library::summary_for(receipts.path(), &summary).contains("VideoLAN.VLC"));
+}
+
+#[test]
+fn install_failures_stay_failed() {
+    for failed in [
+        "install: exit 1603",
+        "start: didn't finish",
+        "install: stopped after 25 minutes",
+    ] {
+        let receipts = tempfile::tempdir().unwrap();
+        let results = edited("vlc-uninstall-unfinished", |m| m["failed"] = failed.into());
+        let summary = apply(results.path(), receipts.path()).unwrap();
+        assert_eq!(summary.failed, [("VideoLAN.VLC".to_string(), failed.to_string())]);
+        assert!(index(receipts.path()).is_empty(), "{failed}");
+    }
+}
+
+#[test]
+fn a_finished_uninstall_replaces_an_unchecked_one_of_the_same_version() {
+    let receipts = tempfile::tempdir().unwrap();
+    apply(&fixture("vlc-uninstall-unfinished"), receipts.path()).unwrap();
+    let finished = edited("vlc-uninstall-unfinished", |m| m["failed"] = serde_json::Value::Null);
+    let summary = apply(finished.path(), receipts.path()).unwrap();
+    assert_eq!(summary.added, ["VideoLAN.VLC"]);
+    assert!(index(receipts.path())[0].leftovers_checked);
+    let page = read(receipts.path().join("videolan.vlc/3.0.24.md"));
+    assert!(!page.contains("didn't finish on the test machine"), "{page}");
+    assert!(!receipts.path().join("videolan.vlc/3.0.24-2.md").exists());
+    // And an unchecked rerun doesn't replace a checked page.
+    let summary = apply(&fixture("vlc-uninstall-unfinished"), receipts.path()).unwrap();
+    assert_eq!(summary.skipped_same, ["VideoLAN.VLC"]);
+    assert!(index(receipts.path())[0].leftovers_checked);
 }

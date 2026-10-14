@@ -162,7 +162,7 @@ fn is_under(path: &str, dir: &str) -> bool {
 }
 
 /// A folder too broad to be one app's, which some installers still write as their location.
-fn is_too_broad(dir: &str) -> bool {
+pub(crate) fn is_too_broad(dir: &str) -> bool {
     let parts: Vec<&str> = dir.split('\\').filter(|p| !p.is_empty()).collect();
     let tail = |n: usize| parts[parts.len().saturating_sub(n)..].join("\\");
     parts.len() < 2
