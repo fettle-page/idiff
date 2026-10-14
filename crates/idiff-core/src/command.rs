@@ -40,6 +40,15 @@ pub fn extract_exe(cmd: &str, env: &Env) -> Option<String> {
         }),
         "powershell" | "pwsh" => after_flag(rest, &["-file", "-f"]).and_then(|r| split_first(r, RUNNABLE)),
         "wscript" | "cscript" => split_first(skip_flags(rest, |f| f.starts_with("//")), SCRIPTS),
+        // `conhost [--headless] <command>` hosts another command line, which may be a launcher too.
+        // Windows starts it as `conhost 0xffffffff -ForceV1`, with nothing inside.
+        "conhost" => {
+            let inner = skip_flags(rest, |f| f.starts_with("--"));
+            if !inner.is_empty() && !inner.starts_with('-') && !inner.to_ascii_lowercase().starts_with("0x") {
+                return extract_exe(inner, env);
+            }
+            None
+        }
         _ => None,
     };
     let (file, _) = inner.unwrap_or((first, rest));
