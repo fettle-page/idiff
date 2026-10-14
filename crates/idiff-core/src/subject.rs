@@ -53,6 +53,11 @@ impl Subject {
             .filter(|w| is_token(w, 4))
             .collect();
         tokens.extend(words(&self.name).next().filter(|w| is_token(w, 3)));
+        // Short words read together: "Logitech G HUB" is in folders as "ghub" and "lghub".
+        let joined: String = words(&self.name)
+            .filter(|w| w.chars().count() < 4 && !GENERIC.contains(&w.as_str()))
+            .collect();
+        tokens.extend(Some(joined).filter(|j| j.chars().count() >= 4));
         tokens.sort();
         tokens.dedup();
         tokens
@@ -159,6 +164,15 @@ fn prop(item: &Item, name: &str) -> Option<String> {
 /// Paths in normalized form: lowercase, no trailing backslash.
 fn is_under(path: &str, dir: &str) -> bool {
     path == dir || path.strip_prefix(dir).is_some_and(|rest| rest.starts_with('\\'))
+}
+
+/// A folder's letters-only name `leaf` is the app's when it contains a token (a word of the name
+/// is part of the letters-only form, so this covers both), or when it's at least 4 characters
+/// and starts a token ("logi" for "logitech"). Tokens never include generic words.
+fn is_named_after(leaf: &str, tokens: &[String]) -> bool {
+    tokens
+        .iter()
+        .any(|t| leaf.contains(t.as_str()) || (leaf.chars().count() >= 4 && t.starts_with(leaf)))
 }
 
 /// A folder too broad to be one app's, which some installers still write as their location.
@@ -268,8 +282,7 @@ pub fn find_subject(delta: &Delta, app_flag: Option<&str>, command: &[String]) -
             .filter(|c| c.is_alphanumeric())
             .flat_map(char::to_lowercase)
             .collect();
-        // A word of the name is part of its letters-only form, so this covers both.
-        let named = tokens.iter().any(|t| leaf.contains(t.as_str()));
+        let named = is_named_after(&leaf, &tokens);
         let holds_install = location.as_deref().is_some_and(|l| is_under(l, dir));
         if (named || holds_install) && !is_too_broad(dir) && !subject.install_dirs.iter().any(|d| d == dir) {
             subject.install_dirs.push(dir.to_string());
