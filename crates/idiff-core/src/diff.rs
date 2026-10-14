@@ -2,7 +2,7 @@
 
 use crate::copy;
 use crate::model::{Item, Snapshot, SourceKind, SourceSnap};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Change {
@@ -32,6 +32,8 @@ pub struct Delta {
     pub sources: BTreeMap<SourceKind, Vec<Change>>,
     /// Why a source couldn't be compared, or was only partly read.
     pub notes: BTreeMap<SourceKind, String>,
+    /// The sources in `notes` that were read, but only in part (the rest weren't read at all).
+    pub partial: BTreeSet<SourceKind>,
 }
 
 pub fn diff(before: &Snapshot, after: &Snapshot) -> Delta {
@@ -56,6 +58,7 @@ pub fn diff(before: &Snapshot, after: &Snapshot) -> Delta {
         }
         if let Some(note) = a.note.as_ref().or(b.note.as_ref()) {
             delta.notes.insert(kind, note.clone());
+            delta.partial.insert(kind);
         }
         let changes = diff_items(b, a);
         if !changes.is_empty() {

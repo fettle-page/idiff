@@ -68,6 +68,8 @@ pub const KIND_NETWORK: &str = "Network setting";
 
 // The receipt (spec §7). `{name}`-style parts are filled in by the verdict.
 pub const TITLE_INSTALLED: &str = "{name}: installed";
+/// No app was named or found, and nothing changed that could be an install.
+pub const TITLE_NO_INSTALL: &str = "No install found";
 pub const TITLE_UPDATED: &str = "{name}: updated from {previous} to {version}";
 pub const TITLE_LEFTOVERS_NONE: &str = "{name}: after uninstall, no leftovers";
 /// When some sources couldn't be checked, so "none" isn't certain.
@@ -112,6 +114,8 @@ pub const NONE_DRIVERS: &str = "drivers";
 pub const NONE_FIREWALL: &str = "firewall rules";
 pub const NOTHING_FOUND: &str = "No lasting changes found";
 pub const COULDNT_CHECK: &str = "Couldn't check {source}: {reason}";
+/// A source that was read, but not all of it (scheduled tasks without administrator rights).
+pub const ONLY_PARTLY_CHECKED: &str = "Only partly checked {source}: {reason}";
 pub const HIDDEN_ONE: &str = "1 Windows background change hidden (idiff show --all)";
 pub const HIDDEN_MANY: &str = "{n} Windows background changes hidden (idiff show --all)";
 pub const ALSO_CHANGED: &str = "Also changed while installing (couldn't tell if it was this app)";
@@ -151,3 +155,14 @@ pub const LEVEL_GOOD: &str = "Good:";
 pub const LEVEL_NOTE: &str = "Note:";
 pub const LEVEL_WARN: &str = "Warning:";
 pub const LEVEL_BAD: &str = "Problem:";
+
+// `idiff run`. Progress goes to stderr; the receipt is the only thing on stdout.
+pub const FIRST_RUN: &str = "Open {app} once, then close it and press Enter. (Type s and Enter to skip.)";
+/// Who `FIRST_RUN` asks to open when nothing names the app yet.
+pub const THE_APP: &str = "the app";
+pub const SESSION_UNFINISHED: &str = "This session didn't finish.";
+pub const RUN_BEFORE: &str = "Reading this PC before the install...";
+pub const RUN_STARTING: &str = "Running: {command}";
+pub const RUN_SETTLING: &str = "Waiting {n} seconds for the app to settle...";
+pub const RUN_AFTER: &str = "Reading this PC again...";
+pub const RUN_TIMED_OUT: &str = "The install command was still running after {n} minutes";

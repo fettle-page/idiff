@@ -70,6 +70,8 @@ fn a_failed_source_is_noted_not_empty() {
     let d = diff(&b, &a);
     assert!(d.sources.is_empty());
     assert_eq!(d.notes[&SourceKind::Services], "access denied");
+    // Not read at all is not the same as read in part.
+    assert!(d.partial.is_empty());
 }
 
 #[test]
@@ -99,6 +101,7 @@ fn a_partial_source_keeps_its_changes_and_its_note() {
     let d = diff(&b, &a);
     assert_eq!(d.sources[&SourceKind::Services].len(), 1);
     assert_eq!(d.notes[&SourceKind::Services], "not elevated");
+    assert!(d.partial.contains(&SourceKind::Services));
 }
 
 #[test]

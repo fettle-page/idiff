@@ -9,7 +9,7 @@ use idiff_core::noise::NoiseList;
 use idiff_core::render::{TextOptions, html, markdown, md_escape, text};
 use idiff_core::subject::find_subject;
 use idiff_core::verdict::{Level, Line, Receipt, install_receipt};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
 fn discord() -> Receipt {
@@ -18,7 +18,14 @@ fn discord() -> Receipt {
     let d = diff(&before, &after);
     let subject = find_subject(&d, None, &[]);
     let attributed = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
-    install_receipt(&subject, &attributed, &BTreeMap::new(), Some(0), &after.env)
+    install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &after.env,
+    )
 }
 
 /// Compares with a golden file, or rewrites it with `UPDATE_GOLDEN=1`. The version is a

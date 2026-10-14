@@ -36,7 +36,8 @@ pub struct Subject {
 }
 
 impl Subject {
-    fn is_known(&self) -> bool {
+    /// False for `copy::UNKNOWN_APP`: nothing said which app this was.
+    pub fn is_known(&self) -> bool {
         !self.name.is_empty() && self.name != copy::UNKNOWN_APP
     }
 
