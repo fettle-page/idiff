@@ -10,3 +10,5 @@
 source = "Folders"
 key = '^[a-z]:\\users\\[^\\]+\\appdata\\(local|roaming)\\mozilla$'
 note = "GitHub runner: preinstalled Firefox"
+# Mozilla's own apps (Thunderbird) can create the same folders: those stay theirs.
+unless_publisher = "Mozilla"

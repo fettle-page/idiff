@@ -53,3 +53,17 @@ fn nothing_else_is() {
     };
     assert_eq!(noise.matches(SourceKind::Tasks, &task, &subject), None);
 }
+
+#[test]
+fn mozilla_apps_keep_their_own_folders() {
+    let thunderbird = Subject {
+        name: "Thunderbird".into(),
+        publisher: Some("Mozilla".into()),
+        ..Default::default()
+    };
+    let key = r"c:\users\runneradmin\appdata\local\mozilla";
+    assert_eq!(
+        runner_noise().matches(SourceKind::Folders, &folder(key), &thunderbird),
+        None
+    );
+}
