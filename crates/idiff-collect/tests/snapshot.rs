@@ -64,3 +64,10 @@ fn real_snapshot_has_packaged_apps() {
     let packaged = read_one(SourceKind::Packaged);
     assert!(packaged.ok, "{:?}", packaged.error);
 }
+
+#[test]
+fn real_snapshot_has_root_certificates() {
+    let certs = read_one(SourceKind::Certs);
+    assert!(certs.ok, "{:?}", certs.error);
+    assert!(!certs.items.is_empty());
+}

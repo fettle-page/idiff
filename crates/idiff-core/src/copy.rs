@@ -11,6 +11,8 @@ pub const NO_SUCH_SESSION: &str = "There's no session with that id. See them wit
 pub const CANT_READ_FILE: &str = "Couldn't read";
 pub const NO_CHANGES: &str = "No changes";
 pub const NOT_BUILT_YET: &str = "not built yet";
+/// Why a source that only administrators can read wasn't read, as in "Couldn't check {source}: …".
+pub const NEEDS_ADMIN: &str = "needs administrator";
 
 pub const SOURCE_PROGRAMS: &str = "installed programs";
 pub const SOURCE_SERVICES: &str = "services";

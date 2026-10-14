@@ -19,6 +19,7 @@ windows = { workspace = true, features = [
     "Management_Deployment",
     "Win32_Foundation",
     "Win32_Security",
+    "Win32_Security_Cryptography",
     "Win32_Storage_FileSystem",
     "Win32_System_Com",
     "Win32_System_Threading",
