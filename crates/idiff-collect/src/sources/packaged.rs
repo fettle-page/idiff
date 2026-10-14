@@ -22,22 +22,40 @@ pub fn manifest_extensions(xml: &str) -> Vec<&'static str> {
     .collect()
 }
 
+/// Errors from the package manager's COM server that mean it was busy or restarting (an install
+/// still finishing, say), not that the list can't be read: CO_E_SERVER_STOPPING and
+/// RPC_E_DISCONNECTED. Worth one more try.
+pub fn is_retryable(hresult: i32) -> bool {
+    matches!(hresult as u32, 0x8008_0008 | 0x8001_0108)
+}
+
+/// The user's packages. A busy package manager is asked once more after 2 seconds; if it
+/// fails again, its error is kept.
 #[cfg(windows)]
 pub fn read() -> Result<crate::SourceOutput, String> {
+    // WinRT needs the thread in the multithreaded apartment for the whole read (see com.rs).
+    let _com = crate::com::Com::mta();
+    match read_once() {
+        Err(e) if is_retryable(e.code().0) => {
+            std::thread::sleep(std::time::Duration::from_secs(2));
+            read_once().map_err(|e| e.to_string())
+        }
+        result => result.map_err(|e| e.to_string()),
+    }
+}
+
+#[cfg(windows)]
+fn read_once() -> windows::core::Result<crate::SourceOutput> {
     use idiff_core::command::normalize_path;
     use idiff_core::model::Item;
     use std::collections::BTreeMap;
     use windows::Management::Deployment::PackageManager;
     use windows::core::HSTRING;
 
-    // WinRT needs the thread in the multithreaded apartment for the whole read (see com.rs).
-    let _com = crate::com::Com::mta();
     let text = |s: windows::core::Result<HSTRING>| s.ok().map(|s| s.to_string()).filter(|s| !s.trim().is_empty());
-    let manager = PackageManager::new().map_err(|e| e.to_string())?;
+    let manager = PackageManager::new()?;
     // An empty user SID means the current user.
-    let packages = manager
-        .FindPackagesByUserSecurityId(&HSTRING::new())
-        .map_err(|e| e.to_string())?;
+    let packages = manager.FindPackagesByUserSecurityId(&HSTRING::new())?;
 
     // A family can have one package per architecture (frameworks): keep the first by full name.
     let mut by_family: BTreeMap<String, (String, Item)> = BTreeMap::new();
@@ -86,6 +104,17 @@ pub fn read() -> Result<crate::SourceOutput, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_busy_package_manager_is_asked_again() {
+        // CO_E_SERVER_STOPPING and RPC_E_DISCONNECTED: the COM server was busy or restarting.
+        assert!(is_retryable(0x8008_0008_u32 as i32));
+        assert!(is_retryable(0x8001_0108_u32 as i32));
+        // Anything else (access denied, not found, class not registered) won't change on a retry.
+        for code in [0x8007_0005_u32, 0x8007_0002, 0x8004_0154, 0] {
+            assert!(!is_retryable(code as i32), "{code:#x}");
+        }
+    }
 
     #[test]
     fn manifest_startup_task_is_found() {

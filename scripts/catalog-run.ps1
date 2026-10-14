@@ -105,6 +105,11 @@ function Get-InstalledVersion {
 
 try {
     Save-Meta
+    # What the runner image changes by itself (its preinstalled Firefox) is hidden, and counted,
+    # in these receipts only: idiff reads a noise.local.toml from its home.
+    New-Item -ItemType Directory -Force -Path $env:IDIFF_HOME | Out-Null
+    Copy-Item -Path (Join-Path $PSScriptRoot '..\catalog\runner-noise.toml') `
+        -Destination (Join-Path $env:IDIFF_HOME 'noise.local.toml') -ErrorAction Stop
     $meta.idiff_version = ((& $Idiff --version) -split ' ')[-1]
 
     # 1. Install.

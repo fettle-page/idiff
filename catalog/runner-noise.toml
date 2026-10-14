@@ -1,0 +1,12 @@
+# Changes GitHub's windows-2025 runner image makes by itself during a catalog run, which aren't
+# the app's and aren't Windows' either. scripts/catalog-run.ps1 copies this file to each job's
+# idiff home as noise.local.toml, so they're hidden (and counted) only in catalog receipts.
+#
+# Not in the built-in list: on a user's PC these are real data and must stay visible.
+# Same format as crates/idiff-core/noise.toml; crates/idiff-core/tests/runner_noise.rs loads it.
+
+# The image has Firefox preinstalled; its background agent creates these during runs.
+[[rule]]
+source = "Folders"
+key = '^[a-z]:\\users\\[^\\]+\\appdata\\(local|roaming)\\mozilla$'
+note = "GitHub runner: preinstalled Firefox"
