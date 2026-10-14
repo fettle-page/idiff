@@ -600,3 +600,35 @@ fn leftovers_in_a_partly_read_source_are_not_claimed_gone() {
     assert!(!texts(&r).contains(&(Level::Good, "Nothing left behind")));
     assert_eq!(r.title, "Discord 1.0.9170: after uninstall, no leftovers found");
 }
+
+#[test]
+fn the_hidden_count_has_two_hints() {
+    use idiff_core::verdict::hidden_count_text;
+    assert_eq!(
+        hidden_count_text(1, false),
+        "1 Windows background change hidden (idiff show --all)"
+    );
+    assert_eq!(
+        hidden_count_text(3, false),
+        "3 Windows background changes hidden (idiff show --all)"
+    );
+    assert_eq!(
+        hidden_count_text(1, true),
+        "1 Windows background change hidden (listed below)"
+    );
+    assert_eq!(
+        hidden_count_text(3, true),
+        "3 Windows background changes hidden (listed below)"
+    );
+    // The receipt's own line is the `show --all` one.
+    let (_, after, subject, attributed) = discord();
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &after.env,
+    );
+    assert!(r.lines.iter().any(|l| l.text == hidden_count_text(3, false)));
+}
