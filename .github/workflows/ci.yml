@@ -2,7 +2,10 @@
 name: CI
 
 on:
+  # Branches only: a version tag's commit has already been tested on its branch, and the
+  # release workflow runs the tests again. The catalog's receipts branches hold only pages.
   push:
+    branches: ["**", "!receipts/**"]
   pull_request:
 
 permissions:
