@@ -86,3 +86,11 @@ fn paths_are_normalized() {
         assert_eq!(normalize_path(input, &env), want, "{input}");
     }
 }
+
+#[test]
+fn windir_means_system_root() {
+    assert_eq!(
+        extract_exe(r"%windir%\system32\SecurityHealthSystray.exe", &env_fixture()).as_deref(),
+        Some(r"c:\windows\system32\securityhealthsystray.exe")
+    );
+}
