@@ -99,21 +99,32 @@ pub fn md_escape(s: &str) -> String {
 }
 
 pub fn markdown(r: &Receipt, all: bool) -> String {
+    markdown_receipts(&[r], all)
+}
+
+/// Several receipts in one Markdown file (an install, then its leftovers), with one footer.
+pub fn markdown_receipts(receipts: &[&Receipt], all: bool) -> String {
     let list = |lines: &[Line]| -> String {
         lines
             .iter()
             .map(|l| format!("- {} {}\n", icon(l.level), md_escape(&l.text)))
             .collect()
     };
-    let mut out = format!("## {}\n\n{}", md_escape(&r.title), list(&r.lines));
-    let mut section = |heading: &str, lines: &[Line]| {
-        if !lines.is_empty() {
-            out.push_str(&format!("\n### {}\n\n{}", md_escape(heading), list(lines)));
+    let mut out = String::new();
+    for (i, r) in receipts.iter().enumerate() {
+        if i > 0 {
+            out.push('\n');
         }
-    };
-    section(copy::ALSO_CHANGED, &r.unknown);
-    if all {
-        section(copy::HIDDEN_HEADING, &r.hidden);
+        out.push_str(&format!("## {}\n\n{}", md_escape(&r.title), list(&r.lines)));
+        let mut section = |heading: &str, lines: &[Line]| {
+            if !lines.is_empty() {
+                out.push_str(&format!("\n### {}\n\n{}", md_escape(heading), list(lines)));
+            }
+        };
+        section(copy::ALSO_CHANGED, &r.unknown);
+        if all {
+            section(copy::HIDDEN_HEADING, &r.hidden);
+        }
     }
     out.push_str(&format!("\n---\n\n{}\n", md_escape(&footer())));
     out
@@ -169,6 +180,11 @@ footer { color: var(--soft); font-size: 0.85em; text-align: center; }
 ";
 
 pub fn html(r: &Receipt) -> String {
+    html_receipts(&[r])
+}
+
+/// Several receipts in one HTML file (an install, then its leftovers), titled after the first.
+pub fn html_receipts(receipts: &[&Receipt]) -> String {
     let list = |lines: &[Line]| -> String {
         let rows: String = lines
             .iter()
@@ -190,18 +206,25 @@ pub fn html(r: &Receipt) -> String {
             .collect();
         format!("<ul>\n{rows}</ul>\n")
     };
-    let mut body = format!("<h1>{}</h1>\n<hr>\n{}", html_escape(&r.title), list(&r.lines));
-    for (heading, lines) in [(copy::ALSO_CHANGED, &r.unknown), (copy::HIDDEN_HEADING, &r.hidden)] {
-        if !lines.is_empty() {
-            body.push_str(&format!("<h2>{}</h2>\n{}", html_escape(heading), list(lines)));
+    let mut body = String::new();
+    for (i, r) in receipts.iter().enumerate() {
+        if i > 0 {
+            body.push_str("<hr>\n");
+        }
+        body.push_str(&format!("<h1>{}</h1>\n<hr>\n{}", html_escape(&r.title), list(&r.lines)));
+        for (heading, lines) in [(copy::ALSO_CHANGED, &r.unknown), (copy::HIDDEN_HEADING, &r.hidden)] {
+            if !lines.is_empty() {
+                body.push_str(&format!("<h2>{}</h2>\n{}", html_escape(heading), list(lines)));
+            }
         }
     }
+    let title = receipts.first().map(|r| r.title.as_str()).unwrap_or_default();
     format!(
         "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n\
          <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\
          <title>{title}</title>\n<style>{CSS}</style>\n</head>\n<body>\n<main>\n{body}<hr>\n\
          <footer>{footer}</footer>\n</main>\n</body>\n</html>\n",
-        title = html_escape(&r.title),
+        title = html_escape(title),
         footer = html_escape(&footer()),
     )
 }
