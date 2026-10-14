@@ -8,6 +8,8 @@ mod elevation;
 #[cfg(windows)]
 pub mod reg;
 pub mod runner;
+#[cfg(windows)]
+pub mod shortcut;
 pub mod sources;
 
 pub use runner::{Raw, Source, SourceResult, run_all, run_all_with};

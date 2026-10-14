@@ -37,8 +37,13 @@ fn read_one(kind: SourceKind) -> idiff_core::model::SourceSnap {
 }
 
 #[test]
-fn real_snapshot_has_startup_path_and_shell_extensions() {
-    for kind in [SourceKind::Startup, SourceKind::Path, SourceKind::ShellExt] {
+fn real_snapshot_has_startup_path_shell_extensions_and_folders() {
+    for kind in [
+        SourceKind::Startup,
+        SourceKind::Path,
+        SourceKind::ShellExt,
+        SourceKind::Folders,
+    ] {
         let snap = read_one(kind);
         assert!(snap.ok, "{kind:?}: {:?}", snap.error);
         assert!(!snap.items.is_empty(), "{kind:?} has no items");

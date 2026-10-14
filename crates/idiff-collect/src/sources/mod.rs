@@ -2,6 +2,7 @@
 //! `pub fn read() -> Result<SourceOutput, String>` that does the reading.
 
 pub mod firewall;
+pub mod folders;
 pub mod network;
 pub mod path;
 pub mod programs;
@@ -23,6 +24,7 @@ pub fn source(kind: SourceKind) -> crate::runner::Source {
         SourceKind::ShellExt => shellext::read,
         SourceKind::Firewall => firewall::read,
         SourceKind::Network => network::read,
+        SourceKind::Folders => folders::read,
         _ => || Err("not built yet".into()),
     };
     Box::new(move || read().and_then(|out| serde_json::to_value(out).map_err(|e| e.to_string())))

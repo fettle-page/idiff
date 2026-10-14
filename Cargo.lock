@@ -162,6 +162,7 @@ dependencies = [
  "idiff-core",
  "serde",
  "serde_json",
+ "tempfile",
  "windows",
  "winreg",
 ]
