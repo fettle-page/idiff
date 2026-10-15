@@ -1,7 +1,7 @@
 # Builds the download: target\package\idiff-<version>-x64.zip (idiff.exe, LICENSE, README.md)
 # and SHA256SUMS.txt beside it.
 #
-#   pwsh -File scripts\package.ps1 -Version 0.9.0
+#   pwsh -File scripts\package.ps1 -Version 1.0.0
 param([Parameter(Mandatory)][ValidatePattern('^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$')][string]$Version)
 $ErrorActionPreference = 'Stop'
 

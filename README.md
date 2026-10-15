@@ -25,9 +25,18 @@ Installers can do far more than copy files: add background services with full sy
 
 Windows 10 and 11, 64-bit. Free and open source (MIT).
 
+Want to see results first? [`receipts/FINDINGS.md`](receipts/FINDINGS.md) has the numbers from receipts for popular apps.
+
 ## Install
 
-Download `idiff-<version>-x64.zip` from [Releases](../../releases), unzip it, and put `idiff.exe` somewhere on your PATH. Check the download against `SHA256SUMS.txt` and its [build attestation](https://docs.github.com/actions/security-for-github-actions/using-artifact-attestations). The program isn't code-signed yet, so Windows SmartScreen may warn the first time.
+Download `idiff-<version>-x64.zip` from the [latest release](../../releases/latest), then check it before you unzip it:
+
+- Compare its SHA-256 hash with the one in `SHA256SUMS.txt` from the same release: `(Get-FileHash idiff-<version>-x64.zip).Hash`
+- Check the [build attestation](https://docs.github.com/actions/security-for-github-actions/using-artifact-attestations), which shows the zip was built from this repo's source by its release workflow: `gh attestation verify <zip> -R fettle-page/idiff`
+
+Then unzip it and put `idiff.exe` somewhere on your PATH.
+
+Downloads are not signed yet. Windows SmartScreen may warn the first time you run it.
 
 OpenImageIO also has a command called `idiff` (an image comparison tool). If you have both, run this one by its full path.
 
@@ -88,7 +97,17 @@ Nothing leaves your PC. Sessions are stored in `%LOCALAPPDATA%\idiff`. `export` 
 
 ## Receipts Library
 
-Receipts for popular apps, made automatically on fresh test machines: coming with 1.0.
+Receipts for popular apps. Each app is installed on its own fresh GitHub Windows Server 2025 runner by the Catalog workflow with `winget install --silent`, then uninstalled with `winget uninstall --silent`. idiff writes a receipt for each step. The app itself is never started, so changes it makes on first run aren't included.
+
+- The pages are in [`receipts/`](receipts/). Each one says which runner image, idiff version, app version and date it came from, and links to the workflow run.
+- [`receipts/README.md`](receipts/README.md) is the overview, with one line per app.
+- [`receipts/FINDINGS.md`](receipts/FINDINGS.md) has the numbers across all of them.
+
+Known limits:
+
+- The receipts come from Windows Server 2025 runners, not from a Windows 10 or 11 PC, so a desktop PC may show different background changes.
+- The uninstall check only finishes on a test machine for apps that have a truly silent uninstall. For the others, the page says the uninstall didn't finish and shows no leftovers. That doesn't mean nothing was left behind.
+- An app is installed once, silently, with its default options. Your choices in the installer can change the result.
 
 ## About
 
