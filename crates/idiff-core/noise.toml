@@ -67,13 +67,17 @@ note = "a Windows firewall rule"
 [[rule]]
 source = "Firewall"
 props = { pfn = '_(8wekyb3d8bbwe|cw5n1h2txyewy)$' }
+# PowerToys' own Store package has one too.
+unless_publisher = "Microsoft"
 note = "a Microsoft Store app's firewall rule"
 
 # ---------- Store apps ----------
 
 [[rule]]
 source = "Packaged"
-props = { publisher = '\bo=microsoft corporation\b' }
+# The publisher is the package's display name ("Microsoft Corporation"), or its certificate name
+# when it has no display name.
+props = { publisher = '^microsoft corporation$|\bo=microsoft corporation\b' }
 only_changed = ["version", "target"]
 note = "a Microsoft Store app updated itself"
 

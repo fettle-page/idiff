@@ -1132,3 +1132,146 @@ fn a_noise_package_is_never_the_subject() {
     );
     assert_eq!(receipt.title, "AnyDesk: installed");
 }
+
+/// Catalog run 38772924882. The collector writes a Store package's publisher as its display name
+/// ("Microsoft Corporation"), not the certificate's `O=` form, so the Store-update noise rule must
+/// know that form too: GitHub Desktop's install showed "Windows Security" updating as "couldn't tell".
+#[test]
+fn a_microsoft_store_app_updating_itself_is_windows_by_its_display_name_too() {
+    let subject = Subject {
+        name: "GitHub Desktop".into(),
+        publisher: Some("GitHub, Inc.".into()),
+        ..Default::default()
+    };
+    let security = |version: &str| {
+        item(
+            "microsoft.sechealthui_8wekyb3d8bbwe",
+            Some(&format!(
+                r"c:\program files\windowsapps\microsoft.sechealthui_{version}_x64__8wekyb3d8bbwe"
+            )),
+            &[("version", version), ("publisher", "Microsoft Corporation")],
+        )
+    };
+    let d = Delta {
+        sources: BTreeMap::from([(
+            SourceKind::Packaged,
+            vec![Change::Modified {
+                before: security("1000.26100.33438.0"),
+                after: security("1000.26100.33500.0"),
+                fields: vec!["target".into(), "version".into()],
+            }],
+        )]),
+        ..Default::default()
+    };
+    let r = attribute(&d, &subject, &NoiseList::builtin(), &BTreeMap::new());
+    assert_eq!(r[0].owner, Owner::Windows, "{r:#?}");
+}
+
+/// PowerToys' own Store package (a Microsoft publisher, like the Store apps the noise rule is
+/// for) has a firewall rule. Hiding every rule of a Microsoft package hid the app's own.
+#[test]
+fn a_microsoft_apps_own_store_firewall_rule_is_not_hidden_as_noise() {
+    let rule = item(
+        "microsoft.powertoys.sparseapp_8wekyb3d8bbwe-out-allow-allcapabilities",
+        None,
+        &[("pfn", "microsoft.powertoys.sparseapp_8wekyb3d8bbwe")],
+    );
+    let d = added(SourceKind::Firewall, vec![rule]);
+    let powertoys = Subject {
+        name: "PowerToys".into(),
+        publisher: Some("Microsoft Corporation".into()),
+        ..Default::default()
+    };
+    let other = Subject {
+        name: "Discord".into(),
+        publisher: Some("Discord Inc.".into()),
+        ..Default::default()
+    };
+    let noise = NoiseList::builtin();
+    let env = BTreeMap::new();
+    assert_eq!(attribute(&d, &powertoys, &noise, &env)[0].owner, Owner::App);
+    assert_eq!(attribute(&d, &other, &noise, &env)[0].owner, Owner::Windows);
+}
+
+/// A service that was already there and changed (BITS, PcaSvc: Windows touches them during any
+/// install) is Windows' even when the app is Microsoft's: signed by Microsoft proves nothing then.
+/// PowerToys and VS Code showed "Changes service PcaSvc" as their own.
+#[test]
+fn a_changed_windows_service_is_windows_even_for_a_microsoft_app() {
+    let svchost = |start: &str| {
+        item(
+            "pcasvc",
+            Some(r"c:\windows\system32\svchost.exe"),
+            &[("start", start), ("signer", "Microsoft Windows")],
+        )
+    };
+    let vs_code = Subject {
+        name: "Visual Studio Code".into(),
+        publisher: Some("Microsoft Corporation".into()),
+        install_dirs: vec![r"c:\users\a\appdata\local\programs\microsoft vs code".into()],
+        ..Default::default()
+    };
+    let env = BTreeMap::from([("SystemRoot".to_string(), r"C:\Windows".to_string())]);
+    let noise = NoiseList::builtin();
+    let modified = Change::Modified {
+        before: svchost("3"),
+        after: svchost("2"),
+        fields: vec!["start".into()],
+    };
+    for change in [modified, Change::Removed(svchost("3"))] {
+        let d = Delta {
+            sources: BTreeMap::from([(SourceKind::Services, vec![change])]),
+            ..Default::default()
+        };
+        let r = attribute(&d, &vs_code, &noise, &env);
+        assert_eq!(r[0].reason, Reason::WindowsComponent, "{r:#?}");
+    }
+    // Its own new service, in its own folder, is still the app's.
+    let own = item(
+        "codehelper",
+        Some(r"c:\users\a\appdata\local\programs\microsoft vs code\helper.exe"),
+        &[("signer", "Microsoft Corporation")],
+    );
+    let r = attribute(&added(SourceKind::Services, vec![own]), &vs_code, &noise, &env);
+    assert_eq!(r[0].owner, Owner::App);
+    // And a new service from System32 signed by Microsoft isn't Windows' by its path.
+    let new = item(
+        "newsvc",
+        Some(r"c:\windows\system32\svchost.exe"),
+        &[("signer", "Microsoft Corporation")],
+    );
+    let r = attribute(&added(SourceKind::Services, vec![new]), &vs_code, &noise, &env);
+    assert_ne!(r[0].reason, Reason::WindowsComponent, "{r:#?}");
+}
+
+/// Windows Installer bundles (WiX Burn) cache themselves in `AppData\Local\Package Cache`, and
+/// Inno Setup's per-user shared files go to `AppData\Local\Programs\Common`. Both are parents of
+/// many apps' folders, like `Programs`: PowerToys and Greenshot listed them as "couldn't tell".
+#[test]
+fn installer_cache_parents_are_shared_folders() {
+    let powertoys = Subject {
+        name: "PowerToys".into(),
+        publisher: Some("Microsoft Corporation".into()),
+        ..Default::default()
+    };
+    for dir in [
+        r"c:\users\a\appdata\local\package cache",
+        r"c:\programdata\package cache",
+        r"c:\users\a\appdata\local\programs\common",
+    ] {
+        let d = added(SourceKind::Folders, vec![item(dir, None, &[("kind", "folder")])]);
+        let r = attribute(&d, &powertoys, &NoiseList::builtin(), &BTreeMap::new());
+        assert_eq!(r[0].reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()), "{dir}");
+    }
+    // A folder inside one is not shared: this is the bundle's own cache.
+    let d = added(
+        SourceKind::Folders,
+        vec![item(
+            r"c:\users\a\appdata\local\package cache\{guid}",
+            None,
+            &[("kind", "folder")],
+        )],
+    );
+    let r = attribute(&d, &powertoys, &NoiseList::builtin(), &BTreeMap::new());
+    assert_ne!(r[0].reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()));
+}

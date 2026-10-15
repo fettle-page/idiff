@@ -195,6 +195,17 @@ impl Rules<'_> {
         if target.is_some_and(|t| self.in_install_dir(t)) {
             return Reason::TargetInInstallDir;
         }
+        // Microsoft signs Windows too, so for a Microsoft app R3 would take Windows' own services
+        // (BITS, PcaSvc) that any install changes. Something that already existed and runs from
+        // the Windows folder is Windows'; R5 decides it for every other publisher, further down.
+        if self.subject_is_microsoft
+            && !matches!(change, Change::Added(_))
+            && target
+                .zip(self.system_root.as_deref())
+                .is_some_and(|(t, root)| is_under(t, root))
+        {
+            return Reason::WindowsComponent;
+        }
         if let (Some(signer), Some(publisher)) = (signer, self.subject.publisher.as_deref())
             && publisher::same(signer, publisher)
         {
