@@ -829,3 +829,81 @@ fn an_empty_leftover_folder_says_so() {
     let r = leftovers_receipt(&subject, &install, &uninstalled, &[], &BTreeMap::from([(key, 1)]));
     assert_eq!(texts(&r), [(Level::Bad, r"1 KB in AppData\Local\Discord")]);
 }
+
+/// Catalog run 38772924882: NordVPN's uninstall left only the .NET it brought along, and its page
+/// said "5 leftovers". Microsoft's runtimes that came with an app and stay are one Note.
+#[test]
+fn microsoft_runtimes_left_installed_are_a_note_not_a_leftover() {
+    let program = |key: &str, label: &str, publisher: &str| {
+        app_added(
+            SourceKind::Programs,
+            item(key, label, None, &[("publisher", publisher)]),
+        )
+    };
+    let install = vec![
+        program(r"hklm\native\app", "NordVPN", "Nord Security"),
+        program(
+            r"hklm\native\a",
+            "Microsoft .NET Runtime - 8.0.32 (x64)",
+            "Microsoft Corporation",
+        ),
+        program(
+            r"hklm\native\b",
+            "Microsoft .NET Host - 8.0.32 (x64)",
+            "Microsoft Corporation",
+        ),
+        program(r"hklm\native\c", "NordUpdater", "Nord Security"),
+    ];
+    let mut uninstalled = Snapshot::load(include_str!("fixtures/discord-before.json")).unwrap();
+    let programs = uninstalled.sources.get_mut(&SourceKind::Programs).unwrap();
+    for a in install.iter().skip(1) {
+        programs.items.push(a.change.item().clone());
+    }
+    let subject = Subject {
+        name: "NordVPN".into(),
+        publisher: Some("Nord Security".into()),
+        own_entry: Some(r"hklm\native\app".into()),
+        ..Default::default()
+    };
+    let r = leftovers_receipt(&subject, &install, &uninstalled, &[], &BTreeMap::new());
+    // A non-Microsoft extra entry stays a leftover; the runtimes don't count.
+    assert_eq!(r.title, "NordVPN: after uninstall, 1 leftover");
+    assert_eq!(
+        texts(&r),
+        [
+            (Level::Bad, r#"Program "NordUpdater" is still there"#),
+            (
+                Level::Note,
+                "Left installed: Microsoft .NET Runtime - 8.0.32 (x64), Microsoft .NET Host - 8.0.32 (x64). \
+                 They came with the app, and other apps may use them."
+            ),
+        ]
+    );
+    assert_eq!(r.lines[1].items, [r"hklm\native\a", r"hklm\native\b"]);
+
+    // One runtime reads in the singular; with nothing else left, it is "no leftovers".
+    let one = vec![install[0].clone(), install[1].clone()];
+    let mut only_one = Snapshot::load(include_str!("fixtures/discord-before.json")).unwrap();
+    only_one
+        .sources
+        .get_mut(&SourceKind::Programs)
+        .unwrap()
+        .items
+        .push(install[1].change.item().clone());
+    let r = leftovers_receipt(&subject, &one, &only_one, &[], &BTreeMap::new());
+    assert_eq!(r.title, "NordVPN: after uninstall, no leftovers");
+    assert!(texts(&r).contains(&(
+        Level::Note,
+        "Left installed: Microsoft .NET Runtime - 8.0.32 (x64). It came with the app, and other apps may use it."
+    )));
+
+    // The app's own entry is a leftover even from Microsoft, and so is anything of a Microsoft app.
+    let microsoft = Subject {
+        name: "PowerToys".into(),
+        publisher: Some("Microsoft Corporation".into()),
+        own_entry: Some(r"hklm\native\app".into()),
+        ..Default::default()
+    };
+    let r = leftovers_receipt(&microsoft, &one, &only_one, &[], &BTreeMap::new());
+    assert_eq!(r.title, "PowerToys: after uninstall, 1 leftover");
+}

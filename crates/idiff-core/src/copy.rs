@@ -143,6 +143,10 @@ pub const SAME_NAME_RULES: &str = " ({n} rules)";
 pub const SAME_NAME_ITEMS: &str = " ({n} items)";
 pub const UNINSTALLER_ADDED: &str = "The uninstaller added {kind} \"{label}\"";
 pub const NOTHING_LEFT: &str = "Nothing left behind";
+/// A Microsoft runtime the install brought along (.NET, Visual C++) that the uninstall kept: not
+/// a leftover, since other apps may use it. `{names}` are its programs.
+pub const LEFT_INSTALLED_ONE: &str = "Left installed: {names}. It came with the app, and other apps may use it.";
+pub const LEFT_INSTALLED_MANY: &str = "Left installed: {names}. They came with the app, and other apps may use them.";
 
 // Scheduled task summaries: what it runs, then when.
 pub const RUNS_UPDATER: &str = "runs an updater";

@@ -4,6 +4,7 @@ use crate::attribute::{Attributed, Owner, Reason};
 use crate::copy;
 use crate::diff::Change;
 use crate::model::{Env, Item, Snapshot, SourceKind};
+use crate::publisher;
 use crate::subject::Subject;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -592,6 +593,9 @@ pub fn leftovers_receipt(
     // Sources the leftovers couldn't be fully checked in: (reason, read in part).
     let mut unchecked: BTreeMap<SourceKind, (String, bool)> = BTreeMap::new();
     let mut left = 0;
+    // Microsoft runtimes that came with the app and stayed: (label, key, why).
+    let mut runtimes: Vec<(String, String, String)> = Vec::new();
+    let subject_is_microsoft = subject.publisher.as_deref().is_some_and(publisher::is_microsoft);
     // Where a line for this kind and text is, and how many items it stands for.
     let mut same_name: BTreeMap<(SourceKind, String), (usize, usize)> = BTreeMap::new();
     for a in install
@@ -618,6 +622,20 @@ pub fn leftovers_receipt(
             }
         };
         if !present {
+            continue;
+        }
+        // A runtime from Microsoft that the install brought along isn't the app's to remove: the
+        // uninstaller leaves it for the other apps that may use it. The app's own entry is.
+        if a.kind == SourceKind::Programs
+            && !subject_is_microsoft
+            && subject.own_entry.as_deref() != Some(item.key.as_str())
+            && prop(item, "publisher").is_some_and(publisher::is_microsoft)
+        {
+            runtimes.push((
+                display_label(a.kind, item).to_string(),
+                item.key.clone(),
+                a.reason.text(),
+            ));
             continue;
         }
         left += 1;
@@ -690,6 +708,21 @@ pub fn leftovers_receipt(
     }
     for (kind, (reason, partial)) in &unchecked {
         lines.push(check_line(*kind, reason, *partial));
+    }
+    if !runtimes.is_empty() {
+        let names = unique_join(runtimes.iter().map(|(label, ..)| label.clone()), ", ");
+        let distinct = runtimes.iter().map(|(label, ..)| label).collect::<BTreeSet<_>>().len();
+        let template = if distinct == 1 {
+            copy::LEFT_INSTALLED_ONE
+        } else {
+            copy::LEFT_INSTALLED_MANY
+        };
+        lines.push(Line {
+            level: Level::Note,
+            text: fill(template, &[("names", &names)]),
+            items: runtimes.iter().map(|(_, key, _)| key.clone()).collect(),
+            why: runtimes.iter().map(|(.., why)| why.clone()).collect(),
+        });
     }
 
     let name = name_and_version(subject);
