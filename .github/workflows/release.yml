@@ -1,4 +1,4 @@
-# A version tag (v0.9.0) builds the download here, in the open, from that tag's source: the zip and
+# A version tag (v1.0.0) builds the download here, in the open, from that tag's source: the zip and
 # SHA256SUMS.txt, with a build attestation. It makes a draft release; a maintainer reads it and
 # publishes it.
 #

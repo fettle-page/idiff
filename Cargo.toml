@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/idiff-core", "crates/idiff-collect", "apps/idiff", "tools/library"]
 
 [workspace.package]
-version = "0.9.1"
+version = "1.0.0"
 edition = "2024"
 license = "MIT"
 publish = false
