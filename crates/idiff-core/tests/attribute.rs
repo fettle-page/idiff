@@ -359,7 +359,8 @@ fn signer_rules_use_the_publisher() {
     );
     let r = attribute(&d, &subject, &NoiseList::parse("").unwrap(), &env);
     assert_eq!(find(&r, "zoomsvc").reason, Reason::SignerMatchesPublisher);
-    assert_eq!(find(&r, "mssvc").reason, Reason::WindowsComponent);
+    // A new service isn't Windows' for its signature alone: installers bring Microsoft's (catalog).
+    assert_eq!(find(&r, "mssvc").reason, Reason::Unattributed);
     // Something new in the Windows folder isn't Windows' without Windows' signature (kill test).
     assert_eq!(find(&r, "winsvc").reason, Reason::Unattributed);
 
@@ -527,10 +528,12 @@ mod kill_test {
 
     #[test]
     fn an_added_item_signed_as_windows_is_windows() {
+        // Only for the kinds of new item installers don't bring Microsoft's own of (see
+        // added_microsoft_signed_services_and_drivers_are_not_hidden).
         let dropbox = subject("Dropbox", "Dropbox, Inc.", r"c:\program files (x86)\dropbox\client");
         for signer in ["Microsoft Windows", "microsoft corporation"] {
-            let service = item("wuauserv", Some(r"c:\program files\x\y.exe"), &[("signer", signer)]);
-            let a = one(SourceKind::Services, Change::Added(service), &dropbox);
+            let handler = item("*|handler|x", Some(r"c:\program files\x\y.dll"), &[("signer", signer)]);
+            let a = one(SourceKind::ShellExt, Change::Added(handler), &dropbox);
             assert_eq!(a.reason, Reason::WindowsComponent, "{signer}");
         }
     }
@@ -752,4 +755,53 @@ fn generic_words_take_no_part_in_folder_names() {
     // A short folder name is never a prefix match: "log" is too short to stand for "logitech".
     let dirs = dirs_with_folders("Logitech G HUB", "Logitech", &[r"c:\programdata\log"]);
     assert!(dirs.is_empty(), "{dirs:?}");
+}
+
+/// Installers bring Microsoft's redistributables along: Epic's adds "GameInput Redist Service",
+/// signed by Microsoft. A new service, driver or task isn't Windows' just for its signature.
+#[test]
+fn added_microsoft_signed_services_and_drivers_are_not_hidden() {
+    let epic = Subject {
+        name: "Epic Games Launcher".into(),
+        publisher: Some("Epic Games, Inc.".into()),
+        ..Default::default()
+    };
+    let env = BTreeMap::from([("SystemRoot".to_string(), r"C:\Windows".to_string())]);
+    let one = |kind: SourceKind, signer: &str| {
+        let d = added(
+            kind,
+            vec![item(
+                "gameinputredist",
+                Some(r"c:\program files\microsoft gameinput\gameinputredist.exe"),
+                &[("signer", signer)],
+            )],
+        );
+        attribute(&d, &epic, &NoiseList::parse("").unwrap(), &env).remove(0)
+    };
+    for kind in [
+        SourceKind::Services,
+        SourceKind::Drivers,
+        SourceKind::Tasks,
+        SourceKind::Startup,
+        SourceKind::Certs,
+        SourceKind::Defender,
+        SourceKind::Network,
+    ] {
+        for signer in ["Microsoft Corporation", "Microsoft Windows"] {
+            assert_ne!(one(kind, signer).owner, Owner::Windows, "{kind:?} {signer}");
+        }
+    }
+    // The other kinds of new item can still be Windows' by Windows' own signature.
+    for kind in [
+        SourceKind::Firewall,
+        SourceKind::ShellExt,
+        SourceKind::Path,
+        SourceKind::Packaged,
+    ] {
+        assert_eq!(
+            one(kind, "Microsoft Windows").reason,
+            Reason::WindowsComponent,
+            "{kind:?}"
+        );
+    }
 }

@@ -191,7 +191,10 @@ impl Rules<'_> {
 /// R5. A change to something that already existed is Windows' if it runs from the Windows folder
 /// or is signed as Windows. Something new needs Windows' own signature: apps put drivers and
 /// services in System32 too (Malwarebytes, Dropbox), and their uninstall shortcuts point at
-/// msiexec, so a new folder or shortcut is never Windows' by this rule.
+/// msiexec, so a new folder or shortcut is never Windows' by this rule. Nor is a new service,
+/// driver, task, startup entry, certificate, exclusion or network setting: installers bring
+/// Microsoft's redistributables with them (Epic's "GameInput Redist Service"), and hiding one of
+/// those would hide what the install did. Windows' own new ones are in the noise list.
 fn is_windows_component(
     kind: SourceKind,
     change: &Change,
@@ -201,7 +204,17 @@ fn is_windows_component(
 ) -> bool {
     let windows_signed = signer.is_some_and(publisher::is_windows_signer);
     match change {
-        Change::Added(_) => kind != SourceKind::Folders && windows_signed,
+        Change::Added(_) => {
+            windows_signed
+                && matches!(
+                    kind,
+                    SourceKind::Firewall
+                        | SourceKind::ShellExt
+                        | SourceKind::Path
+                        | SourceKind::Packaged
+                        | SourceKind::Programs
+                )
+        }
         Change::Modified { .. } | Change::Removed(_) => {
             windows_signed || target.zip(system_root).is_some_and(|(t, root)| is_under(t, root))
         }
