@@ -906,3 +906,55 @@ fn a_new_folder_made_to_hold_the_install_dir_is_the_apps() {
             .any(|d| d == r"c:\users\a\appdata\local\programs")
     );
 }
+
+/// "EA app" names no folder, but its winget id does: ElectronicArts.EADesktop.
+#[test]
+fn winget_id_parts_name_the_apps_folders() {
+    let ea = Item {
+        label: "EA app".into(),
+        ..item(
+            r"hklm\native\{ea}",
+            None,
+            &[("version", "13"), ("publisher", "Electronic Arts")],
+        )
+    };
+    let folder = |key: &str| Change::Added(item(key, None, &[("kind", "folder")]));
+    let d = Delta {
+        sources: BTreeMap::from([
+            (SourceKind::Programs, vec![Change::Added(ea)]),
+            (
+                SourceKind::Folders,
+                vec![
+                    folder(r"c:\users\a\appdata\local\eadesktop"),
+                    folder(r"c:\programdata\ea desktop"),
+                    folder(r"c:\users\a\appdata\local\sentry"),
+                ],
+            ),
+        ]),
+        ..Default::default()
+    };
+    let command: Vec<String> = ["winget", "install", "--id", "ElectronicArts.EADesktop", "--exact"]
+        .iter()
+        .map(|s| s.to_string())
+        .collect();
+    let with_id = find_subject(&d, None, &command).install_dirs;
+    assert!(
+        with_id.iter().any(|d| d == r"c:\users\a\appdata\local\eadesktop"),
+        "{with_id:?}"
+    );
+    assert!(with_id.iter().any(|d| d == r"c:\programdata\ea desktop"), "{with_id:?}");
+    assert!(!with_id.iter().any(|d| d.ends_with("sentry")), "{with_id:?}");
+    // Without the command there's nothing to go on.
+    assert!(find_subject(&d, None, &[]).install_dirs.is_empty());
+    // Generic parts don't count: Microsoft.VisualStudioCode gives "visualstudiocode", not "microsoft".
+    let code = ["winget", "install", "Microsoft.VisualStudioCode"].map(String::from);
+    let d = Delta {
+        sources: BTreeMap::from([(SourceKind::Folders, vec![folder(r"c:\programdata\microsoft corp")])]),
+        ..Default::default()
+    };
+    assert!(
+        find_subject(&d, Some("Visual Studio Code"), &code)
+            .install_dirs
+            .is_empty()
+    );
+}

@@ -166,6 +166,24 @@ fn is_under(path: &str, dir: &str) -> bool {
     path == dir || path.strip_prefix(dir).is_some_and(|rest| rest.starts_with('\\'))
 }
 
+/// Folder tokens from the winget id's parts, for apps whose name says little: "EA app" is
+/// `ElectronicArts.EADesktop`, giving `electronicarts` and `eadesktop`. Same rules as the
+/// name's tokens: letters and digits only, 4+ characters, never a generic word.
+fn winget_id_tokens(command: &[String]) -> Vec<String> {
+    let Some(id) = winget_id(command) else {
+        return Vec::new();
+    };
+    id.split('.')
+        .map(|part| {
+            part.chars()
+                .filter(|c| c.is_alphanumeric())
+                .flat_map(char::to_lowercase)
+                .collect::<String>()
+        })
+        .filter(|part| is_token(part, 4))
+        .collect()
+}
+
 /// A folder's letters-only name `leaf` is the app's when it contains a token (a word of the name
 /// is part of the letters-only form, so this covers both), or when it's at least 4 characters
 /// and starts a token ("logi" for "logitech"). Tokens never include generic words.
@@ -267,7 +285,8 @@ pub fn find_subject(delta: &Delta, app_flag: Option<&str>, command: &[String]) -
     subject.install_dirs.extend(location.clone());
     // A new top-level folder is the app's only if it holds the install location or is named
     // after the app. Windows makes folders during installs too (BranchCache's PeerDistRepub).
-    let tokens = subject.folder_tokens();
+    let mut tokens = subject.folder_tokens();
+    tokens.extend(winget_id_tokens(command));
     for change in changes(SourceKind::Folders) {
         let Change::Added(folder) = change else { continue };
         if folder.props.get("kind").map(String::as_str) == Some("shortcut") || folder.key.ends_with(".lnk") {
