@@ -1,0 +1,56 @@
+# Checks a winget manifest from packaging/winget/ the way winget-pkgs will: validates it, installs
+# idiff from it on a fresh windows-2025 runner, runs the `idiff` alias, then uninstalls it. Run it
+# before submitting a version to microsoft/winget-pkgs (see packaging/winget/README.md).
+#
+#   gh workflow run winget.yml -f version=1.0.0
+name: winget
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version folder under packaging/winget/Fettle.InstallDiff/
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  manifest:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    env:
+      VERSION: ${{ inputs.version }}
+      MANIFEST: packaging/winget/Fettle.InstallDiff/${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate
+        shell: pwsh
+        run: |
+          winget --version
+          winget validate --manifest $env:MANIFEST
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Install from the manifest
+        shell: pwsh
+        run: |
+          winget settings --enable LocalManifestFiles
+          winget install --manifest $env:MANIFEST --accept-package-agreements --accept-source-agreements --disable-interactivity
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Run the idiff alias
+        shell: pwsh
+        run: |
+          $alias = Join-Path $env:LOCALAPPDATA 'Microsoft\WinGet\Links\idiff.exe'
+          if (-not (Test-Path $alias)) { Write-Error "no alias at $alias"; exit 1 }
+          $out = & $alias --version
+          $out
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          if ("$out" -notmatch [regex]::Escape($env:VERSION)) { Write-Error "expected version $env:VERSION"; exit 1 }
+      - name: Uninstall
+        shell: pwsh
+        run: |
+          winget uninstall --manifest $env:MANIFEST --accept-source-agreements --disable-interactivity
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          $alias = Join-Path $env:LOCALAPPDATA 'Microsoft\WinGet\Links\idiff.exe'
+          if (Test-Path $alias) { Write-Error "alias still there after uninstall"; exit 1 }
