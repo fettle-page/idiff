@@ -311,7 +311,10 @@ fn an_unknown_app_claims_nothing_by_name() {
     let d = diff(&before, &after);
     let unknown = find_subject(&Delta::default(), None, &[]);
     let r = attribute(&d, &unknown, &NoiseList::builtin(), &after.env);
-    assert!(!r.iter().any(|a| a.owner == Owner::App), "{r:#?}");
+    // Only the Programs entry, which any install's own entry is (InstalledAlongside).
+    let app: Vec<&Attributed> = r.iter().filter(|a| a.owner == Owner::App).collect();
+    assert!(app.iter().all(|a| a.reason == Reason::InstalledAlongside), "{app:#?}");
+    assert!(!r.iter().any(|a| a.reason == Reason::NameMatches), "{r:#?}");
     assert_eq!(find(&r, "directory|verb|playwithvlc").owner, Owner::Unknown);
 }
 
@@ -804,4 +807,58 @@ fn added_microsoft_signed_services_and_drivers_are_not_hidden() {
             "{kind:?}"
         );
     }
+}
+
+/// EA's installer adds its own Visual C++ runtime entries (system components) next to "EA app".
+#[test]
+fn programs_added_by_the_install_are_its_own() {
+    let entry = |key: &str, label: &str, props: &[(&str, &str)]| Item {
+        label: label.into(),
+        ..item(key, None, props)
+    };
+    let vc = entry(
+        r"hklm\wow6432node\{vc2013}",
+        "Microsoft Visual C++ 2013 x86 Minimum Runtime - 12.0.40664",
+        &[("system_component", "1"), ("publisher", "Microsoft Corporation")],
+    );
+    let firefox_service = |version: &str| {
+        entry(
+            r"hklm\native\mozillamaintenanceservice",
+            "Mozilla Maintenance Service",
+            &[("version", version), ("system_component", "1")],
+        )
+    };
+    let d = Delta {
+        sources: BTreeMap::from([(
+            SourceKind::Programs,
+            vec![
+                Change::Added(entry(
+                    r"hklm\native\{ea-app}",
+                    "EA app",
+                    &[("size_kb", "900000"), ("publisher", "Electronic Arts")],
+                )),
+                Change::Added(vc),
+                // Firefox was on the runner already; its updater service changing isn't EA's.
+                Change::Modified {
+                    before: firefox_service("140.0"),
+                    after: firefox_service("141.0"),
+                    fields: vec!["version".into()],
+                },
+            ],
+        )]),
+        notes: BTreeMap::new(),
+        partial: Default::default(),
+    };
+    let subject = find_subject(&d, None, &[]);
+    assert_eq!(subject.name, "EA app");
+    assert!(
+        subject.also_installed.is_empty(),
+        "system components count but aren't named"
+    );
+    let r = attribute(&d, &subject, &NoiseList::builtin(), &BTreeMap::new());
+    let vc = find(&r, "{vc2013}");
+    assert_eq!((vc.owner, &vc.reason), (Owner::App, &Reason::InstalledAlongside));
+    assert!(Reason::InstalledAlongside.text().contains("added by this install"));
+    assert_eq!(find(&r, "{ea-app}").reason, Reason::SubjectEntry);
+    assert_eq!(find(&r, "mozillamaintenanceservice").owner, Owner::Unknown);
 }

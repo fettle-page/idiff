@@ -39,6 +39,8 @@ pub enum Reason {
     /// After R1–R7: a new folder nothing else placed holds a program already given to the app
     /// by R2–R4.
     HoldsAppProgram,
+    /// A Programs entry the install added next to its own (runtimes it brought along).
+    InstalledAlongside,
 }
 
 impl Reason {
@@ -62,6 +64,7 @@ impl Reason {
             Reason::WindowsComponent => copy::WHY_WINDOWS_COMPONENT.into(),
             Reason::NameMatches => copy::WHY_NAME_MATCHES.into(),
             Reason::HoldsAppProgram => copy::WHY_HOLDS_APP_PROGRAM.into(),
+            Reason::InstalledAlongside => copy::WHY_INSTALLED_ALONGSIDE.into(),
             Reason::Unattributed => copy::WHY_UNATTRIBUTED.into(),
         }
     }
@@ -154,6 +157,11 @@ impl Rules<'_> {
         let item = change.item();
         if matches!(kind, SourceKind::Programs | SourceKind::Packaged) && self.subject.entries.contains(&item.key) {
             return Reason::SubjectEntry;
+        }
+        // Programs entries appear when something is installed, and this install is what ran:
+        // EA's Visual C++ runtimes, NordVPN's .NET. A changed entry can be another app's update.
+        if kind == SourceKind::Programs && matches!(change, Change::Added(_)) {
+            return Reason::InstalledAlongside;
         }
         let target = item.target.as_deref();
         let signer = item.props.get("signer").map(String::as_str);
