@@ -3,6 +3,7 @@
 use crate::copy;
 use crate::diff::{Change, Delta};
 use crate::model::{Item, SourceKind};
+use crate::noise::NoiseList;
 use crate::publisher;
 use serde::{Deserialize, Serialize};
 
@@ -213,9 +214,21 @@ pub(crate) fn is_too_broad(dir: &str) -> bool {
 }
 
 /// Whose install this is (spec order: `--app`, new Programs entries, new Store apps, the winget
-/// id, else unknown), with its install folders.
-pub fn find_subject(delta: &Delta, app_flag: Option<&str>, command: &[String]) -> Subject {
-    let changes = |kind| delta.sources.get(&kind).map(Vec::as_slice).unwrap_or_default();
+/// id, else unknown), with its install folders. Entries the noise list matches are never the
+/// app: winget refreshing its own source package during a failed install once became "the app",
+/// and its Microsoft publisher then made a Windows change the app's.
+pub fn find_subject(delta: &Delta, app_flag: Option<&str>, command: &[String], noise: &NoiseList) -> Subject {
+    let nobody = Subject::default();
+    let changes = |kind| -> Vec<&Change> {
+        delta
+            .sources
+            .get(&kind)
+            .map(Vec::as_slice)
+            .unwrap_or_default()
+            .iter()
+            .filter(|c| noise.matches_change(kind, c, &nobody).is_none())
+            .collect()
+    };
     let visible = |i: &Item| i.props.get("system_component").map(String::as_str) != Some("1");
 
     let mut candidates: Vec<(&Item, Option<String>)> = changes(SourceKind::Programs)

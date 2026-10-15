@@ -157,8 +157,9 @@ fn cmd_snapshot(_output: Option<&Path>, _no_elevate: bool) -> Result<(), String>
 fn cmd_diff(before: &Path, after: &Path, app: Option<&str>, all: bool, why: bool) -> Result<(), String> {
     let (before, after) = (load(before)?, load(after)?);
     let delta = diff(&before, &after);
-    let subject = find_subject(&delta, app, &[]);
-    let attributed = attribute(&delta, &subject, &noise(), &after.env);
+    let noise = noise();
+    let subject = find_subject(&delta, app, &[], &noise);
+    let attributed = attribute(&delta, &subject, &noise, &after.env);
     let mut receipt = install_receipt(&subject, &attributed, &delta.notes, &delta.partial, None, &after.env);
     receipt.lines.push(Line {
         level: Level::Note,
@@ -265,7 +266,7 @@ fn cmd_run(
 
     let mut delta = diff(&before, &after);
     idiff_collect::enrich::enrich(&mut delta);
-    let subject = find_subject(&delta, app, command);
+    let subject = find_subject(&delta, app, command, &noise);
     let attributed = attribute(&delta, &subject, &noise, &after.env);
     let mut receipt = install_receipt(
         &subject,
