@@ -3,23 +3,30 @@
 Shows, in plain words, what an app's installer did to your Windows PC, and what it left behind after you uninstalled it.
 
 ```
-> idiff run -- winget install Discord.Discord
+> idiff run -- winget install --id Discord.Discord --exact --silent
 
-Discord 1.0.9170: installed
-⚠ 1 scheduled task: runs an updater every day
+Discord 1.0.9262: installed
 ⚠ Starts with Windows
 ✓ No services, drivers or firewall rules
-✓ Files only in your user folder (412 MB)
+✓ Files only in your user folder (631 MB)
+· Adds a desktop shortcut
+· Adds a Start menu entry
 · 3 Windows background changes hidden (idiff show --all)
 ```
 
 ```
-> idiff leftovers last -- winget uninstall Discord.Discord
+> idiff leftovers last -- winget uninstall --id Discord.Discord --exact --silent
 
-Discord 1.0.9170: after uninstall, 2 leftovers
-✗ Scheduled task "DiscordUpdate" is still there
-✗ 340 MB in AppData\Local\Discord
+Discord 1.0.9262: after uninstall, 6 leftovers
+✗ 2 MB in AppData\Local\Discord
+✗ 9 KB in AppData\Local\SquirrelTemp
+✗ 38 MB in AppData\Roaming\discord
+✗ Shortcut "Start menu\Discord Inc\Discord.lnk" is still there
+✗ Shortcut "Start menu\Discord.lnk" is still there
+✗ Shortcut "Desktop\Discord.lnk" is still there
 ```
+
+That's real output, from the [Discord receipt](receipts/discord.discord/1.0.9262.md) in the Receipts Library.
 
 Installers can do far more than copy files: add background services with full system rights, schedule daily updaters, start with Windows, install drivers, open the firewall, add right-click menu entries. Windows doesn't tell you, and uninstalling often leaves some of it behind. idiff looks at exactly those places before and after, filters out what Windows changed on its own in the meantime, and prints a receipt.
 
