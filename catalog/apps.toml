@@ -1,4 +1,4 @@
-# The apps the Receipts Library installs on fresh GitHub runners, one # The 30 for the first library: the 26 that installed in the kill test, plus four well-known apps.
+# The apps the Receipts Library installs on fresh GitHub runners, one # The first library: the apps that installed in the kill test, plus four well-known apps.
 [[app]]
 id = "Discord.Discord"
 name = "Discord"
@@ -90,10 +90,6 @@ name = "WinRAR"
 [[app]]
 id = "TeamViewer.TeamViewer"
 name = "TeamViewer"
-
-[[app]]
-id = "AnyDesk.AnyDesk"
-name = "AnyDesk"
 
 [[app]]
 id = "OBSProject.OBSStudio"
@@ -200,3 +196,9 @@ name = "GIMP"
 # [[app]]
 # id = "Notion.Notion"
 # name = "Notion"
+
+# Waiting on winget: its AnyDesk manifest points at an unversioned download whose checksum no
+# longer matches (2026-10-15), and winget refuses that as administrator.
+# [[app]]
+# id = "AnyDesk.AnyDesk"
+# name = "AnyDesk"
