@@ -146,3 +146,46 @@ fn an_unfinished_session_has_no_leftovers_check() {
     let err = leftovers_from_files(&s, &fixture("before"), &NoiseList::builtin(), &|_| 0).unwrap_err();
     assert_eq!(err, copy::SESSION_UNFINISHED);
 }
+
+/// Runtimes an installer brings along (Epic's Microsoft GameInput, NordVPN's .NET) often stay after
+/// the app's own uninstall. That's a leftover, not a sign the uninstall didn't run: only the app's
+/// own entry counts.
+#[test]
+fn a_runtime_left_behind_doesnt_mean_the_app_is_still_installed() {
+    let _home = temp_home();
+    let runtime = Item {
+        key: r"hklm\native\{runtime}".into(),
+        label: "Microsoft .NET Runtime - 8.0.32 (x64)".into(),
+        props: [
+            ("version".to_string(), "8.0.32".to_string()),
+            ("size_kb".to_string(), "1".to_string()),
+        ]
+        .into(),
+        ..Default::default()
+    };
+    let s = session::create("Discord").unwrap();
+    let mut after = fixture("after");
+    after
+        .sources
+        .get_mut(&SourceKind::Programs)
+        .unwrap()
+        .items
+        .push(runtime.clone());
+    s.write_json("before.json", &fixture("before")).unwrap();
+    s.write_json("after.json", &after).unwrap();
+    let mut uninstalled = fixture("before");
+    uninstalled
+        .sources
+        .get_mut(&SourceKind::Programs)
+        .unwrap()
+        .items
+        .push(runtime);
+
+    let result = leftovers_from_files(&s, &uninstalled, &NoiseList::builtin(), &|_| 0).unwrap();
+    assert!(!result.still_listed, "{:?}", texts(&result.receipt));
+    assert!(
+        texts(&result.receipt)
+            .iter()
+            .any(|(level, text)| *level == Level::Bad && text.contains(".NET Runtime"))
+    );
+}

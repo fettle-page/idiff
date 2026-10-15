@@ -68,10 +68,11 @@ pub fn leftovers_from_files(
             .get(&kind)
             .is_some_and(|s| s.ok && s.items.iter().any(|i| i.key == key))
     };
+    // Only the app's own entry: runtimes installed alongside it often stay, and that's a leftover.
     let still_listed = subject
-        .entries
-        .iter()
-        .any(|key| listed(SourceKind::Programs, key) || listed(SourceKind::Packaged, key));
+        .own_entry
+        .as_deref()
+        .is_some_and(|key| listed(SourceKind::Programs, key) || listed(SourceKind::Packaged, key));
     if still_listed {
         receipt.lines.insert(
             0,

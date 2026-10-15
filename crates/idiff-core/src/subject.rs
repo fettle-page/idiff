@@ -34,6 +34,9 @@ pub struct Subject {
     pub also_installed: Vec<String>,
     /// Keys of the Programs or Packaged entries this install added (or upgraded).
     pub entries: Vec<String>,
+    /// The key of the app's own entry among `entries`: the one a real uninstall always removes.
+    /// Runtimes installed alongside it can stay behind without meaning the uninstall didn't run.
+    pub own_entry: Option<String>,
 }
 
 impl Subject {
@@ -283,6 +286,7 @@ pub fn find_subject(delta: &Delta, app_flag: Option<&str>, command: &[String], n
             .and_then(|(i, _)| prop(i, "publisher"))
             .map(|p| publisher::display(&p)),
         entries: candidates.iter().map(|(i, _)| i.key.clone()).collect(),
+        own_entry: primary.map(|(i, _)| i.key.clone()),
         also_installed: candidates
             .iter()
             .filter(|c| Some(*c) != primary)
