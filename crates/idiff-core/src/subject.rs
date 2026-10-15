@@ -3,6 +3,7 @@
 use crate::copy;
 use crate::diff::{Change, Delta};
 use crate::model::{Item, SourceKind};
+use crate::noise::NoiseList;
 use crate::publisher;
 use serde::{Deserialize, Serialize};
 
@@ -166,6 +167,24 @@ fn is_under(path: &str, dir: &str) -> bool {
     path == dir || path.strip_prefix(dir).is_some_and(|rest| rest.starts_with('\\'))
 }
 
+/// Folder tokens from the winget id's parts, for apps whose name says little: "EA app" is
+/// `ElectronicArts.EADesktop`, giving `electronicarts` and `eadesktop`. Same rules as the
+/// name's tokens: letters and digits only, 4+ characters, never a generic word.
+fn winget_id_tokens(command: &[String]) -> Vec<String> {
+    let Some(id) = winget_id(command) else {
+        return Vec::new();
+    };
+    id.split('.')
+        .map(|part| {
+            part.chars()
+                .filter(|c| c.is_alphanumeric())
+                .flat_map(char::to_lowercase)
+                .collect::<String>()
+        })
+        .filter(|part| is_token(part, 4))
+        .collect()
+}
+
 /// A folder's letters-only name `leaf` is the app's when it contains a token (a word of the name
 /// is part of the letters-only form, so this covers both), or when it's at least 4 characters
 /// and starts a token ("logi" for "logitech"). Tokens never include generic words.
@@ -195,9 +214,21 @@ pub(crate) fn is_too_broad(dir: &str) -> bool {
 }
 
 /// Whose install this is (spec order: `--app`, new Programs entries, new Store apps, the winget
-/// id, else unknown), with its install folders.
-pub fn find_subject(delta: &Delta, app_flag: Option<&str>, command: &[String]) -> Subject {
-    let changes = |kind| delta.sources.get(&kind).map(Vec::as_slice).unwrap_or_default();
+/// id, else unknown), with its install folders. Entries the noise list matches are never the
+/// app: winget refreshing its own source package during a failed install once became "the app",
+/// and its Microsoft publisher then made a Windows change the app's.
+pub fn find_subject(delta: &Delta, app_flag: Option<&str>, command: &[String], noise: &NoiseList) -> Subject {
+    let nobody = Subject::default();
+    let changes = |kind| -> Vec<&Change> {
+        delta
+            .sources
+            .get(&kind)
+            .map(Vec::as_slice)
+            .unwrap_or_default()
+            .iter()
+            .filter(|c| noise.matches_change(kind, c, &nobody).is_none())
+            .collect()
+    };
     let visible = |i: &Item| i.props.get("system_component").map(String::as_str) != Some("1");
 
     let mut candidates: Vec<(&Item, Option<String>)> = changes(SourceKind::Programs)
@@ -267,7 +298,8 @@ pub fn find_subject(delta: &Delta, app_flag: Option<&str>, command: &[String]) -
     subject.install_dirs.extend(location.clone());
     // A new top-level folder is the app's only if it holds the install location or is named
     // after the app. Windows makes folders during installs too (BranchCache's PeerDistRepub).
-    let tokens = subject.folder_tokens();
+    let mut tokens = subject.folder_tokens();
+    tokens.extend(winget_id_tokens(command));
     for change in changes(SourceKind::Folders) {
         let Change::Added(folder) = change else { continue };
         if folder.props.get("kind").map(String::as_str) == Some("shortcut") || folder.key.ends_with(".lnk") {

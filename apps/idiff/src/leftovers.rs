@@ -36,7 +36,7 @@ pub fn leftovers_from_files(
     let meta: SessionMeta = session.read_json("session.json")?;
 
     let installed = diff(&before, &after);
-    let subject = find_subject(&installed, meta.app_flag.as_deref(), &meta.command);
+    let subject = find_subject(&installed, meta.app_flag.as_deref(), &meta.command, noise);
     let install = attribute(&installed, &subject, noise, &after.env);
     let during: Vec<Attributed> = attribute(&diff(&after, uninstalled), &subject, noise, &uninstalled.env)
         .into_iter()

@@ -16,7 +16,7 @@ fn discord() -> Receipt {
     let before = Snapshot::load(include_str!("fixtures/discord-before.json")).unwrap();
     let after = Snapshot::load(include_str!("fixtures/discord-after.json")).unwrap();
     let d = diff(&before, &after);
-    let subject = find_subject(&d, None, &[]);
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
     let attributed = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
     install_receipt(
         &subject,

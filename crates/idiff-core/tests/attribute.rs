@@ -56,7 +56,12 @@ fn added(kind: SourceKind, items: Vec<Item>) -> Delta {
 fn discord_changes_are_split_correctly() {
     let (before, after) = discord();
     let d = diff(&before, &after);
-    let r = attribute(&d, &find_subject(&d, None, &[]), &NoiseList::builtin(), &after.env);
+    let r = attribute(
+        &d,
+        &find_subject(&d, None, &[], &NoiseList::builtin()),
+        &NoiseList::builtin(),
+        &after.env,
+    );
     let owner = |key: &str| find(&r, key).owner;
     assert_eq!(owner("discordupdate"), Owner::App);
     assert_eq!(owner("|discord"), Owner::App); // startup run value
@@ -73,7 +78,7 @@ fn discord_changes_are_split_correctly() {
 #[test]
 fn a_microsoft_store_app_updating_itself_is_windows() {
     let (_, after) = discord();
-    let subject = find_subject(&diff(&after, &after), None, &[]);
+    let subject = find_subject(&diff(&after, &after), None, &[], &NoiseList::builtin());
     let ms = "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US";
     let store = |version: &str| Item {
         key: "microsoft.windowsstore_8wekyb3d8bbwe".into(),
@@ -107,7 +112,12 @@ fn a_microsoft_store_app_updating_itself_is_windows() {
 fn reasons_say_which_rule_matched() {
     let (before, after) = discord();
     let d = diff(&before, &after);
-    let r = attribute(&d, &find_subject(&d, None, &[]), &NoiseList::builtin(), &after.env);
+    let r = attribute(
+        &d,
+        &find_subject(&d, None, &[], &NoiseList::builtin()),
+        &NoiseList::builtin(),
+        &after.env,
+    );
     assert_eq!(find(&r, "discordupdate").reason, Reason::TargetInInstallDir);
     assert_eq!(find(&r, r"appdata\local\discord").reason, Reason::ItemInInstallDir);
     assert_eq!(find(&r, r"hkcu\native\discord").reason, Reason::SubjectEntry);
@@ -137,7 +147,7 @@ fn reasons_say_which_rule_matched() {
 #[test]
 fn subject_comes_from_the_new_program_entry() {
     let (before, after) = discord();
-    let subject = find_subject(&diff(&before, &after), None, &[]);
+    let subject = find_subject(&diff(&before, &after), None, &[], &NoiseList::builtin());
     assert_eq!(subject.name, "Discord");
     assert_eq!(subject.version.as_deref(), Some("1.0.9170"));
     assert_eq!(subject.publisher.as_deref(), Some("Discord Inc."));
@@ -153,6 +163,7 @@ fn app_flag_wins_over_programs() {
         &diff(&before, &after),
         Some("Steam"),
         &s(["winget", "install", "Valve.Steam"]),
+        &NoiseList::builtin(),
     );
     assert_eq!(subject.name, "Steam");
 }
@@ -179,7 +190,7 @@ fn several_new_programs_pick_the_largest() {
             ),
         ],
     );
-    let subject = find_subject(&d, None, &[]);
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
     assert_eq!(subject.name, r"hklm\native\game");
     assert_eq!(subject.also_installed, [r"hklm\native\redist"]);
     assert_eq!(subject.install_dirs, [r"c:\games\game"]);
@@ -193,7 +204,12 @@ fn a_too_broad_install_location_is_ignored() {
             SourceKind::Programs,
             vec![item(r"hklm\native\tool", Some(broad), &[("version", "1")])],
         );
-        assert!(find_subject(&d, None, &[]).install_dirs.is_empty(), "{broad}");
+        assert!(
+            find_subject(&d, None, &[], &NoiseList::builtin())
+                .install_dirs
+                .is_empty(),
+            "{broad}"
+        );
     }
 }
 
@@ -214,7 +230,7 @@ fn packaged_and_winget_and_unknown_subjects() {
             ]),
         }],
     );
-    let subject = find_subject(&store_app, None, &[]);
+    let subject = find_subject(&store_app, None, &[], &NoiseList::builtin());
     assert_eq!(subject.name, "Spotify Music");
     assert_eq!(subject.publisher.as_deref(), Some("Spotify AB"));
     assert_eq!(subject.install_dirs.len(), 1);
@@ -223,10 +239,11 @@ fn packaged_and_winget_and_unknown_subjects() {
         &Delta::default(),
         None,
         &s(["winget", "install", "--id", "Valve.Steam"]),
+        &NoiseList::builtin(),
     );
     assert_eq!(winget.name, "Valve.Steam");
 
-    let unknown = find_subject(&Delta::default(), None, &s(["setup.exe", "/S"]));
+    let unknown = find_subject(&Delta::default(), None, &s(["setup.exe", "/S"]), &NoiseList::builtin());
     assert_eq!(unknown.name, copy::UNKNOWN_APP);
     assert!(unknown.install_dirs.is_empty());
 }
@@ -240,7 +257,7 @@ fn upgrade_sets_previous_version() {
     let entry = programs.iter_mut().find(|i| i.key == r"hkcu\native\discord").unwrap();
     entry.props.insert("version".into(), "1.0.9100".into());
     let d = diff(&base, &after);
-    let subject = find_subject(&d, None, &[]);
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
     assert_eq!(subject.name, "Discord");
     assert_eq!(subject.version.as_deref(), Some("1.0.9170"));
     assert_eq!(subject.previous_version.as_deref(), Some("1.0.9100"));
@@ -252,7 +269,7 @@ fn upgrade_sets_previous_version() {
 fn removed_changes_use_the_same_rules() {
     let (before, after) = discord();
     let install = diff(&before, &after);
-    let subject = find_subject(&install, None, &[]);
+    let subject = find_subject(&install, None, &[], &NoiseList::builtin());
     // As after an uninstall: everything the install added is gone again.
     let r = attribute(&diff(&after, &before), &subject, &NoiseList::builtin(), &after.env);
     let task = find(&r, "discordupdate");
@@ -266,7 +283,12 @@ fn removed_changes_use_the_same_rules() {
 fn vlc_runner_install_is_attributed() {
     let (before, after) = vlc();
     let d = diff(&before, &after);
-    let subject = find_subject(&d, None, &s(["winget", "install", "--id", "VideoLAN.VLC", "--exact"]));
+    let subject = find_subject(
+        &d,
+        None,
+        &s(["winget", "install", "--id", "VideoLAN.VLC", "--exact"]),
+        &NoiseList::builtin(),
+    );
     assert_eq!(subject.name, "VLC media player");
     assert_eq!(subject.version.as_deref(), Some("3.0.24"));
     assert_eq!(subject.publisher.as_deref(), Some("VideoLAN"));
@@ -300,7 +322,7 @@ fn unrelated_new_folder_is_not_an_install_dir() {
     // Without the noise list, BranchCache's folder must still not count as VLC's.
     let (before, after) = vlc();
     let d = diff(&before, &after);
-    let subject = find_subject(&d, None, &[]);
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
     let r = attribute(&d, &subject, &NoiseList::parse("").unwrap(), &after.env);
     assert_eq!(find(&r, "peerdistrepub").owner, Owner::Unknown);
 }
@@ -309,9 +331,12 @@ fn unrelated_new_folder_is_not_an_install_dir() {
 fn an_unknown_app_claims_nothing_by_name() {
     let (before, after) = vlc();
     let d = diff(&before, &after);
-    let unknown = find_subject(&Delta::default(), None, &[]);
+    let unknown = find_subject(&Delta::default(), None, &[], &NoiseList::builtin());
     let r = attribute(&d, &unknown, &NoiseList::builtin(), &after.env);
-    assert!(!r.iter().any(|a| a.owner == Owner::App), "{r:#?}");
+    // Only the Programs entry, which any install's own entry is (InstalledAlongside).
+    let app: Vec<&Attributed> = r.iter().filter(|a| a.owner == Owner::App).collect();
+    assert!(app.iter().all(|a| a.reason == Reason::InstalledAlongside), "{app:#?}");
+    assert!(!r.iter().any(|a| a.reason == Reason::NameMatches), "{r:#?}");
     assert_eq!(find(&r, "directory|verb|playwithvlc").owner, Owner::Unknown);
 }
 
@@ -359,7 +384,8 @@ fn signer_rules_use_the_publisher() {
     );
     let r = attribute(&d, &subject, &NoiseList::parse("").unwrap(), &env);
     assert_eq!(find(&r, "zoomsvc").reason, Reason::SignerMatchesPublisher);
-    assert_eq!(find(&r, "mssvc").reason, Reason::WindowsComponent);
+    // A new service isn't Windows' for its signature alone: installers bring Microsoft's (catalog).
+    assert_eq!(find(&r, "mssvc").reason, Reason::Unattributed);
     // Something new in the Windows folder isn't Windows' without Windows' signature (kill test).
     assert_eq!(find(&r, "winsvc").reason, Reason::Unattributed);
 
@@ -527,10 +553,12 @@ mod kill_test {
 
     #[test]
     fn an_added_item_signed_as_windows_is_windows() {
+        // Only for the kinds of new item installers don't bring Microsoft's own of (see
+        // added_microsoft_signed_services_and_drivers_are_not_hidden).
         let dropbox = subject("Dropbox", "Dropbox, Inc.", r"c:\program files (x86)\dropbox\client");
         for signer in ["Microsoft Windows", "microsoft corporation"] {
-            let service = item("wuauserv", Some(r"c:\program files\x\y.exe"), &[("signer", signer)]);
-            let a = one(SourceKind::Services, Change::Added(service), &dropbox);
+            let handler = item("*|handler|x", Some(r"c:\program files\x\y.dll"), &[("signer", signer)]);
+            let a = one(SourceKind::ShellExt, Change::Added(handler), &dropbox);
             assert_eq!(a.reason, Reason::WindowsComponent, "{signer}");
         }
     }
@@ -696,7 +724,7 @@ fn dirs_with_folders(name: &str, publisher: &str, folders: &[&str]) -> Vec<Strin
         notes: BTreeMap::new(),
         partial: Default::default(),
     };
-    let subject = find_subject(&d, None, &[]);
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
     assert_eq!(subject.name, name);
     subject.install_dirs
 }
@@ -752,4 +780,292 @@ fn generic_words_take_no_part_in_folder_names() {
     // A short folder name is never a prefix match: "log" is too short to stand for "logitech".
     let dirs = dirs_with_folders("Logitech G HUB", "Logitech", &[r"c:\programdata\log"]);
     assert!(dirs.is_empty(), "{dirs:?}");
+}
+
+/// Installers bring Microsoft's redistributables along: Epic's adds "GameInput Redist Service",
+/// signed by Microsoft. A new service, driver or task isn't Windows' just for its signature.
+#[test]
+fn added_microsoft_signed_services_and_drivers_are_not_hidden() {
+    let epic = Subject {
+        name: "Epic Games Launcher".into(),
+        publisher: Some("Epic Games, Inc.".into()),
+        ..Default::default()
+    };
+    let env = BTreeMap::from([("SystemRoot".to_string(), r"C:\Windows".to_string())]);
+    let one = |kind: SourceKind, signer: &str| {
+        let d = added(
+            kind,
+            vec![item(
+                "gameinputredist",
+                Some(r"c:\program files\microsoft gameinput\gameinputredist.exe"),
+                &[("signer", signer)],
+            )],
+        );
+        attribute(&d, &epic, &NoiseList::parse("").unwrap(), &env).remove(0)
+    };
+    for kind in [
+        SourceKind::Services,
+        SourceKind::Drivers,
+        SourceKind::Tasks,
+        SourceKind::Startup,
+        SourceKind::Certs,
+        SourceKind::Defender,
+        SourceKind::Network,
+    ] {
+        for signer in ["Microsoft Corporation", "Microsoft Windows"] {
+            assert_ne!(one(kind, signer).owner, Owner::Windows, "{kind:?} {signer}");
+        }
+    }
+    // The other kinds of new item can still be Windows' by Windows' own signature.
+    for kind in [
+        SourceKind::Firewall,
+        SourceKind::ShellExt,
+        SourceKind::Path,
+        SourceKind::Packaged,
+    ] {
+        assert_eq!(
+            one(kind, "Microsoft Windows").reason,
+            Reason::WindowsComponent,
+            "{kind:?}"
+        );
+    }
+}
+
+/// EA's installer adds its own Visual C++ runtime entries (system components) next to "EA app".
+#[test]
+fn programs_added_by_the_install_are_its_own() {
+    let entry = |key: &str, label: &str, props: &[(&str, &str)]| Item {
+        label: label.into(),
+        ..item(key, None, props)
+    };
+    let vc = entry(
+        r"hklm\wow6432node\{vc2013}",
+        "Microsoft Visual C++ 2013 x86 Minimum Runtime - 12.0.40664",
+        &[("system_component", "1"), ("publisher", "Microsoft Corporation")],
+    );
+    let firefox_service = |version: &str| {
+        entry(
+            r"hklm\native\mozillamaintenanceservice",
+            "Mozilla Maintenance Service",
+            &[("version", version), ("system_component", "1")],
+        )
+    };
+    let d = Delta {
+        sources: BTreeMap::from([(
+            SourceKind::Programs,
+            vec![
+                Change::Added(entry(
+                    r"hklm\native\{ea-app}",
+                    "EA app",
+                    &[("size_kb", "900000"), ("publisher", "Electronic Arts")],
+                )),
+                Change::Added(vc),
+                // Firefox was on the runner already; its updater service changing isn't EA's.
+                Change::Modified {
+                    before: firefox_service("140.0"),
+                    after: firefox_service("141.0"),
+                    fields: vec!["version".into()],
+                },
+            ],
+        )]),
+        notes: BTreeMap::new(),
+        partial: Default::default(),
+    };
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
+    assert_eq!(subject.name, "EA app");
+    assert!(
+        subject.also_installed.is_empty(),
+        "system components count but aren't named"
+    );
+    let r = attribute(&d, &subject, &NoiseList::builtin(), &BTreeMap::new());
+    let vc = find(&r, "{vc2013}");
+    assert_eq!((vc.owner, &vc.reason), (Owner::App, &Reason::InstalledAlongside));
+    assert!(Reason::InstalledAlongside.text().contains("added by this install"));
+    assert_eq!(find(&r, "{ea-app}").reason, Reason::SubjectEntry);
+    assert_eq!(find(&r, "mozillamaintenanceservice").owner, Owner::Unknown);
+}
+
+/// GIMP, VS Code, Signal and Opera install into AppData\Local\Programs\<app>, and the installer
+/// makes AppData\Local\Programs itself when it isn't there yet.
+#[test]
+fn a_new_folder_made_to_hold_the_install_dir_is_the_apps() {
+    let gimp = Subject {
+        name: "GIMP".into(),
+        publisher: Some("The GIMP Team".into()),
+        install_dirs: vec![r"c:\users\a\appdata\local\programs\gimp 3".into()],
+        ..Default::default()
+    };
+    let folder = |key: &str, root: &str| Change::Added(item(key, None, &[("root", root), ("kind", "folder")]));
+    let d = added(SourceKind::Folders, vec![]);
+    let d = Delta {
+        sources: BTreeMap::from([(
+            SourceKind::Folders,
+            vec![
+                folder(r"c:\users\a\appdata\local\programs", r"AppData\Local"),
+                folder(r"c:\users\a\appdata\local\programs\gimp 3", r"AppData\Local\Programs"),
+                folder(r"c:\users\a\appdata\local\crashdumps", r"AppData\Local"),
+            ],
+        )]),
+        ..d
+    };
+    let r = attribute(&d, &gimp, &NoiseList::builtin(), &BTreeMap::new());
+    let programs = r
+        .iter()
+        .find(|a| a.change.item().key == r"c:\users\a\appdata\local\programs")
+        .unwrap();
+    assert_eq!(
+        (programs.owner, &programs.reason),
+        (Owner::App, &Reason::HoldsAppProgram)
+    );
+    assert_eq!(find(&r, r"programs\gimp 3").reason, Reason::ItemInInstallDir);
+    assert_eq!(find(&r, "crashdumps").owner, Owner::Unknown);
+    // Holding it doesn't make it an install dir: everything else under it isn't claimed.
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
+    assert!(
+        !subject
+            .install_dirs
+            .iter()
+            .any(|d| d == r"c:\users\a\appdata\local\programs")
+    );
+}
+
+/// "EA app" names no folder, but its winget id does: ElectronicArts.EADesktop.
+#[test]
+fn winget_id_parts_name_the_apps_folders() {
+    let ea = Item {
+        label: "EA app".into(),
+        ..item(
+            r"hklm\native\{ea}",
+            None,
+            &[("version", "13"), ("publisher", "Electronic Arts")],
+        )
+    };
+    let folder = |key: &str| Change::Added(item(key, None, &[("kind", "folder")]));
+    let d = Delta {
+        sources: BTreeMap::from([
+            (SourceKind::Programs, vec![Change::Added(ea)]),
+            (
+                SourceKind::Folders,
+                vec![
+                    folder(r"c:\users\a\appdata\local\eadesktop"),
+                    folder(r"c:\programdata\ea desktop"),
+                    folder(r"c:\users\a\appdata\local\sentry"),
+                ],
+            ),
+        ]),
+        ..Default::default()
+    };
+    let command: Vec<String> = ["winget", "install", "--id", "ElectronicArts.EADesktop", "--exact"]
+        .iter()
+        .map(|s| s.to_string())
+        .collect();
+    let with_id = find_subject(&d, None, &command, &NoiseList::builtin()).install_dirs;
+    assert!(
+        with_id.iter().any(|d| d == r"c:\users\a\appdata\local\eadesktop"),
+        "{with_id:?}"
+    );
+    assert!(with_id.iter().any(|d| d == r"c:\programdata\ea desktop"), "{with_id:?}");
+    assert!(!with_id.iter().any(|d| d.ends_with("sentry")), "{with_id:?}");
+    // Without the command there's nothing to go on.
+    assert!(
+        find_subject(&d, None, &[], &NoiseList::builtin())
+            .install_dirs
+            .is_empty()
+    );
+    // Generic parts don't count: Microsoft.VisualStudioCode gives "visualstudiocode", not "microsoft".
+    let code = ["winget", "install", "Microsoft.VisualStudioCode"].map(String::from);
+    let d = Delta {
+        sources: BTreeMap::from([(SourceKind::Folders, vec![folder(r"c:\programdata\microsoft corp")])]),
+        ..Default::default()
+    };
+    assert!(
+        find_subject(&d, Some("Visual Studio Code"), &code, &NoiseList::builtin())
+            .install_dirs
+            .is_empty()
+    );
+}
+
+/// Squirrel installers (Discord, Slack) work in AppData\Local\SquirrelTemp and leave it behind.
+#[test]
+fn an_installer_frameworks_own_new_folder_is_the_apps() {
+    let discord = Subject {
+        name: "Discord".into(),
+        publisher: Some("Discord Inc.".into()),
+        install_dirs: vec![r"c:\users\a\appdata\local\discord".into()],
+        ..Default::default()
+    };
+    let temp = || item(r"c:\users\a\appdata\local\squirreltemp", None, &[("kind", "folder")]);
+    let d = Delta {
+        sources: BTreeMap::from([(SourceKind::Folders, vec![Change::Added(temp())])]),
+        ..Default::default()
+    };
+    let a = attribute(&d, &discord, &NoiseList::builtin(), &BTreeMap::new()).remove(0);
+    assert_eq!((a.owner, &a.reason), (Owner::App, &Reason::InstallerLeftover));
+    assert!(Reason::InstallerLeftover.text().contains("left by the app's installer"));
+    // Only when the install made it: one that was there before and went away isn't this rule's.
+    let d = Delta {
+        sources: BTreeMap::from([(SourceKind::Folders, vec![Change::Removed(temp())])]),
+        ..Default::default()
+    };
+    let a = attribute(&d, &discord, &NoiseList::builtin(), &BTreeMap::new()).remove(0);
+    assert_ne!(a.reason, Reason::InstallerLeftover);
+}
+
+/// AnyDesk's install failed and added no Programs entry; meanwhile winget refreshed its own
+/// source package. That package must not become the app, or its Microsoft publisher makes
+/// Windows' BITS change "the app's" (catalog run, AnyDesk).
+#[test]
+fn a_noise_package_is_never_the_subject() {
+    let ms = "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US";
+    let source = Item {
+        label: "Microsoft.Winget.Source".into(),
+        ..item(
+            "microsoft.winget.source_8wekyb3d8bbwe",
+            None,
+            &[("version", "2026.1015.1300.12"), ("publisher", ms)],
+        )
+    };
+    let bits = |start: &str| {
+        item(
+            "bits",
+            Some(r"c:\windows\system32\svchost.exe"),
+            &[("start", start), ("signer", "Microsoft Windows")],
+        )
+    };
+    let d = Delta {
+        sources: BTreeMap::from([
+            (SourceKind::Packaged, vec![Change::Added(source)]),
+            (
+                SourceKind::Services,
+                vec![Change::Modified {
+                    before: bits("2"),
+                    after: bits("3"),
+                    fields: vec!["start".into()],
+                }],
+            ),
+        ]),
+        ..Default::default()
+    };
+    let noise = NoiseList::builtin();
+    let command = ["winget", "install", "--id", "AnyDesk.AnyDesk", "--exact"].map(String::from);
+    let subject = find_subject(&d, Some("AnyDesk"), &command, &noise);
+    assert_eq!(subject.name, "AnyDesk");
+    assert_eq!((subject.version.as_deref(), subject.publisher.as_deref()), (None, None));
+    assert!(subject.entries.is_empty());
+    let r = attribute(
+        &d,
+        &subject,
+        &noise,
+        &BTreeMap::from([("SystemRoot".to_string(), r"C:\Windows".to_string())]),
+    );
+    assert_ne!(find(&r, "bits").owner, Owner::App, "{r:#?}");
+    let receipt = idiff_core::verdict::install_receipt(
+        &subject,
+        &r,
+        &BTreeMap::new(),
+        &Default::default(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    assert_eq!(receipt.title, "AnyDesk: installed");
 }

@@ -15,7 +15,7 @@ fn discord() -> (Snapshot, Snapshot, Subject, Vec<Attributed>) {
     let before = load(include_str!("fixtures/discord-before.json"));
     let after = load(include_str!("fixtures/discord-after.json"));
     let d = diff(&before, &after);
-    let subject = find_subject(&d, None, &[]);
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
     let attributed = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
     (before, after, subject, attributed)
 }
@@ -124,7 +124,7 @@ fn upgrade_titles_and_modified_items() {
         entry.props.insert(prop.into(), value.into());
     }
     let d = diff(&base, &after);
-    let subject = find_subject(&d, None, &[]);
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
     let attributed = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
     let r = install_receipt(
         &subject,
@@ -569,7 +569,7 @@ fn partial_reads_are_worded_apart_from_failed_ones() {
 #[test]
 fn no_subject_and_nothing_found_is_no_install() {
     let (_, after, _, attributed) = discord();
-    let nobody = find_subject(&idiff_core::diff::Delta::default(), None, &[]);
+    let nobody = find_subject(&idiff_core::diff::Delta::default(), None, &[], &NoiseList::builtin());
     let r = install_receipt(&nobody, &[], &BTreeMap::new(), &BTreeSet::new(), Some(0), &after.env);
     assert_eq!(r.title, "No install found");
     assert_eq!(texts(&r), [(Level::Good, "No lasting changes found")]);
