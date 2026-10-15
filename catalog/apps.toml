@@ -1,4 +1,5 @@
-# The apps the Receipts Library installs on fresh GitHub runners, one # The first library: the apps that installed in the kill test, plus four well-known apps.
+# The apps the Receipts Library installs on fresh GitHub runners, one per runner.
+# The apps that installed in the kill test, plus well-known apps checked with `winget show`.
 [[app]]
 id = "Discord.Discord"
 name = "Discord"
@@ -119,83 +120,81 @@ name = "GIMP"
 id = "Microsoft.PowerToys"
 name = "PowerToys"
 
-# Later: checked with `winget show`, not run yet. Uncomment to add them to the next run.
+[[app]]
+id = "Element.Element"
+name = "Element"
 
-# [[app]]
-# id = "Element.Element"
-# name = "Element"
+[[app]]
+id = "LibreWolf.LibreWolf"
+name = "LibreWolf"
 
-# [[app]]
-# id = "LibreWolf.LibreWolf"
-# name = "LibreWolf"
+[[app]]
+id = "GOG.Galaxy"
+name = "GOG Galaxy"
 
-# [[app]]
-# id = "GOG.Galaxy"
-# name = "GOG Galaxy"
+[[app]]
+id = "JetBrains.Toolbox"
+name = "JetBrains Toolbox"
 
-# [[app]]
-# id = "JetBrains.Toolbox"
-# name = "JetBrains Toolbox"
+[[app]]
+id = "Postman.Postman"
+name = "Postman"
 
-# [[app]]
-# id = "Postman.Postman"
-# name = "Postman"
+[[app]]
+id = "GitHub.GitHubDesktop"
+name = "GitHub Desktop"
 
-# [[app]]
-# id = "GitHub.GitHubDesktop"
-# name = "GitHub Desktop"
+[[app]]
+id = "PuTTY.PuTTY"
+name = "PuTTY"
 
-# [[app]]
-# id = "PuTTY.PuTTY"
-# name = "PuTTY"
+[[app]]
+id = "WinSCP.WinSCP"
+name = "WinSCP"
 
-# [[app]]
-# id = "WinSCP.WinSCP"
-# name = "WinSCP"
+[[app]]
+id = "voidtools.Everything"
+name = "Everything"
 
-# [[app]]
-# id = "voidtools.Everything"
-# name = "Everything"
+[[app]]
+id = "ShareX.ShareX"
+name = "ShareX"
 
-# [[app]]
-# id = "ShareX.ShareX"
-# name = "ShareX"
+[[app]]
+id = "Greenshot.Greenshot"
+name = "Greenshot"
 
-# [[app]]
-# id = "Greenshot.Greenshot"
-# name = "Greenshot"
+[[app]]
+id = "KeePassXCTeam.KeePassXC"
+name = "KeePassXC"
 
-# [[app]]
-# id = "KeePassXCTeam.KeePassXC"
-# name = "KeePassXC"
+[[app]]
+id = "Bitwarden.Bitwarden"
+name = "Bitwarden"
 
-# [[app]]
-# id = "Bitwarden.Bitwarden"
-# name = "Bitwarden"
+[[app]]
+id = "AgileBits.1Password"
+name = "1Password"
 
-# [[app]]
-# id = "AgileBits.1Password"
-# name = "1Password"
+[[app]]
+id = "HandBrake.HandBrake"
+name = "HandBrake"
 
-# [[app]]
-# id = "HandBrake.HandBrake"
-# name = "HandBrake"
+[[app]]
+id = "Inkscape.Inkscape"
+name = "Inkscape"
 
-# [[app]]
-# id = "Inkscape.Inkscape"
-# name = "Inkscape"
+[[app]]
+id = "BlenderFoundation.Blender"
+name = "Blender"
 
-# [[app]]
-# id = "BlenderFoundation.Blender"
-# name = "Blender"
+[[app]]
+id = "Obsidian.Obsidian"
+name = "Obsidian"
 
-# [[app]]
-# id = "Obsidian.Obsidian"
-# name = "Obsidian"
-
-# [[app]]
-# id = "Notion.Notion"
-# name = "Notion"
+[[app]]
+id = "Notion.Notion"
+name = "Notion"
 
 # Waiting on winget: its AnyDesk manifest points at an unversioned download whose checksum no
 # longer matches (2026-10-15), and winget refuses that as administrator.
