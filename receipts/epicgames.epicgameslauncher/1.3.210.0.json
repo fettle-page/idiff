@@ -1,0 +1,148 @@
+{
+  "meta": {
+    "id": "EpicGames.EpicGamesLauncher",
+    "name": "Epic Games Launcher",
+    "version": "1.3.210.0",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Epic Games Launcher 1.3.210.0: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: Epic Games Updater (full system rights)",
+        "items": [
+          "epicgamesupdater"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (555 MB)",
+        "items": [
+          "c:\\program files\\epic games"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (729 KB)",
+        "items": [
+          "c:\\programdata\\epic"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\epic games launcher.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\epic games launcher.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Also installed: Microsoft GameInput",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "1 Windows background change hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added service \"GameInput Redist Service\"",
+        "items": [
+          "gameinputredistservice"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"Program Files\\Microsoft GameInput\"",
+        "items": [
+          "c:\\program files\\microsoft gameinput"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Epic Games Launcher 1.3.210.0: after uninstall, 1 leftover",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Folder \"ProgramData\\Epic\" is still there (empty)",
+        "items": [
+          "c:\\programdata\\epic"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Left installed: Microsoft GameInput. It came with the app, and other apps may use it.",
+        "items": [
+          "hklm\\native\\{ecb4bdd1-984c-9f25-299c-a9ef75c14197}"
+        ],
+        "why": [
+          "the installed program's own entry"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

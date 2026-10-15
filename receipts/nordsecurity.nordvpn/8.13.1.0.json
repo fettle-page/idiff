@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "id": "NordSecurity.NordVPN",
+    "name": "NordVPN",
+    "version": "8.13.1.0",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "NordVPN 8.13.1.0: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Installs 1 driver: NordVPN Divert Driver",
+        "items": [
+          "ndivert"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Adds 3 background services: nordsec-threatprotection-service, NordSec Update Service, nordvpn-service (starts with Windows) (full system rights)",
+        "items": [
+          "nordsec-threatprotection-service",
+          "nordupdaterservice",
+          "nordvpn-service"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (405 MB)",
+        "items": [
+          "c:\\program files\\nordupdater",
+          "c:\\program files\\nordvpn"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (571 KB)",
+        "items": [
+          "c:\\programdata\\nordupdater",
+          "c:\\programdata\\nordvpn"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\nordvpn.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\nordsec\\nordvpn diagnostics.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\nordsec\\nordvpn.lnk"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Also installed: Microsoft Windows Desktop Runtime - 8.0.32 (x64), NordUpdater",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added driver \"ovpn-dco\"",
+        "items": [
+          "ovpn-dco"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added driver \"WireGuard\"",
+        "items": [
+          "wireguard"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "NordVPN 8.13.1.0: after uninstall, no leftovers",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "Nothing left behind",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Left installed: Microsoft .NET Host FX Resolver - 8.0.32 (x64), Microsoft .NET Runtime - 8.0.32 (x64), Microsoft Windows Desktop Runtime - 8.0.32 (x64), Microsoft .NET Host - 8.0.32 (x64). They came with the app, and other apps may use them.",
+        "items": [
+          "hklm\\native\\{90670cf8-7e43-4604-9ed0-a14c2fc29c15}",
+          "hklm\\native\\{a43104bd-8b2f-4370-97f2-bcbdca9ba997}",
+          "hklm\\native\\{b3f524c3-adc5-4043-9624-61055de12870}",
+          "hklm\\native\\{bd355c09-bbba-4f60-95a9-3f92a3e728cd}",
+          "hklm\\wow6432node\\{ae6de048-c0e4-4d6a-937f-09acccf3a971}"
+        ],
+        "why": [
+          "added by this install",
+          "added by this install",
+          "added by this install",
+          "added by this install",
+          "the installed program's own entry"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

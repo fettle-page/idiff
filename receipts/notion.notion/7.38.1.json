@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "id": "Notion.Notion",
+    "name": "Notion",
+    "version": "7.38.1",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Notion 7.38.1: installed",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "No services, drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Good",
+        "text": "Files only in your user folder (496 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\notion-updater",
+          "c:\\users\\runneradmin\\appdata\\local\\programs\\notion"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\notion.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\notion.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "3 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Programs\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\programs"
+        ],
+        "why": [
+          "Windows background change: a folder many apps share"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Notion 7.38.1: after uninstall, 2 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "112 MB in AppData\\Local\\notion-updater",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\notion-updater"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Folder \"AppData\\Local\\Programs\\Notion\" is still there (empty)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\programs\\notion"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

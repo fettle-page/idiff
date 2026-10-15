@@ -1,0 +1,162 @@
+{
+  "meta": {
+    "id": "GOG.Galaxy",
+    "name": "GOG Galaxy",
+    "version": "2.1.10.56",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "GOG Galaxy 2.1.10.56: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: GalaxyCommunication (full system rights)",
+        "items": [
+          "galaxycommunication"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|goggalaxy"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (367 MB)",
+        "items": [
+          "c:\\program files\\gog galaxy"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (291 MB)",
+        "items": [
+          "c:\\programdata\\gog.com"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (3 KB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\gog.com"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\gog galaxy.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\gog.com\\gog galaxy\\gog galaxy.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added service \"GalaxyClientService\"",
+        "items": [
+          "galaxyclientservice"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added startup entry \"GalaxyClient\"",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|galaxyclient"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "GOG Galaxy 2.1.10.56: after uninstall, 1 leftover",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Folder \"AppData\\Local\\GOG.com\" is still there (empty)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\gog.com"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

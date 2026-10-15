@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "id": "WireGuard.WireGuard",
+    "name": "WireGuard",
+    "version": "1.1.1",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "WireGuard 1.1.1: installed",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "No services, drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Adds to PATH: C:\\Program Files\\WireGuard\\",
+        "items": [
+          "machine|c:\\program files\\wireguard\\"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (9 MB)",
+        "items": [
+          "c:\\program files\\wireguard"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\wireguard.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "1 Windows background change hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "WireGuard 1.1.1: after uninstall, no leftovers",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "Nothing left behind",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

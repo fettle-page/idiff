@@ -1,0 +1,145 @@
+{
+  "meta": {
+    "id": "SlackTechnologies.Slack",
+    "name": "Slack",
+    "version": "4.52.178",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Slack 4.52.178: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|com.squirrel.slack.slack"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services, drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Good",
+        "text": "Files only in your user folder (550 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\slack",
+          "c:\\users\\runneradmin\\appdata\\local\\squirreltemp",
+          "c:\\users\\runneradmin\\appdata\\roaming\\slack"
+        ],
+        "why": [
+          "inside the app's folder",
+          "left by the app's installer",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\slack.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\slack technologies inc\\slack.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "3 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Slack 4.52.178: after uninstall, 3 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "2 MB in AppData\\Local\\slack",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\slack"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "4 KB in AppData\\Local\\SquirrelTemp",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\squirreltemp"
+        ],
+        "why": [
+          "left by the app's installer"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "1 MB in AppData\\Roaming\\Slack",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\slack"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

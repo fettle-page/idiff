@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "id": "Zoom.Zoom",
+    "name": "Zoom Workplace",
+    "version": "7.2.48556",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Zoom Workplace 7.2.48556: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: Zoom Sharing Service (starts with Windows) (full system rights)",
+        "items": [
+          "zoomcptservice"
+        ],
+        "why": [
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Runs once at the next sign-in",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\runonce|zoommsirepair"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for airhost.exe, zoom.exe, zoomhybridconf.exe",
+        "items": [
+          "{0322422f-68f6-47cc-b354-97820fbe4097}",
+          "{d4284963-5d5c-4404-af95-891989c3e2ad}",
+          "{e4f523f2-08a4-4924-9ced-92541e5da566}",
+          "{e7f36040-ff0d-4cb8-b974-be9d4c0afd67}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (561 MB)",
+        "items": [
+          "c:\\program files\\zoom"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\zoom"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\zoom workplace.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\zoom\\zoom workplace.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Zoom Workplace 7.2.48556: after uninstall, 4 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"Airhost service for Zoom Video Meetings\" is still there (2 rules)",
+        "items": [
+          "{0322422f-68f6-47cc-b354-97820fbe4097}",
+          "{e7f36040-ff0d-4cb8-b974-be9d4c0afd67}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"Zoom Video Meeting\" is still there",
+        "items": [
+          "{d4284963-5d5c-4404-af95-891989c3e2ad}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"Hybrid Conference for Zoom Video Meetings\" is still there",
+        "items": [
+          "{e4f523f2-08a4-4924-9ced-92541e5da566}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

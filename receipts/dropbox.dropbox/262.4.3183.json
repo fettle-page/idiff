@@ -1,0 +1,413 @@
+{
+  "meta": {
+    "id": "Dropbox.Dropbox",
+    "name": "Dropbox",
+    "version": "262.4.3183",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": "leftovers: exit 2"
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Dropbox 262.4.3183: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 4 background services: Dropbox Update Service (dbupdate), Dropbox Update Service (dbupdatem), DbxSvc, Dropbox Elevation Service (DropboxElevationService) (starts with Windows) (full system rights)",
+        "items": [
+          "dbupdate",
+          "dbupdatem",
+          "dbxsvc",
+          "dropboxelevationservice"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "signed by the app's publisher",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "2 scheduled tasks: runs an updater at sign-in, as SYSTEM; runs an updater every day, as SYSTEM",
+        "items": [
+          "\\dropboxupdatetaskmachinecore",
+          "\\dropboxupdatetaskmachineua"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hklm|software\\wow6432node\\microsoft\\windows\\currentversion\\run|dropbox"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for dropbox.exe",
+        "items": [
+          "{0338d58d-35e4-4ba0-a517-e605822c3cc2}",
+          "{fb829720-abf8-4bfb-8dd8-ad792fb22031}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Adds right-click menu entries",
+        "items": [
+          "*|handler|dropboxext",
+          "directory\\background|handler|dropboxext",
+          "directory|handler|dropboxext",
+          "dropboxinc.dropbox_wkt425jdc3sga"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (1.7 GB)",
+        "items": [
+          "c:\\program files (x86)\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (290 KB)",
+        "items": [
+          "c:\\programdata\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (21 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\dropbox",
+          "c:\\users\\runneradmin\\appdata\\local\\dropboxupdate",
+          "c:\\users\\runneradmin\\appdata\\roaming\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\dropbox\\dropbox.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "7 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed scheduled task \"PrintJobCleanupTask\"",
+        "items": [
+          "\\microsoft\\windows\\printing\\printjobcleanuptask"
+        ],
+        "why": [
+          "Windows background change: Windows' own scheduled tasks"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Mozilla\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\mozilla"
+        ],
+        "why": [
+          "Windows background change: GitHub runner: preinstalled Firefox"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\PeerDistRepub\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\peerdistrepub"
+        ],
+        "why": [
+          "Windows background change: BranchCache, Windows' download cache"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Roaming\\Mozilla\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\mozilla"
+        ],
+        "why": [
+          "Windows background change: GitHub runner: preinstalled Firefox"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Dropbox 262.4.3183: after uninstall, 20 leftovers",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "The uninstall was still running after 5 minutes, so this list may include things it would have removed",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Bad",
+        "text": "Program \"Dropbox\" is still there",
+        "items": [
+          "hklm\\wow6432node\\dropbox"
+        ],
+        "why": [
+          "the installed program's own entry"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Program \"Dropbox Update Helper\" is still there",
+        "items": [
+          "hklm\\wow6432node\\{099218a5-a723-43dc-8db5-6173656a1e94}"
+        ],
+        "why": [
+          "added by this install"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Service \"Dropbox Update Service (dbupdate)\" is still there",
+        "items": [
+          "dbupdate"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Service \"Dropbox Update Service (dbupdatem)\" is still there",
+        "items": [
+          "dbupdatem"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Service \"Dropbox Elevation Service (DropboxElevationService)\" is still there",
+        "items": [
+          "dropboxelevationservice"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"DropboxUpdateTaskMachineCore\" is still there",
+        "items": [
+          "\\dropboxupdatetaskmachinecore"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"DropboxUpdateTaskMachineUA\" is still there",
+        "items": [
+          "\\dropboxupdatetaskmachineua"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Startup entry \"Dropbox\" is still there",
+        "items": [
+          "run|hklm|software\\wow6432node\\microsoft\\windows\\currentversion\\run|dropbox"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"Dropbox\" is still there (2 rules)",
+        "items": [
+          "{0338d58d-35e4-4ba0-a517-e605822c3cc2}",
+          "{fb829720-abf8-4bfb-8dd8-ad792fb22031}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Right-click menu entry \"DropboxExt\" is still there (3 items)",
+        "items": [
+          "*|handler|dropboxext",
+          "directory\\background|handler|dropboxext",
+          "directory|handler|dropboxext"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "898 MB in Program Files (x86)\\Dropbox",
+        "items": [
+          "c:\\program files (x86)\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "346 KB in ProgramData\\Dropbox",
+        "items": [
+          "c:\\programdata\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu (all users)\\Dropbox\\Dropbox.lnk\" is still there",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\dropbox\\dropbox.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "18 MB in AppData\\Local\\Dropbox",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Folder \"AppData\\Local\\DropboxUpdate\" is still there (empty)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\dropboxupdate"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "4 MB in AppData\\Roaming\\Dropbox",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Store app \"Dropbox\" is still there",
+        "items": [
+          "dropboxinc.dropbox_wkt425jdc3sga"
+        ],
+        "why": [
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added folder \"Program Files\\Dropbox\"",
+        "items": [
+          "c:\\program files\\dropbox"
+        ],
+        "why": [
+          "name matches the app (a weak sign)"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

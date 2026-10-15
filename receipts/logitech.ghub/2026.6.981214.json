@@ -1,0 +1,304 @@
+{
+  "meta": {
+    "id": "Logitech.GHUB",
+    "name": "Logitech G HUB",
+    "version": "2026.6.981214",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": "leftovers: exit 2"
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Logitech G HUB 2026.6.981214: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Installs 3 drivers: logi_joy_bus_enum, logi_joy_vir_hid, logi_joy_xlcore",
+        "items": [
+          "logi_joy_bus_enum",
+          "logi_joy_vir_hid",
+          "logi_joy_xlcore"
+        ],
+        "why": [
+          "signed by the app's publisher",
+          "signed by the app's publisher",
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: LGHUB Updater Service (starts with Windows) (full system rights)",
+        "items": [
+          "lghubupdaterservice"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (610 MB)",
+        "items": [
+          "c:\\program files\\lghub",
+          "c:\\program files\\logi",
+          "c:\\program files\\logitech"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (1.4 GB)",
+        "items": [
+          "c:\\programdata\\lghub",
+          "c:\\programdata\\lghubdata",
+          "c:\\programdata\\logi"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (9 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\lghub",
+          "c:\\users\\runneradmin\\appdata\\roaming\\g hub",
+          "c:\\users\\runneradmin\\appdata\\roaming\\lghub"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\logitech g hub.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\logi\\logitech g hub.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added folder \"ProgramData\\Logishrd\"",
+        "items": [
+          "c:\\programdata\\logishrd"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Sentry\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\sentry"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Logitech G HUB 2026.6.981214: after uninstall, 13 leftovers",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "The uninstall was still running after 5 minutes, so this list may include things it would have removed",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Bad",
+        "text": "Program \"Logitech G HUB\" is still there",
+        "items": [
+          "hklm\\native\\{521c89be-637f-4274-a840-baaf7460c2b2}"
+        ],
+        "why": [
+          "the installed program's own entry"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Service \"LGHUB Updater Service\" is still there",
+        "items": [
+          "lghubupdaterservice"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "599 MB in Program Files\\LGHUB",
+        "items": [
+          "c:\\program files\\lghub"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "2 MB in Program Files\\Logi",
+        "items": [
+          "c:\\program files\\logi"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "9 MB in Program Files\\Logitech",
+        "items": [
+          "c:\\program files\\logitech"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "1.3 GB in ProgramData\\LGHUB",
+        "items": [
+          "c:\\programdata\\lghub"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "2 MB in ProgramData\\LGHUBData",
+        "items": [
+          "c:\\programdata\\lghubdata"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "4 MB in ProgramData\\Logi",
+        "items": [
+          "c:\\programdata\\logi"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu (all users)\\Logi\\Logitech G HUB.lnk\" is still there",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\logi\\logitech g hub.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Public Desktop\\Logitech G HUB.lnk\" is still there",
+        "items": [
+          "c:\\users\\public\\desktop\\logitech g hub.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "7 MB in AppData\\Local\\LGHUB",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\lghub"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "2 MB in AppData\\Roaming\\G HUB",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\g hub"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "1 KB in AppData\\Roaming\\lghub",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\lghub"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

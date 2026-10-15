@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "id": "Microsoft.PowerToys",
+    "name": "PowerToys",
+    "version": "0.101.2362.0",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "PowerToys 0.101.2362.0: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "1 scheduled task: runs powertoys.exe at sign-in",
+        "items": [
+          "\\powertoys\\autorun for runneradmin"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for powertoys.mousewithoutborders.exe",
+        "items": [
+          "{6fe932fb-9420-4176-846d-258d5f6e8881}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds outbound firewall rules for PowerToys.SparseApp",
+        "items": [
+          "microsoft.powertoys.sparseapp_8wekyb3d8bbwe-out-allow-allcapabilities"
+        ],
+        "why": [
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services or drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Adds right-click menu entries",
+        "items": [
+          "allfilesystemobjects|handler|filelocksmithext",
+          "allfilesystemobjects|handler|powerrenameext",
+          "directory\\background|handler|powerrenameext",
+          "drive|handler|filelocksmithext",
+          "microsoft.powertoys.filelocksmithcontextmenu_8wekyb3d8bbwe",
+          "microsoft.powertoys.imageresizercontextmenu_8wekyb3d8bbwe",
+          "microsoft.powertoys.powerrenamecontextmenu_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "name matches the app (a weak sign)",
+          "name matches the app (a weak sign)",
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds to PATH: C:\\Users\\runneradmin\\AppData\\Local\\PowerToys\\DSCModules\\",
+        "items": [
+          "user|c:\\users\\runneradmin\\appdata\\local\\powertoys\\dscmodules\\"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "Files only in your user folder (985 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\powertoys"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\powertoys (preview)\\powertoys (preview).lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "3 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added store app \"Command Palette\"",
+        "items": [
+          "microsoft.commandpalette_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Package Cache\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\package cache"
+        ],
+        "why": [
+          "Windows background change: a folder many apps share"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "PowerToys 0.101.2362.0: after uninstall, no leftovers",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "Nothing left behind",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

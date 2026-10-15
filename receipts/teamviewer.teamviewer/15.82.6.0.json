@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "id": "TeamViewer.TeamViewer",
+    "name": "TeamViewer",
+    "version": "15.82.6.0",
+    "date": "2026-10-15",
+    "idiff_version": "1.0.0",
+    "runner_image": "win25-vs2026 20261007.264.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "TeamViewer 15.82.6.0: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: TeamViewer (starts with Windows) (full system rights)",
+        "items": [
+          "teamviewer"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for teamviewer.exe, teamviewer_service.exe",
+        "items": [
+          "{35104607-ffec-4dbc-9b4c-99473e14ef32}",
+          "{3bb57e1c-e76c-49cc-ab9d-e5fd0747a6a5}",
+          "{3f8b1b6c-9ec9-4c9f-860a-19c12ad8737f}",
+          "{fa1cb6f3-fe5f-4463-bf8e-0480fa9a84b1}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (217 MB)",
+        "items": [
+          "c:\\program files\\teamviewer"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (4 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\teamviewer"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\teamviewer.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\teamviewer.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "TeamViewer 15.82.6.0: after uninstall, 2 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "57 KB in Program Files\\TeamViewer",
+        "items": [
+          "c:\\program files\\teamviewer"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "4 MB in AppData\\Local\\TeamViewer",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\teamviewer"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}
