@@ -958,3 +958,29 @@ fn winget_id_parts_name_the_apps_folders() {
             .is_empty()
     );
 }
+
+/// Squirrel installers (Discord, Slack) work in AppData\Local\SquirrelTemp and leave it behind.
+#[test]
+fn an_installer_frameworks_own_new_folder_is_the_apps() {
+    let discord = Subject {
+        name: "Discord".into(),
+        publisher: Some("Discord Inc.".into()),
+        install_dirs: vec![r"c:\users\a\appdata\local\discord".into()],
+        ..Default::default()
+    };
+    let temp = || item(r"c:\users\a\appdata\local\squirreltemp", None, &[("kind", "folder")]);
+    let d = Delta {
+        sources: BTreeMap::from([(SourceKind::Folders, vec![Change::Added(temp())])]),
+        ..Default::default()
+    };
+    let a = attribute(&d, &discord, &NoiseList::builtin(), &BTreeMap::new()).remove(0);
+    assert_eq!((a.owner, &a.reason), (Owner::App, &Reason::InstallerLeftover));
+    assert!(Reason::InstallerLeftover.text().contains("left by the app's installer"));
+    // Only when the install made it: one that was there before and went away isn't this rule's.
+    let d = Delta {
+        sources: BTreeMap::from([(SourceKind::Folders, vec![Change::Removed(temp())])]),
+        ..Default::default()
+    };
+    let a = attribute(&d, &discord, &NoiseList::builtin(), &BTreeMap::new()).remove(0);
+    assert_ne!(a.reason, Reason::InstallerLeftover);
+}

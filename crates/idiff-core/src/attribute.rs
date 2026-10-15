@@ -41,7 +41,12 @@ pub enum Reason {
     HoldsAppProgram,
     /// A Programs entry the install added next to its own (runtimes it brought along).
     InstalledAlongside,
+    /// A new folder an installer framework works in and leaves behind (`SquirrelTemp`).
+    InstallerLeftover,
 }
+
+/// Folders installer frameworks make for themselves, by letters-and-digits-only name.
+const INSTALLER_FOLDERS: &[&str] = &["squirreltemp"];
 
 impl Reason {
     pub fn owner(&self) -> Owner {
@@ -65,6 +70,7 @@ impl Reason {
             Reason::NameMatches => copy::WHY_NAME_MATCHES.into(),
             Reason::HoldsAppProgram => copy::WHY_HOLDS_APP_PROGRAM.into(),
             Reason::InstalledAlongside => copy::WHY_INSTALLED_ALONGSIDE.into(),
+            Reason::InstallerLeftover => copy::WHY_INSTALLER_LEFTOVER.into(),
             Reason::Unattributed => copy::WHY_UNATTRIBUTED.into(),
         }
     }
@@ -173,6 +179,9 @@ impl Rules<'_> {
         if kind == SourceKind::Programs && matches!(change, Change::Added(_)) {
             return Reason::InstalledAlongside;
         }
+        if kind == SourceKind::Folders && matches!(change, Change::Added(_)) && is_installer_folder(item) {
+            return Reason::InstallerLeftover;
+        }
         let target = item.target.as_deref();
         let signer = item.props.get("signer").map(String::as_str);
         if target.is_some_and(|t| self.in_install_dir(t)) {
@@ -248,6 +257,21 @@ fn company_matches(signer: Option<&str>, company: Option<&String>, publisher: Op
         && company
             .zip(publisher)
             .is_some_and(|(company, publisher)| publisher::same(company, publisher))
+}
+
+/// A folder (not a shortcut) whose name is one installer frameworks use for themselves.
+fn is_installer_folder(item: &Item) -> bool {
+    let is_shortcut = item.props.get("kind").map(String::as_str) == Some("shortcut") || item.key.ends_with(".lnk");
+    let leaf: String = item
+        .key
+        .rsplit('\\')
+        .next()
+        .unwrap_or(&item.key)
+        .chars()
+        .filter(|c| c.is_alphanumeric())
+        .flat_map(char::to_lowercase)
+        .collect();
+    !is_shortcut && INSTALLER_FOLDERS.contains(&leaf.as_str())
 }
 
 /// Where the item itself is, for items that are places: folders, shortcuts and PATH entries.

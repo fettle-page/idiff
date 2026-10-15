@@ -37,6 +37,7 @@ pub const WHY_WINDOWS_COMPONENT: &str = "part of Windows";
 pub const WHY_NAME_MATCHES: &str = "name matches the app (a weak sign)";
 pub const WHY_HOLDS_APP_PROGRAM: &str = "holds one of the app's programs";
 pub const WHY_INSTALLED_ALONGSIDE: &str = "added by this install";
+pub const WHY_INSTALLER_LEFTOVER: &str = "left by the app's installer";
 pub const WHY_UNATTRIBUTED: &str = "no rule matched";
 
 pub const SOURCE_PROGRAMS: &str = "installed programs";
