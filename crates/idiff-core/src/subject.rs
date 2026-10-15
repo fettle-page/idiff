@@ -214,6 +214,11 @@ pub(crate) fn is_too_broad(dir: &str) -> bool {
         || (parts.len() == 3 && parts[1] == "users")
         || ["appdata\\local", "appdata\\roaming"].contains(&tail(2).as_str())
         || tail(3) == "appdata\\local\\programs"
+        // Where installers keep what many apps share: Windows Installer bundles cache themselves
+        // in `Package Cache`, and Inno Setup puts per-user shared files in `Programs\Common`.
+        || tail(2) == "programdata\\package cache"
+        || tail(3) == "appdata\\local\\package cache"
+        || tail(4) == "appdata\\local\\programs\\common"
 }
 
 /// Whose install this is (spec order: `--app`, new Programs entries, new Store apps, the winget

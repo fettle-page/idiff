@@ -100,6 +100,8 @@ pub const SERVICE_FULL_RIGHTS: &str = " (full system rights)";
 pub const TASKS_ONE: &str = "1 scheduled task: {summary}";
 pub const TASKS_MANY: &str = "{n} scheduled tasks: {summary}";
 pub const STARTS_WITH_WINDOWS: &str = "Starts with Windows";
+/// A `RunOnce` registry value: it runs one time, then Windows deletes it.
+pub const RUNS_ONCE: &str = "Runs once at the next sign-in";
 pub const FIREWALL_INBOUND: &str = "Allows incoming connections for {program}";
 pub const FIREWALL_OUTBOUND: &str = "Adds outbound firewall rules for {program}";
 pub const SHELL_EXT_ADDED: &str = "Adds right-click menu entries";
@@ -143,6 +145,10 @@ pub const SAME_NAME_RULES: &str = " ({n} rules)";
 pub const SAME_NAME_ITEMS: &str = " ({n} items)";
 pub const UNINSTALLER_ADDED: &str = "The uninstaller added {kind} \"{label}\"";
 pub const NOTHING_LEFT: &str = "Nothing left behind";
+/// A Microsoft runtime the install brought along (.NET, Visual C++) that the uninstall kept: not
+/// a leftover, since other apps may use it. `{names}` are its programs.
+pub const LEFT_INSTALLED_ONE: &str = "Left installed: {names}. It came with the app, and other apps may use it.";
+pub const LEFT_INSTALLED_MANY: &str = "Left installed: {names}. They came with the app, and other apps may use them.";
 
 // Scheduled task summaries: what it runs, then when.
 pub const RUNS_UPDATER: &str = "runs an updater";

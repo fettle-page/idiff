@@ -829,3 +829,194 @@ fn an_empty_leftover_folder_says_so() {
     let r = leftovers_receipt(&subject, &install, &uninstalled, &[], &BTreeMap::from([(key, 1)]));
     assert_eq!(texts(&r), [(Level::Bad, r"1 KB in AppData\Local\Discord")]);
 }
+
+/// Catalog run 38772924882: NordVPN's uninstall left only the .NET it brought along, and its page
+/// said "5 leftovers". Microsoft's runtimes that came with an app and stay are one Note.
+#[test]
+fn microsoft_runtimes_left_installed_are_a_note_not_a_leftover() {
+    let program = |key: &str, label: &str, publisher: &str| {
+        app_added(
+            SourceKind::Programs,
+            item(key, label, None, &[("publisher", publisher)]),
+        )
+    };
+    let install = vec![
+        program(r"hklm\native\app", "NordVPN", "Nord Security"),
+        program(
+            r"hklm\native\a",
+            "Microsoft .NET Runtime - 8.0.32 (x64)",
+            "Microsoft Corporation",
+        ),
+        program(
+            r"hklm\native\b",
+            "Microsoft .NET Host - 8.0.32 (x64)",
+            "Microsoft Corporation",
+        ),
+        program(r"hklm\native\c", "NordUpdater", "Nord Security"),
+    ];
+    let mut uninstalled = Snapshot::load(include_str!("fixtures/discord-before.json")).unwrap();
+    let programs = uninstalled.sources.get_mut(&SourceKind::Programs).unwrap();
+    for a in install.iter().skip(1) {
+        programs.items.push(a.change.item().clone());
+    }
+    let subject = Subject {
+        name: "NordVPN".into(),
+        publisher: Some("Nord Security".into()),
+        own_entry: Some(r"hklm\native\app".into()),
+        ..Default::default()
+    };
+    let r = leftovers_receipt(&subject, &install, &uninstalled, &[], &BTreeMap::new());
+    // A non-Microsoft extra entry stays a leftover; the runtimes don't count.
+    assert_eq!(r.title, "NordVPN: after uninstall, 1 leftover");
+    assert_eq!(
+        texts(&r),
+        [
+            (Level::Bad, r#"Program "NordUpdater" is still there"#),
+            (
+                Level::Note,
+                "Left installed: Microsoft .NET Runtime - 8.0.32 (x64), Microsoft .NET Host - 8.0.32 (x64). \
+                 They came with the app, and other apps may use them."
+            ),
+        ]
+    );
+    assert_eq!(r.lines[1].items, [r"hklm\native\a", r"hklm\native\b"]);
+
+    // One runtime reads in the singular; with nothing else left, it is "no leftovers".
+    let one = vec![install[0].clone(), install[1].clone()];
+    let mut only_one = Snapshot::load(include_str!("fixtures/discord-before.json")).unwrap();
+    only_one
+        .sources
+        .get_mut(&SourceKind::Programs)
+        .unwrap()
+        .items
+        .push(install[1].change.item().clone());
+    let r = leftovers_receipt(&subject, &one, &only_one, &[], &BTreeMap::new());
+    assert_eq!(r.title, "NordVPN: after uninstall, no leftovers");
+    assert!(texts(&r).contains(&(
+        Level::Note,
+        "Left installed: Microsoft .NET Runtime - 8.0.32 (x64). It came with the app, and other apps may use it."
+    )));
+
+    // The app's own entry is a leftover even from Microsoft, and so is anything of a Microsoft app.
+    let microsoft = Subject {
+        name: "PowerToys".into(),
+        publisher: Some("Microsoft Corporation".into()),
+        own_entry: Some(r"hklm\native\app".into()),
+        ..Default::default()
+    };
+    let r = leftovers_receipt(&microsoft, &one, &only_one, &[], &BTreeMap::new());
+    assert_eq!(r.title, "PowerToys: after uninstall, 1 leftover");
+}
+
+/// ShareX: the Startup-folder shortcut was both "Starts with Windows" and "Adds a Start menu entry".
+#[test]
+fn a_startup_folder_shortcut_is_not_a_start_menu_entry() {
+    let shortcut = |key: &str| {
+        app_added(
+            SourceKind::Folders,
+            item(key, key, None, &[("kind", "shortcut"), ("root", "Start menu")]),
+        )
+    };
+    let attributed = vec![
+        shortcut(r"c:\users\a\appdata\roaming\microsoft\windows\start menu\programs\sharex\sharex.lnk"),
+        shortcut(r"c:\users\a\appdata\roaming\microsoft\windows\start menu\programs\startup\sharex.lnk"),
+    ];
+    let subject = Subject {
+        name: "ShareX".into(),
+        ..Default::default()
+    };
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    let line = r.lines.iter().find(|l| l.text == "Adds a Start menu entry").unwrap();
+    assert_eq!(line.items.len(), 1, "{line:?}");
+    assert!(line.items[0].contains(r"\sharex\sharex.lnk"));
+    // Only the Startup folder: no Start menu line at all.
+    let r = install_receipt(
+        &subject,
+        &attributed[1..],
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    assert!(!r.lines.iter().any(|l| l.text == "Adds a Start menu entry"), "{r:#?}");
+}
+
+/// Zoom's `RunOnce` value runs one time at the next sign-in; it isn't a program that starts with Windows.
+#[test]
+fn a_runonce_entry_runs_once_and_is_not_a_startup_program() {
+    let entry = |key: &str, label: &str| app_added(SourceKind::Startup, item(key, label, None, &[]));
+    let attributed = vec![
+        entry(r"run|hkcu|software\microsoft\windows\currentversion\run|zoom", "Zoom"),
+        entry(
+            r"run|hkcu|software\microsoft\windows\currentversion\runonce|zoommsirepair",
+            "ZoomMsiRepair",
+        ),
+    ];
+    let subject = Subject {
+        name: "Zoom".into(),
+        ..Default::default()
+    };
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    let startup = r.lines.iter().find(|l| l.text == "Starts with Windows").unwrap();
+    assert_eq!(startup.level, Level::Warn);
+    assert_eq!(startup.items.len(), 1, "{startup:?}");
+    let once = r
+        .lines
+        .iter()
+        .find(|l| l.text == "Runs once at the next sign-in")
+        .unwrap();
+    assert_eq!(once.level, Level::Note);
+    assert!(once.items[0].ends_with("|zoommsirepair"));
+    // Alone, it is not "Starts with Windows" at all.
+    let r = install_receipt(
+        &subject,
+        &attributed[1..],
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    assert!(!r.lines.iter().any(|l| l.text == "Starts with Windows"), "{r:#?}");
+}
+
+/// EA app: the registry name "Microsoft Visual C++ 2010  x86 Redistributable" has two spaces.
+#[test]
+fn runs_of_spaces_in_program_names_are_one_space() {
+    let subject = Subject {
+        name: "EA app".into(),
+        also_installed: vec!["Microsoft Visual C++ 2010  x86 Redistributable - 10.0.40219".into()],
+        ..Default::default()
+    };
+    let attributed = vec![app_added(
+        SourceKind::Services,
+        item("svc", "Some   Update\tService", None, &[]),
+    )];
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    let text: Vec<&str> = r.lines.iter().map(|l| l.text.as_str()).collect();
+    assert!(
+        text.contains(&"Also installed: Microsoft Visual C++ 2010 x86 Redistributable - 10.0.40219"),
+        "{text:?}"
+    );
+    assert!(text.iter().any(|t| t.ends_with("Some Update Service")), "{text:?}");
+}

@@ -4,6 +4,7 @@ use crate::attribute::{Attributed, Owner, Reason};
 use crate::copy;
 use crate::diff::Change;
 use crate::model::{Env, Item, Snapshot, SourceKind};
+use crate::publisher;
 use crate::subject::Subject;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -130,6 +131,19 @@ pub fn trigger_summary(item: &Item) -> String {
     format!("{what} {when}{}", if as_system { copy::AS_SYSTEM } else { "" })
 }
 
+/// A startup value under `RunOnce` (or `RunOnceEx`): its key is `run|<hive>|<registry path>|<name>`.
+fn is_run_once(item: &Item) -> bool {
+    item.key.split('|').nth(2).is_some_and(|path| {
+        let path = path.trim_end_matches('\\');
+        path.ends_with("\\runonce") || path.ends_with("\\runonceex")
+    })
+}
+
+/// A shortcut in the Start menu's Startup folder, which Windows runs at sign-in.
+fn in_startup_folder(item: &Item) -> bool {
+    item.key.contains("\\programs\\startup\\")
+}
+
 fn is_shortcut(item: &Item) -> bool {
     prop(item, "kind") == Some("shortcut") || item.key.ends_with(".lnk")
 }
@@ -167,11 +181,16 @@ fn kind_in_sentence(kind: SourceKind, item: &Item) -> String {
 }
 
 /// The name people know an item by: a task's name without its folder, else the label.
-fn display_label(kind: SourceKind, item: &Item) -> &str {
+/// Names as people read them: a registry name's runs of spaces ("Visual C++ 2010  x86") are one.
+fn tidy(s: &str) -> String {
+    s.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+fn display_label(kind: SourceKind, item: &Item) -> String {
     let label = if item.label.is_empty() { &item.key } else { &item.label };
     match kind {
-        SourceKind::Tasks => label.rsplit('\\').next().unwrap_or(label),
-        _ => label,
+        SourceKind::Tasks => tidy(label.rsplit('\\').next().unwrap_or(label)),
+        _ => tidy(label),
     }
 }
 
@@ -187,7 +206,7 @@ fn change_line(a: &Attributed) -> Line {
         template,
         &[
             ("kind", &kind_in_sentence(a.kind, item)),
-            ("label", display_label(a.kind, item)),
+            ("label", &display_label(a.kind, item)),
         ],
     );
     about(Level::Note, text, &[a])
@@ -249,9 +268,10 @@ fn title(subject: &Subject) -> String {
 
 /// The name with its version, unless the name has it already ("7-Zip 24.08 (x64)").
 fn name_and_version(subject: &Subject) -> String {
+    let name = tidy(&subject.name);
     match &subject.version {
-        Some(v) if !subject.name.contains(v.as_str()) => format!("{} {v}", subject.name),
-        _ => subject.name.clone(),
+        Some(v) if !name.contains(v.as_str()) => format!("{name} {v}"),
+        _ => name,
     }
 }
 
@@ -281,12 +301,7 @@ pub fn install_receipt(
             .filter(|a| a.kind == kind && matches!(a.change, Change::Added(_)))
             .collect()
     };
-    let labels = |list: &[&Attributed]| {
-        unique_join(
-            list.iter().map(|a| display_label(a.kind, a.change.item()).to_string()),
-            ", ",
-        )
-    };
+    let labels = |list: &[&Attributed]| unique_join(list.iter().map(|a| display_label(a.kind, a.change.item())), ", ");
     let mut lines = Vec::new();
 
     match exit_code {
@@ -300,7 +315,7 @@ pub fn install_receipt(
         let subject_name = display_label(a.kind, a.change.item());
         lines.push(about(
             Level::Bad,
-            fill(copy::CERT_ADDED, &[("subject", subject_name)]),
+            fill(copy::CERT_ADDED, &[("subject", &subject_name)]),
             &[a],
         ));
     }
@@ -308,7 +323,7 @@ pub fn install_receipt(
         let path = display_label(a.kind, a.change.item());
         lines.push(about(
             Level::Bad,
-            fill(copy::DEFENDER_EXCLUSION, &[("path", path)]),
+            fill(copy::DEFENDER_EXCLUSION, &[("path", &path)]),
             &[a],
         ));
     }
@@ -380,8 +395,13 @@ pub fn install_receipt(
         .into_iter()
         .chain(with_extension("startup"))
         .collect();
+    let (once, startup): (Vec<&Attributed>, Vec<&Attributed>) =
+        startup.into_iter().partition(|a| is_run_once(a.change.item()));
     if !startup.is_empty() {
         lines.push(about(Level::Warn, copy::STARTS_WITH_WINDOWS, &startup));
+    }
+    if !once.is_empty() {
+        lines.push(about(Level::Note, copy::RUNS_ONCE, &once));
     }
 
     let firewall = added(SourceKind::Firewall);
@@ -495,6 +515,8 @@ pub fn install_receipt(
             .iter()
             .copied()
             .filter(|a| prop(a.change.item(), "root").is_some_and(|r| roots.contains(&r)))
+            // A shortcut in a Startup folder is "Starts with Windows", not a Start menu entry.
+            .filter(|a| !in_startup_folder(a.change.item()))
             .collect();
         if !these.is_empty() {
             lines.push(about(Level::Note, text, &these));
@@ -502,7 +524,12 @@ pub fn install_receipt(
     }
 
     if !subject.also_installed.is_empty() {
-        let names = subject.also_installed.join(", ");
+        let names = subject
+            .also_installed
+            .iter()
+            .map(|n| tidy(n))
+            .collect::<Vec<_>>()
+            .join(", ");
         lines.push(plain(Level::Note, fill(copy::ALSO_INSTALLED, &[("names", &names)])));
     }
     // The app's own entry changing version is what the title says already.
@@ -515,7 +542,7 @@ pub fn install_receipt(
             copy::CHANGES_ITEM,
             &[
                 ("kind", &kind_in_sentence(a.kind, item)),
-                ("label", display_label(a.kind, item)),
+                ("label", &display_label(a.kind, item)),
             ],
         );
         lines.push(about(Level::Note, text, &[a]));
@@ -592,6 +619,9 @@ pub fn leftovers_receipt(
     // Sources the leftovers couldn't be fully checked in: (reason, read in part).
     let mut unchecked: BTreeMap<SourceKind, (String, bool)> = BTreeMap::new();
     let mut left = 0;
+    // Microsoft runtimes that came with the app and stayed: (label, key, why).
+    let mut runtimes: Vec<(String, String, String)> = Vec::new();
+    let subject_is_microsoft = subject.publisher.as_deref().is_some_and(publisher::is_microsoft);
     // Where a line for this kind and text is, and how many items it stands for.
     let mut same_name: BTreeMap<(SourceKind, String), (usize, usize)> = BTreeMap::new();
     for a in install
@@ -620,6 +650,16 @@ pub fn leftovers_receipt(
         if !present {
             continue;
         }
+        // A runtime from Microsoft that the install brought along isn't the app's to remove: the
+        // uninstaller leaves it for the other apps that may use it. The app's own entry is.
+        if a.kind == SourceKind::Programs
+            && !subject_is_microsoft
+            && subject.own_entry.as_deref() != Some(item.key.as_str())
+            && prop(item, "publisher").is_some_and(publisher::is_microsoft)
+        {
+            runtimes.push((display_label(a.kind, item), item.key.clone(), a.reason.text()));
+            continue;
+        }
         left += 1;
         let size = sizes
             .get(&item.key)
@@ -630,20 +670,20 @@ pub fn leftovers_receipt(
                     copy::STILL_THERE,
                     &[
                         ("kind", kind_name(a.kind, item)),
-                        ("label", display_label(a.kind, item)),
+                        ("label", &display_label(a.kind, item)),
                     ],
                 );
                 format!("{still}{}", copy::EMPTY_SUFFIX)
             }
             Some(&bytes) => fill(
                 copy::FOLDER_LEFT,
-                &[("size", &format_size(bytes)), ("path", display_label(a.kind, item))],
+                &[("size", &format_size(bytes)), ("path", &display_label(a.kind, item))],
             ),
             None => fill(
                 copy::STILL_THERE,
                 &[
                     ("kind", kind_name(a.kind, item)),
-                    ("label", display_label(a.kind, item)),
+                    ("label", &display_label(a.kind, item)),
                 ],
             ),
         };
@@ -680,7 +720,7 @@ pub fn leftovers_receipt(
             copy::UNINSTALLER_ADDED,
             &[
                 ("kind", &kind_in_sentence(a.kind, item)),
-                ("label", display_label(a.kind, item)),
+                ("label", &display_label(a.kind, item)),
             ],
         );
         lines.push(about(Level::Note, text, &[a]));
@@ -690,6 +730,21 @@ pub fn leftovers_receipt(
     }
     for (kind, (reason, partial)) in &unchecked {
         lines.push(check_line(*kind, reason, *partial));
+    }
+    if !runtimes.is_empty() {
+        let names = unique_join(runtimes.iter().map(|(label, ..)| label.clone()), ", ");
+        let distinct = runtimes.iter().map(|(label, ..)| label).collect::<BTreeSet<_>>().len();
+        let template = if distinct == 1 {
+            copy::LEFT_INSTALLED_ONE
+        } else {
+            copy::LEFT_INSTALLED_MANY
+        };
+        lines.push(Line {
+            level: Level::Note,
+            text: fill(template, &[("names", &names)]),
+            items: runtimes.iter().map(|(_, key, _)| key.clone()).collect(),
+            why: runtimes.iter().map(|(.., why)| why.clone()).collect(),
+        });
     }
 
     let name = name_and_version(subject);
