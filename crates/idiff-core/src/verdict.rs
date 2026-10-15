@@ -588,10 +588,12 @@ pub fn leftovers_receipt(
     during: &[Attributed],
     sizes: &BTreeMap<String, u64>,
 ) -> Receipt {
-    let mut lines = Vec::new();
+    let mut lines: Vec<Line> = Vec::new();
     // Sources the leftovers couldn't be fully checked in: (reason, read in part).
     let mut unchecked: BTreeMap<SourceKind, (String, bool)> = BTreeMap::new();
     let mut left = 0;
+    // Where a line for this kind and text is, and how many items it stands for.
+    let mut same_name: BTreeMap<(SourceKind, String), (usize, usize)> = BTreeMap::new();
     for a in install
         .iter()
         .filter(|a| a.owner == Owner::App && matches!(a.change, Change::Added(_)))
@@ -645,7 +647,29 @@ pub fn leftovers_receipt(
                 ],
             ),
         };
+        // Items of one kind that read the same are one line with a count: a firewall rule per
+        // protocol or profile has the same name (Zoom's "Airhost service" rules). Folders and
+        // shortcuts are told apart by their path, so they aren't merged.
+        if a.kind != SourceKind::Folders {
+            if let Some((first, n)) = same_name.get_mut(&(a.kind, text.clone())) {
+                lines[*first].items.push(item.key.clone());
+                lines[*first].why.push(a.reason.text());
+                *n += 1;
+                continue;
+            }
+            same_name.insert((a.kind, text.clone()), (lines.len(), 1));
+        }
         lines.push(about(Level::Bad, text, &[a]));
+    }
+    for ((kind, _), (index, n)) in same_name {
+        if n > 1 {
+            let template = if kind == SourceKind::Firewall {
+                copy::SAME_NAME_RULES
+            } else {
+                copy::SAME_NAME_ITEMS
+            };
+            lines[index].text.push_str(&fill(template, &[("n", &n.to_string())]));
+        }
     }
     for a in during
         .iter()

@@ -135,6 +135,10 @@ pub const STILL_THERE: &str = "{kind} \"{label}\" is still there";
 pub const FOLDER_LEFT: &str = "{size} in {path}";
 /// After `STILL_THERE` for a leftover folder with nothing in it.
 pub const EMPTY_SUFFIX: &str = " (empty)";
+/// After `STILL_THERE` when several firewall rules have the same name.
+pub const SAME_NAME_RULES: &str = " ({n} rules)";
+/// After `STILL_THERE` when several other items of one kind have the same name.
+pub const SAME_NAME_ITEMS: &str = " ({n} items)";
 pub const UNINSTALLER_ADDED: &str = "The uninstaller added {kind} \"{label}\"";
 pub const NOTHING_LEFT: &str = "Nothing left behind";
 

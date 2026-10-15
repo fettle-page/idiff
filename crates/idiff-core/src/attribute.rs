@@ -120,10 +120,10 @@ pub fn attribute(delta: &Delta, subject: &Subject, noise: &NoiseList, env: &Env)
 /// is the app's too: Logitech G HUB's service is signed by Logitech, but its `Program Files\LGHUB`
 /// isn't named after "Logitech". One pass is enough: a folder doesn't make another one the app's.
 ///
-/// A new folder that holds one of the app's install dirs is the app's too, even a broad one: an
-/// installer that puts the app in `AppData\Local\Programs\<app>` makes `Programs` when it's
-/// missing. This only labels the folder; it doesn't make it an install dir, so the broad-folder
-/// guard isn't needed here.
+/// A new folder that holds one of the app's install dirs is the app's too. Not a broad one,
+/// though: an installer that puts the app in `AppData\Local\Programs\<app>` makes `Programs` when
+/// it's missing, but that's the parent of every per-user install, not the app's folder. It would
+/// show up as an empty leftover (VS Code, Signal, GIMP) or take the app's size (Opera).
 fn claim_folders_holding_app_programs(attributed: &mut [Attributed], subject: &Subject) {
     let programs: Vec<String> = attributed
         .iter()
@@ -141,11 +141,9 @@ fn claim_folders_holding_app_programs(attributed: &mut [Attributed], subject: &S
             && matches!(a.change, Change::Added(_))
             && item.props.get("kind").map(String::as_str) != Some("shortcut")
             && !item.key.ends_with(".lnk");
-        let holds_program = !crate::subject::is_too_broad(&item.key) && programs.iter().any(|p| is_under(p, &item.key));
-        // Of the broad folders, only AppData\Local\Programs is ever made by an installer; the
-        // others (Program Files, a profile, AppData) are on every PC.
-        let always_there = crate::subject::is_too_broad(&item.key) && !item.key.ends_with(r"\appdata\local\programs");
-        let holds_install_dir = !always_there
+        let shared = crate::subject::is_too_broad(&item.key);
+        let holds_program = !shared && programs.iter().any(|p| is_under(p, &item.key));
+        let holds_install_dir = !shared
             && subject
                 .install_dirs
                 .iter()
@@ -171,6 +169,15 @@ impl Rules<'_> {
             return Reason::Noise(note.to_string());
         }
         let item = change.item();
+        // A folder every app shares (Program Files, ProgramData, AppData\Local\Programs, a
+        // profile) is never one app's, whatever it holds or is named: no rule below claims it.
+        if kind == SourceKind::Folders
+            && !item.key.ends_with(".lnk")
+            && item.props.get("kind").map(String::as_str) != Some("shortcut")
+            && crate::subject::is_too_broad(&item.key)
+        {
+            return Reason::Unattributed;
+        }
         if matches!(kind, SourceKind::Programs | SourceKind::Packaged) && self.subject.entries.contains(&item.key) {
             return Reason::SubjectEntry;
         }
