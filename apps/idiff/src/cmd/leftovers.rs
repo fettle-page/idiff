@@ -73,9 +73,18 @@ pub fn run(
     let uninstalled = snapshot_for_run(options.no_elevate);
     let saved = |e: std::io::Error| format!("{}: {e}", s.dir.display());
     s.write_json("uninstalled.json", &uninstalled).map_err(saved)?;
-    let mut receipt = leftovers_from_files(&s, &uninstalled, noise, &|key| folder_size(Path::new(key)).0)?;
+    let found = leftovers_from_files(&s, &uninstalled, noise, &|key| folder_size(Path::new(key)).0)?;
+    let mut receipt = found.receipt;
+    // Still listed: the uninstall didn't run or finish, so these aren't all leftovers.
+    if found.still_listed {
+        status = 2;
+    }
     if timed_out {
         // An uninstaller that hangs (often at a dialog nobody can click) hasn't removed things yet.
+        // That says more than "still listed", so it's the one warning.
+        if found.still_listed {
+            receipt.lines.remove(0);
+        }
         let n = options.timeout_mins.to_string();
         receipt.lines.insert(
             0,

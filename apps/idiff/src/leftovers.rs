@@ -7,8 +7,17 @@ use idiff_core::diff::{Change, diff};
 use idiff_core::model::{Snapshot, SourceKind};
 use idiff_core::noise::NoiseList;
 use idiff_core::subject::find_subject;
-use idiff_core::verdict::{Receipt, leftovers_receipt};
+use idiff_core::verdict::{Level, Line, Receipt, leftovers_receipt};
 use std::collections::BTreeMap;
+
+/// What a leftovers check found.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Leftovers {
+    pub receipt: Receipt,
+    /// The app's own entry in Installed programs (or its Store package) is still there, so the
+    /// uninstall didn't run or didn't finish. The receipt then opens with a warning saying so.
+    pub still_listed: bool,
+}
 
 /// The leftovers receipt for a finished install session and a snapshot taken after the uninstall.
 /// The install is attributed again with `noise` (today's rules, not the ones it was run with).
@@ -18,7 +27,7 @@ pub fn leftovers_from_files(
     uninstalled: &Snapshot,
     noise: &NoiseList,
     size_of: &dyn Fn(&str) -> u64,
-) -> Result<Receipt, String> {
+) -> Result<Leftovers, String> {
     if !session.dir.join("after.json").is_file() {
         return Err(copy::SESSION_UNFINISHED.to_string());
     }
@@ -50,7 +59,31 @@ pub fn leftovers_from_files(
         .filter(|key| still_there(key))
         .map(|key| (key.clone(), size_of(key)))
         .collect();
-    Ok(leftovers_receipt(&subject, &install, uninstalled, &during, &sizes))
+    let mut receipt = leftovers_receipt(&subject, &install, uninstalled, &during, &sizes);
+
+    // A real uninstall always removes the app's own Installed programs entry (or Store package).
+    let listed = |kind: SourceKind, key: &str| {
+        uninstalled
+            .sources
+            .get(&kind)
+            .is_some_and(|s| s.ok && s.items.iter().any(|i| i.key == key))
+    };
+    let still_listed = subject
+        .entries
+        .iter()
+        .any(|key| listed(SourceKind::Programs, key) || listed(SourceKind::Packaged, key));
+    if still_listed {
+        receipt.lines.insert(
+            0,
+            Line {
+                level: Level::Warn,
+                text: copy::UNINSTALL_DIDNT_FINISH.to_string(),
+                items: Vec::new(),
+                why: Vec::new(),
+            },
+        );
+    }
+    Ok(Leftovers { receipt, still_listed })
 }
 
 /// A snapshot from the session, through `Snapshot::load` so a damaged or newer file says so.

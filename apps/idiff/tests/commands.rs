@@ -170,6 +170,67 @@ mod leftovers {
         assert!(stdout(&out).contains("after uninstall"), "{}", stdout(&out));
     }
 
+    /// A session whose "install" added one program that's really on this PC: its before snapshot
+    /// is this PC without that program. Nothing is installed or removed, so after any "uninstall"
+    /// the program is still listed, as when an uninstall didn't run.
+    fn session_with_a_program_still_installed(home: &Path) -> std::path::PathBuf {
+        let dir = finished_nothing_session(home);
+        let mut before: serde_json::Value =
+            serde_json::from_str(&std::fs::read_to_string(dir.join("after.json")).unwrap()).unwrap();
+        let items = before["sources"]["Programs"]["items"].as_array_mut().unwrap();
+        let program = items
+            .iter()
+            .position(|i| i["props"]["system_component"].is_null())
+            .expect("this PC lists at least one program");
+        items.remove(program);
+        std::fs::write(dir.join("before.json"), serde_json::to_string(&before).unwrap()).unwrap();
+        dir
+    }
+
+    #[test]
+    fn an_app_still_listed_after_the_uninstall_gives_an_honest_receipt() {
+        let home = tempfile::tempdir().unwrap();
+        let dir = session_with_a_program_still_installed(home.path());
+        let out = idiff_at(home.path(), &["leftovers", "last", "--yes", "--no-elevate"]);
+        assert_eq!(out.status.code(), Some(2), "{}", stderr(&out));
+        let saved: Receipt =
+            serde_json::from_str(&std::fs::read_to_string(dir.join("leftovers.json")).unwrap()).unwrap();
+        assert_eq!(
+            (saved.lines[0].level, saved.lines[0].text.as_str()),
+            (Level::Warn, copy::UNINSTALL_DIDNT_FINISH)
+        );
+        assert!(stdout(&out).contains(copy::UNINSTALL_DIDNT_FINISH), "{}", stdout(&out));
+    }
+
+    #[test]
+    fn a_timeout_is_the_one_warning_when_the_app_is_also_still_listed() {
+        let home = tempfile::tempdir().unwrap();
+        let dir = session_with_a_program_still_installed(home.path());
+        let out = idiff_at(
+            home.path(),
+            &[
+                "leftovers",
+                "last",
+                "--yes",
+                "--no-elevate",
+                "--settle",
+                "0",
+                "--timeout",
+                "0",
+                "--",
+                "ping",
+                "-n",
+                "3",
+                "127.0.0.1",
+            ],
+        );
+        assert_eq!(out.status.code(), Some(2), "{}", stderr(&out));
+        let saved: Receipt =
+            serde_json::from_str(&std::fs::read_to_string(dir.join("leftovers.json")).unwrap()).unwrap();
+        assert_eq!(saved.lines[0].text, copy::UNINSTALL_TIMED_OUT.replace("{n}", "0"));
+        assert!(!saved.lines.iter().any(|l| l.text == copy::UNINSTALL_DIDNT_FINISH));
+    }
+
     /// An uninstaller that hangs (at a dialog nobody can click) must not pass for a finished one:
     /// the receipt says the list may hold things it would have removed, and idiff exits 2.
     #[test]

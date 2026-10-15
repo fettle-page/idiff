@@ -68,13 +68,16 @@ fn leftovers_from_session_files_list_what_is_still_there() {
         measured.borrow_mut().push(key.to_string());
         340 * 1024 * 1024
     };
-    let r = leftovers_from_files(
+    let result = leftovers_from_files(
         &s,
         &uninstalled_leaving_task_and_folder(),
         &NoiseList::builtin(),
         &size_of,
     )
     .unwrap();
+    // Discord's own entry is gone, so these are real leftovers (Squirrel leaves its data behind).
+    assert!(!result.still_listed);
+    let r = result.receipt;
     assert_eq!(r.mode, Mode::Leftovers);
     assert_eq!(r.title, "Discord 1.0.9170: after uninstall, 2 leftovers");
     assert_eq!(
@@ -104,7 +107,9 @@ fn what_the_uninstaller_added_for_the_app_is_noted() {
             target: Some(r"c:\users\a\appdata\local\discord\cleanup.exe".into()),
             props: Default::default(),
         });
-    let r = leftovers_from_files(&s, &uninstalled, &NoiseList::builtin(), &|_| 0).unwrap();
+    let r = leftovers_from_files(&s, &uninstalled, &NoiseList::builtin(), &|_| 0)
+        .unwrap()
+        .receipt;
     assert_eq!(r.title, "Discord 1.0.9170: after uninstall, no leftovers");
     assert_eq!(
         texts(&r),
@@ -113,6 +118,24 @@ fn what_the_uninstaller_added_for_the_app_is_noted() {
             (Level::Good, "Nothing left behind"),
         ]
     );
+}
+
+/// A real uninstall always removes the app's own entry in Installed programs. Still there means
+/// the uninstall didn't run or finish (EA app on a runner), not that everything is a leftover.
+#[test]
+fn an_app_still_listed_after_the_uninstall_is_said_so_first() {
+    let _home = temp_home();
+    let s = discord_session();
+    // Nothing was removed: the "uninstalled" PC is the PC right after the install.
+    let result = leftovers_from_files(&s, &fixture("after"), &NoiseList::builtin(), &|_| 0).unwrap();
+    assert!(result.still_listed);
+    let first = &result.receipt.lines[0];
+    assert_eq!(
+        (first.level, first.text.as_str()),
+        (Level::Warn, copy::UNINSTALL_DIDNT_FINISH)
+    );
+    // The rest of the receipt is still there to read.
+    assert!(result.receipt.lines.len() > 1);
 }
 
 #[test]

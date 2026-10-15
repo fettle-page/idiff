@@ -84,17 +84,25 @@ function Save-Receipts {
 }
 
 # The installed version, found the way idiff finds the app (spec §6): the biggest new program
-# entry that isn't a system component, else a new Store package.
-function Get-InstalledVersion {
+# entry that isn't a system component, else a new Store package. Only after an install that
+# exited 0: a failed one installed nothing, and anything new then is something else. Store
+# packages published by Microsoft only count for Microsoft's own apps, since winget refreshes its
+# own source package (Microsoft.Winget.Source) during runs.
+function Get-InstalledVersion([object]$ExitCode, [string]$AppId) {
+    if ($ExitCode -ne 0) { return $null }
     $beforeFile, $afterFile = (Find-SessionFile 'before.json'), (Find-SessionFile 'after.json')
     if (-not $beforeFile -or -not $afterFile) { return $null }
     $before = Get-Content $beforeFile.FullName -Raw | ConvertFrom-Json -AsHashtable
     $after = Get-Content $afterFile.FullName -Raw | ConvertFrom-Json -AsHashtable
+    $microsoftApp = $AppId -like 'Microsoft.*'
     foreach ($source in 'Programs', 'Packaged') {
         $old = @{}
         foreach ($i in $before.sources[$source].items) { $old[$i.key] = $true }
         $new = @($after.sources[$source].items | Where-Object {
-                -not $old.ContainsKey($_.key) -and $_.props.system_component -ne '1' -and $_.props.version
+                $publisher = "$($_.props.publisher)"
+                $byMicrosoft = $publisher -like 'Microsoft*' -or $publisher -like '*CN=Microsoft Corporation*'
+                -not $old.ContainsKey($_.key) -and $_.props.system_component -ne '1' -and $_.props.version -and
+                -not ($source -eq 'Packaged' -and $byMicrosoft -and -not $microsoftApp)
             })
         if ($new) {
             return ($new | Sort-Object { [long]($_.props.size_kb ?? 0) } -Descending | Select-Object -First 1).props.version
@@ -119,7 +127,7 @@ try {
         'run', '--yes', '--settle', '30', '--timeout', '20', '--app', "`"$Name`"", '--',
         'winget', 'install', '--id', $Id, '--exact', '--silent',
         '--accept-package-agreements', '--accept-source-agreements', '--disable-interactivity')
-    $meta.version = Get-InstalledVersion
+    $meta.version = Get-InstalledVersion -ExitCode $code -AppId $Id
     Save-Receipts
     # Exit 2 means the installer failed but the receipt was still made; 1 means idiff itself failed.
     $installed = $null -ne $code -and $code -ne 1 -and (Find-SessionFile 'after.json')
