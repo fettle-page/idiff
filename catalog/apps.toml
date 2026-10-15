@@ -115,6 +115,10 @@ name = "NordVPN"
 id = "GIMP.GIMP"
 name = "GIMP"
 
+[[app]]
+id = "Microsoft.PowerToys"
+name = "PowerToys"
+
 # Later: checked with `winget show`, not run yet. Uncomment to add them to the next run.
 
 # [[app]]
@@ -148,10 +152,6 @@ name = "GIMP"
 # [[app]]
 # id = "WinSCP.WinSCP"
 # name = "WinSCP"
-
-# [[app]]
-# id = "Microsoft.PowerToys"
-# name = "PowerToys"
 
 # [[app]]
 # id = "voidtools.Everything"
