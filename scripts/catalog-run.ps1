@@ -105,6 +105,10 @@ function Get-InstalledVersion([object]$ExitCode, [string]$AppId) {
                 -not ($source -eq 'Packaged' -and $byMicrosoft -and -not $microsoftApp)
             })
         if ($new) {
+            # idiff was given --app, so the entry named like the app wins over a bigger runtime that
+            # came along (HandBrake's .NET Desktop Runtime would otherwise give it version 10.0.13).
+            $named = @($new | Where-Object { "$($_.label)".IndexOf($Name, [StringComparison]::OrdinalIgnoreCase) -ge 0 })
+            if ($named) { $new = $named }
             return ($new | Sort-Object { [long]($_.props.size_kb ?? 0) } -Descending | Select-Object -First 1).props.version
         }
     }
