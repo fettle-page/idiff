@@ -97,7 +97,7 @@ Nothing leaves your PC. Sessions are stored in `%LOCALAPPDATA%\idiff`. `export` 
 
 ## Receipts Library
 
-Receipts for popular apps. Each app is installed on its own fresh GitHub Windows Server 2025 runner by the Catalog workflow, opened once, then uninstalled, and idiff prints the receipt.
+Receipts for popular apps. Each app is installed on its own fresh GitHub Windows Server 2025 runner by the Catalog workflow with `winget install --silent`, then uninstalled with `winget uninstall --silent`. idiff writes a receipt for each step. The app itself is never started, so changes it makes on first run aren't included.
 
 - The pages are in [`receipts/`](receipts/). Each one says which runner image, idiff version, app version and date it came from, and links to the workflow run.
 - [`receipts/README.md`](receipts/README.md) is the overview, with one line per app.
@@ -107,7 +107,7 @@ Known limits:
 
 - The receipts come from Windows Server 2025 runners, not from a Windows 10 or 11 PC, so a desktop PC may show different background changes.
 - The uninstall check only finishes on a test machine for apps that have a truly silent uninstall. For the others, the page says the uninstall didn't finish and shows no leftovers. That doesn't mean nothing was left behind.
-- An app is installed once, with its default options. Your choices in the installer can change the result.
+- An app is installed once, silently, with its default options. Your choices in the installer can change the result.
 
 ## About
 
