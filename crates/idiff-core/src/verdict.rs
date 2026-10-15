@@ -131,6 +131,14 @@ pub fn trigger_summary(item: &Item) -> String {
     format!("{what} {when}{}", if as_system { copy::AS_SYSTEM } else { "" })
 }
 
+/// A startup value under `RunOnce` (or `RunOnceEx`): its key is `run|<hive>|<registry path>|<name>`.
+fn is_run_once(item: &Item) -> bool {
+    item.key.split('|').nth(2).is_some_and(|path| {
+        let path = path.trim_end_matches('\\');
+        path.ends_with("\\runonce") || path.ends_with("\\runonceex")
+    })
+}
+
 /// A shortcut in the Start menu's Startup folder, which Windows runs at sign-in.
 fn in_startup_folder(item: &Item) -> bool {
     item.key.contains("\\programs\\startup\\")
@@ -386,8 +394,13 @@ pub fn install_receipt(
         .into_iter()
         .chain(with_extension("startup"))
         .collect();
+    let (once, startup): (Vec<&Attributed>, Vec<&Attributed>) =
+        startup.into_iter().partition(|a| is_run_once(a.change.item()));
     if !startup.is_empty() {
         lines.push(about(Level::Warn, copy::STARTS_WITH_WINDOWS, &startup));
+    }
+    if !once.is_empty() {
+        lines.push(about(Level::Note, copy::RUNS_ONCE, &once));
     }
 
     let firewall = added(SourceKind::Firewall);

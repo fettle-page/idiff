@@ -947,3 +947,48 @@ fn a_startup_folder_shortcut_is_not_a_start_menu_entry() {
     );
     assert!(!r.lines.iter().any(|l| l.text == "Adds a Start menu entry"), "{r:#?}");
 }
+
+/// Zoom's `RunOnce` value runs one time at the next sign-in; it isn't a program that starts with Windows.
+#[test]
+fn a_runonce_entry_runs_once_and_is_not_a_startup_program() {
+    let entry = |key: &str, label: &str| app_added(SourceKind::Startup, item(key, label, None, &[]));
+    let attributed = vec![
+        entry(r"run|hkcu|software\microsoft\windows\currentversion\run|zoom", "Zoom"),
+        entry(
+            r"run|hkcu|software\microsoft\windows\currentversion\runonce|zoommsirepair",
+            "ZoomMsiRepair",
+        ),
+    ];
+    let subject = Subject {
+        name: "Zoom".into(),
+        ..Default::default()
+    };
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    let startup = r.lines.iter().find(|l| l.text == "Starts with Windows").unwrap();
+    assert_eq!(startup.level, Level::Warn);
+    assert_eq!(startup.items.len(), 1, "{startup:?}");
+    let once = r
+        .lines
+        .iter()
+        .find(|l| l.text == "Runs once at the next sign-in")
+        .unwrap();
+    assert_eq!(once.level, Level::Note);
+    assert!(once.items[0].ends_with("|zoommsirepair"));
+    // Alone, it is not "Starts with Windows" at all.
+    let r = install_receipt(
+        &subject,
+        &attributed[1..],
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    assert!(!r.lines.iter().any(|l| l.text == "Starts with Windows"), "{r:#?}");
+}

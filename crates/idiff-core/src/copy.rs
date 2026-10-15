@@ -100,6 +100,8 @@ pub const SERVICE_FULL_RIGHTS: &str = " (full system rights)";
 pub const TASKS_ONE: &str = "1 scheduled task: {summary}";
 pub const TASKS_MANY: &str = "{n} scheduled tasks: {summary}";
 pub const STARTS_WITH_WINDOWS: &str = "Starts with Windows";
+/// A `RunOnce` registry value: it runs one time, then Windows deletes it.
+pub const RUNS_ONCE: &str = "Runs once at the next sign-in";
 pub const FIREWALL_INBOUND: &str = "Allows incoming connections for {program}";
 pub const FIREWALL_OUTBOUND: &str = "Adds outbound firewall rules for {program}";
 pub const SHELL_EXT_ADDED: &str = "Adds right-click menu entries";
