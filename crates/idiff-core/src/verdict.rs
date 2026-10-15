@@ -131,6 +131,11 @@ pub fn trigger_summary(item: &Item) -> String {
     format!("{what} {when}{}", if as_system { copy::AS_SYSTEM } else { "" })
 }
 
+/// A shortcut in the Start menu's Startup folder, which Windows runs at sign-in.
+fn in_startup_folder(item: &Item) -> bool {
+    item.key.contains("\\programs\\startup\\")
+}
+
 fn is_shortcut(item: &Item) -> bool {
     prop(item, "kind") == Some("shortcut") || item.key.ends_with(".lnk")
 }
@@ -496,6 +501,8 @@ pub fn install_receipt(
             .iter()
             .copied()
             .filter(|a| prop(a.change.item(), "root").is_some_and(|r| roots.contains(&r)))
+            // A shortcut in a Startup folder is "Starts with Windows", not a Start menu entry.
+            .filter(|a| !in_startup_folder(a.change.item()))
             .collect();
         if !these.is_empty() {
             lines.push(about(Level::Note, text, &these));

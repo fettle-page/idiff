@@ -907,3 +907,43 @@ fn microsoft_runtimes_left_installed_are_a_note_not_a_leftover() {
     let r = leftovers_receipt(&microsoft, &one, &only_one, &[], &BTreeMap::new());
     assert_eq!(r.title, "PowerToys: after uninstall, 1 leftover");
 }
+
+/// ShareX: the Startup-folder shortcut was both "Starts with Windows" and "Adds a Start menu entry".
+#[test]
+fn a_startup_folder_shortcut_is_not_a_start_menu_entry() {
+    let shortcut = |key: &str| {
+        app_added(
+            SourceKind::Folders,
+            item(key, key, None, &[("kind", "shortcut"), ("root", "Start menu")]),
+        )
+    };
+    let attributed = vec![
+        shortcut(r"c:\users\a\appdata\roaming\microsoft\windows\start menu\programs\sharex\sharex.lnk"),
+        shortcut(r"c:\users\a\appdata\roaming\microsoft\windows\start menu\programs\startup\sharex.lnk"),
+    ];
+    let subject = Subject {
+        name: "ShareX".into(),
+        ..Default::default()
+    };
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    let line = r.lines.iter().find(|l| l.text == "Adds a Start menu entry").unwrap();
+    assert_eq!(line.items.len(), 1, "{line:?}");
+    assert!(line.items[0].contains(r"\sharex\sharex.lnk"));
+    // Only the Startup folder: no Start menu line at all.
+    let r = install_receipt(
+        &subject,
+        &attributed[1..],
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    assert!(!r.lines.iter().any(|l| l.text == "Adds a Start menu entry"), "{r:#?}");
+}
