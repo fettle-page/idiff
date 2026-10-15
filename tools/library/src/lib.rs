@@ -106,6 +106,12 @@ pub fn version_slug(v: &str) -> String {
     if s.is_empty() { "unknown".into() } else { s.into() }
 }
 
+/// An app's folder name from its winget id: `version_slug`, with `+` spelled out first, so
+/// `Notepad++.Notepad++` is `notepadplusplus.notepadplusplus` rather than `notepad--.notepad`.
+pub fn id_slug(id: &str) -> String {
+    version_slug(&id.replace('+', "plus"))
+}
+
 /// Lines that come from the run rather than the app: how much Windows did meanwhile, what
 /// couldn't be read, how the command exited. They'd make every version look "changed".
 fn is_finding(text: &str) -> bool {
@@ -353,7 +359,7 @@ fn apply_one(
         .ok_or_else(|| fail(meta.failed.clone().unwrap_or_else(|| NO_RECEIPT.to_string())))?;
     let leftovers: Option<Receipt> = read_json(&dir.join("leftovers.json")).map_err(fail)?;
 
-    let app_dir = receipts.join(version_slug(&id));
+    let app_dir = receipts.join(id_slug(&id));
     let mut existing = records(&app_dir);
     // The same version is skipped, unless this run checked the leftovers that one couldn't.
     let mut replacing = None;
@@ -415,7 +421,7 @@ fn apply_one(
         },
         leftovers_checked: !unfinished,
         changed: !changes.is_empty(),
-        path: format!("{}/{slug}.md", version_slug(&id)),
+        path: format!("{}/{slug}.md", id_slug(&id)),
     });
     Ok((id, Some(unfinished)))
 }

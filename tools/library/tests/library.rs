@@ -1,5 +1,5 @@
 use idiff_core::verdict::{Level, Line, Mode, Receipt};
-use library::{Entry, Meta, Summary, apply, changes_since, index_md, version_page, version_slug};
+use library::{Entry, Meta, Summary, apply, changes_since, id_slug, index_md, version_page, version_slug};
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 
@@ -206,6 +206,24 @@ fn version_paths_are_safe() {
         "{up}"
     );
     assert_eq!(version_slug("2.0."), "2.0");
+}
+
+#[test]
+fn app_folders_spell_out_plus() {
+    // "Notepad++" would otherwise end in dashes that get trimmed: notepad--.notepad.
+    assert_eq!(id_slug("Notepad++.Notepad++"), "notepadplusplus.notepadplusplus");
+    assert_eq!(id_slug("Foo.C+"), "foo.cplus");
+    // Ids without a plus are named as before.
+    for id in [
+        "VideoLAN.VLC",
+        "Discord.Discord",
+        "Adobe.Acrobat.Reader.64-bit",
+        "AgileBits.1Password",
+    ] {
+        assert_eq!(id_slug(id), version_slug(id), "{id}");
+    }
+    // Versions keep their own rule: a plus there is build metadata, not part of a name.
+    assert_eq!(version_slug("1.0.0+build/7"), "1.0.0-build-7");
 }
 
 #[test]
