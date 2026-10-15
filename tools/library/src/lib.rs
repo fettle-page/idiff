@@ -80,8 +80,8 @@ pub struct Summary {
 
 const INTRO: &str = "What popular Windows apps do to your PC when you install them, and what they leave behind. \
 Every page is made automatically by idiff, the same way you can run it yourself.";
-const HOW_MADE: &str = "Installed with winget on a fresh GitHub Actions runner ({runner_image}) by idiff \
-{idiff_version} on {date}, opened once, then uninstalled.{run} idiff only reads; see the README for how it \
+const HOW_MADE: &str = "Installed silently with winget on a fresh GitHub Actions runner ({runner_image}) by idiff \
+{idiff_version} on {date}, then uninstalled silently. The app itself was never started.{run} idiff only reads; see the README for how it \
 decides what belongs to the app.";
 /// From a version page in `receipts/<app>/` to the README's section on attribution.
 const HOW_IT_DECIDES: &str = "[How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)";

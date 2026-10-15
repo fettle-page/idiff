@@ -121,7 +121,7 @@ fn counts_and_links_from_receipt_lines() {
     let dir = sample();
     let md = findings_md(dir.path(), None).unwrap();
     for part in [
-        "Installed with winget on a fresh GitHub Actions runner (win25 1) by idiff 0.9.1 on 2026-10-15",
+        "Installed silently with winget on a fresh GitHub Actions runner (win25 1) by idiff 0.9.1 on 2026-10-15",
         "[Workflow run](https://github.com/fettle-page/idiff/actions/runs/7)",
         "What 4 popular Windows apps did",
         "- **1 of 4** added a background service: [Alpha](a.a/1.0.md)",

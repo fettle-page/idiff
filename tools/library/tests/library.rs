@@ -64,7 +64,7 @@ fn new_app_gets_a_page_and_an_index_row() {
         "### Discord 1.0.9170: after uninstall, 2 leftovers",
         "- ✗ Scheduled task \"DiscordUpdate\" is still there",
         "## How this was made",
-        "Installed with winget on a fresh GitHub Actions runner (win25 20261004.1) by idiff 0.9.0 on 2026-10-12, opened once, then uninstalled.",
+        "Installed silently with winget on a fresh GitHub Actions runner (win25 20261004.1) by idiff 0.9.0 on 2026-10-12, then uninstalled silently. The app itself was never started.",
         "[Workflow run](https://github.com/fettle-page/idiff/actions/runs/123456)",
         "../../README.md#how-it-decides-whats-the-apps",
     ] {

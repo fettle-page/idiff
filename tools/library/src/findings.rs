@@ -308,7 +308,7 @@ Each app's amount adds up the sizes in its leftover folder lines, which are roun
 
     out.push_str("\n## How this was made\n\n");
     out.push_str(&format!(
-        "Installed with winget on a fresh GitHub Actions runner ({}) by idiff {} on {date}, opened once, then uninstalled.{} \
+        "Installed silently with winget on a fresh GitHub Actions runner ({}) by idiff {} on {date}, then uninstalled silently. The app itself was never started.{} \
 idiff only reads; see the README for how it decides what belongs to the app.\n",
         join_or(distinct(|m| &m.runner_image), "unknown image"),
         join_or(distinct(|m| &m.idiff_version), "unknown version"),
