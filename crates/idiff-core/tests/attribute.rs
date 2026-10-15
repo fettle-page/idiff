@@ -700,7 +700,8 @@ fn a_new_folder_holding_an_app_program_is_the_apps() {
     );
     assert_eq!(find(&r, "sentry").owner, Owner::Unknown);
     let broad = r.iter().find(|a| a.change.item().key == r"c:\program files").unwrap();
-    assert_eq!(broad.owner, Owner::Unknown);
+    // Noise, not "couldn't tell": it's on every PC.
+    assert_eq!(broad.reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()));
 }
 
 /// Install dirs for a subject found from one new Programs entry, with these new folders.
@@ -924,7 +925,8 @@ fn a_shared_parent_folder_is_never_the_apps() {
         };
         let r = attribute(&d, &opera, &NoiseList::builtin(), &BTreeMap::new());
         let parent = r.iter().find(|a| a.change.item().key == dir).unwrap();
-        assert_ne!(parent.owner, Owner::App, "{dir}: {:?}", parent.reason);
+        assert_eq!(parent.reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()), "{dir}");
+        assert_eq!(parent.owner, Owner::Windows, "{dir}");
         let own = r.iter().find(|a| a.change.item().key == app_dir).unwrap();
         assert_eq!(own.owner, Owner::App, "{app_dir}");
     }
@@ -945,7 +947,7 @@ fn a_shared_parent_folder_is_never_the_apps() {
         ..Default::default()
     };
     let r = attribute(&d, &programs, &NoiseList::builtin(), &BTreeMap::new());
-    assert_ne!(r[0].owner, Owner::App, "{:?}", r[0].reason);
+    assert_eq!(r[0].reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()));
 }
 
 /// GIMP, VS Code, Signal and Opera install into AppData\Local\Programs\<app>, and the installer
@@ -977,7 +979,7 @@ fn a_new_folder_made_to_hold_the_install_dir_is_not_the_apps() {
         .find(|a| a.change.item().key == r"c:\users\a\appdata\local\programs")
         .unwrap();
     // The shared parent of every per-user install is nobody's: not the app's folder.
-    assert_ne!(programs.owner, Owner::App, "{:?}", programs.reason);
+    assert_eq!(programs.reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()));
     assert_eq!(find(&r, r"programs\gimp 3").reason, Reason::ItemInInstallDir);
     assert_eq!(find(&r, "crashdumps").owner, Owner::Unknown);
     // Holding it doesn't make it an install dir: everything else under it isn't claimed.

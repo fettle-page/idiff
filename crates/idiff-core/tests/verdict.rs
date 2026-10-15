@@ -721,6 +721,17 @@ fn the_shared_programs_folder_is_neither_added_nor_left_over() {
     let files = r.lines.iter().find(|l| l.text.starts_with("Files only in")).unwrap();
     assert_eq!(files.items, std::slice::from_ref(&app_dir), "{r:#?}");
     assert_eq!(files.text, "Files only in your user folder (447 MB)");
+    // Not "couldn't tell if it was this app" either: it's hidden as shared.
+    assert!(r.unknown.is_empty(), "{:#?}", r.unknown);
+    assert!(
+        r.lines
+            .iter()
+            .chain(&r.unknown)
+            .all(|l| !l.items.iter().any(|k| k == programs)),
+        "{r:#?}"
+    );
+    assert_eq!(r.hidden.len(), 1);
+    assert_eq!(r.hidden[0].items, [programs]);
 
     // Both folders are still there after the uninstall; only the app's own is a leftover.
     let mut uninstalled = Snapshot::load(include_str!("fixtures/discord-before.json")).unwrap();

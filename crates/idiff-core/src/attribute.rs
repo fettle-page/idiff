@@ -171,12 +171,13 @@ impl Rules<'_> {
         let item = change.item();
         // A folder every app shares (Program Files, ProgramData, AppData\Local\Programs, a
         // profile) is never one app's, whatever it holds or is named: no rule below claims it.
+        // It's noise, not "couldn't tell", or every per-user install would list `Programs`.
         if kind == SourceKind::Folders
             && !item.key.ends_with(".lnk")
             && item.props.get("kind").map(String::as_str) != Some("shortcut")
             && crate::subject::is_too_broad(&item.key)
         {
-            return Reason::Unattributed;
+            return Reason::Noise(copy::NOTE_SHARED_FOLDER.to_string());
         }
         if matches!(kind, SourceKind::Programs | SourceKind::Packaged) && self.subject.entries.contains(&item.key) {
             return Reason::SubjectEntry;

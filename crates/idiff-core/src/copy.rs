@@ -24,6 +24,8 @@ pub const COMMAND_NOT_FOUND: &str = "That command wasn't found. Check its name, 
 pub const UNKNOWN_APP: &str = "Unknown app";
 /// The note on noise rules that `idiff calibrate --save` writes.
 pub const NOTE_CALIBRATE: &str = "calibrate";
+/// The noise note for a folder too broad to be one app's (Program Files, AppData\Local\Programs).
+pub const NOTE_SHARED_FOLDER: &str = "a folder many apps share";
 
 // Why a change was given to its owner (`idiff show --why`).
 /// Followed by the noise rule's note.
