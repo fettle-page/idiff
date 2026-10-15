@@ -24,6 +24,8 @@ pub const COMMAND_NOT_FOUND: &str = "That command wasn't found. Check its name, 
 pub const UNKNOWN_APP: &str = "Unknown app";
 /// The note on noise rules that `idiff calibrate --save` writes.
 pub const NOTE_CALIBRATE: &str = "calibrate";
+/// The noise note for a folder too broad to be one app's (Program Files, AppData\Local\Programs).
+pub const NOTE_SHARED_FOLDER: &str = "a folder many apps share";
 
 // Why a change was given to its owner (`idiff show --why`).
 /// Followed by the noise rule's note.
@@ -135,6 +137,10 @@ pub const STILL_THERE: &str = "{kind} \"{label}\" is still there";
 pub const FOLDER_LEFT: &str = "{size} in {path}";
 /// After `STILL_THERE` for a leftover folder with nothing in it.
 pub const EMPTY_SUFFIX: &str = " (empty)";
+/// After `STILL_THERE` when several firewall rules have the same name.
+pub const SAME_NAME_RULES: &str = " ({n} rules)";
+/// After `STILL_THERE` when several other items of one kind have the same name.
+pub const SAME_NAME_ITEMS: &str = " ({n} items)";
 pub const UNINSTALLER_ADDED: &str = "The uninstaller added {kind} \"{label}\"";
 pub const NOTHING_LEFT: &str = "Nothing left behind";
 

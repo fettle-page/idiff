@@ -1,5 +1,5 @@
 use idiff_core::attribute::{Attributed, Owner, Reason, attribute};
-use idiff_core::diff::{Change, diff};
+use idiff_core::diff::{Change, Delta, diff};
 use idiff_core::model::{Env, Item, Snapshot, SourceKind};
 use idiff_core::noise::NoiseList;
 use idiff_core::subject::{Subject, find_subject};
@@ -670,6 +670,132 @@ fn empty_new_folders_show_no_size() {
     ]);
     assert!(has(&r, (Level::Note, "Files in Program Files")), "{r:#?}");
     assert!(has(&r, (Level::Note, "Files in your user folder")), "{r:#?}");
+}
+
+/// Opera and VS Code in catalog run 38742495727: an install into AppData\Local\Programs\<app> made
+/// `Programs` too. It was listed as a leftover (VS Code: empty) and its size was Opera's, twice.
+#[test]
+fn the_shared_programs_folder_is_neither_added_nor_left_over() {
+    let programs = r"c:\users\a\appdata\local\programs";
+    let app_dir = format!(r"{programs}\opera");
+    let folder = |key: &str, bytes: &str| {
+        // Folders are labelled by their path under the profile.
+        let label = key.replace(r"c:\users\a\appdata\local", r"AppData\Local");
+        Change::Added(item(
+            key,
+            &label,
+            None,
+            &[("root", r"AppData\Local"), ("kind", "folder"), ("bytes", bytes)],
+        ))
+    };
+    let opera = Item {
+        label: "Opera Stable".into(),
+        ..item(
+            r"hkcu\native\opera",
+            "Opera Stable",
+            Some(&app_dir),
+            &[("version", "1"), ("publisher", "Opera Software")],
+        )
+    };
+    let d = Delta {
+        sources: BTreeMap::from([
+            (SourceKind::Programs, vec![Change::Added(opera)]),
+            (
+                SourceKind::Folders,
+                vec![folder(programs, "468713472"), folder(&app_dir, "468713472")],
+            ),
+        ]),
+        ..Default::default()
+    };
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
+    let attributed = attribute(&d, &subject, &NoiseList::builtin(), &BTreeMap::new());
+
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &Env::new(),
+    );
+    let files = r.lines.iter().find(|l| l.text.starts_with("Files only in")).unwrap();
+    assert_eq!(files.items, std::slice::from_ref(&app_dir), "{r:#?}");
+    assert_eq!(files.text, "Files only in your user folder (447 MB)");
+    // Not "couldn't tell if it was this app" either: it's hidden as shared.
+    assert!(r.unknown.is_empty(), "{:#?}", r.unknown);
+    assert!(
+        r.lines
+            .iter()
+            .chain(&r.unknown)
+            .all(|l| !l.items.iter().any(|k| k == programs)),
+        "{r:#?}"
+    );
+    assert_eq!(r.hidden.len(), 1);
+    assert_eq!(r.hidden[0].items, [programs]);
+
+    // Both folders are still there after the uninstall; only the app's own is a leftover.
+    let mut uninstalled = Snapshot::load(include_str!("fixtures/discord-before.json")).unwrap();
+    let folders = uninstalled.sources.get_mut(&SourceKind::Folders).unwrap();
+    folders.items.extend([
+        item(programs, "", None, &[("kind", "folder")]),
+        item(&app_dir, "", None, &[("kind", "folder")]),
+    ]);
+    let sizes = BTreeMap::from([(programs.to_string(), 0), (app_dir.clone(), 468713472)]);
+    let r = leftovers_receipt(&subject, &attributed, &uninstalled, &[], &sizes);
+    let folders: Vec<&str> = r
+        .lines
+        .iter()
+        .filter(|l| l.text.to_lowercase().contains("programs"))
+        .map(|l| l.text.as_str())
+        .collect();
+    assert_eq!(folders, [r"447 MB in AppData\Local\programs\opera"], "{r:#?}");
+    assert_eq!(r.title, "Opera Stable 1: after uninstall, 1 leftover");
+}
+
+/// Zoom in catalog run 38742495727: four firewall rules, two named "Airhost service for Zoom
+/// Video Meetings" (different rule ids, as with one for TCP and one for UDP), made four lines.
+#[test]
+fn leftovers_with_the_same_name_are_one_line_with_a_count() {
+    let rule = |id: &str, name: &str| {
+        app_added(
+            SourceKind::Firewall,
+            item(id, name, Some(r"c:\program files\zoom\bin\airhost.exe"), &[]),
+        )
+    };
+    let install = vec![
+        rule("{a}", "Airhost service for Zoom Video Meetings"),
+        rule("{b}", "Airhost service for Zoom Video Meetings"),
+        rule("{c}", "Hybrid Conference for Zoom Video Meetings"),
+        rule("{d}", "Zoom Video Meeting"),
+    ];
+    let mut uninstalled = Snapshot::load(include_str!("fixtures/discord-before.json")).unwrap();
+    let firewall = uninstalled.sources.get_mut(&SourceKind::Firewall).unwrap();
+    for a in &install {
+        firewall.items.push(a.change.item().clone());
+    }
+    let subject = Subject {
+        name: "Zoom".into(),
+        ..Default::default()
+    };
+    let r = leftovers_receipt(&subject, &install, &uninstalled, &[], &BTreeMap::new());
+    assert_eq!(r.title, "Zoom: after uninstall, 4 leftovers");
+    assert_eq!(
+        texts(&r),
+        [
+            (
+                Level::Bad,
+                r#"Firewall rule "Airhost service for Zoom Video Meetings" is still there (2 rules)"#
+            ),
+            (
+                Level::Bad,
+                r#"Firewall rule "Hybrid Conference for Zoom Video Meetings" is still there"#
+            ),
+            (Level::Bad, r#"Firewall rule "Zoom Video Meeting" is still there"#),
+        ]
+    );
+    // Nothing is dropped: both rules' ids and reasons are on the one line.
+    assert_eq!(r.lines[0].items, ["{a}", "{b}"]);
+    assert_eq!(r.lines[0].why.len(), 2);
 }
 
 #[test]

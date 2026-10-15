@@ -700,7 +700,8 @@ fn a_new_folder_holding_an_app_program_is_the_apps() {
     );
     assert_eq!(find(&r, "sentry").owner, Owner::Unknown);
     let broad = r.iter().find(|a| a.change.item().key == r"c:\program files").unwrap();
-    assert_eq!(broad.owner, Owner::Unknown);
+    // Noise, not "couldn't tell": it's on every PC.
+    assert_eq!(broad.reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()));
 }
 
 /// Install dirs for a subject found from one new Programs entry, with these new folders.
@@ -885,10 +886,74 @@ fn programs_added_by_the_install_are_its_own() {
     assert_eq!(find(&r, "mozillamaintenanceservice").owner, Owner::Unknown);
 }
 
-/// GIMP, VS Code, Signal and Opera install into AppData\Local\Programs\<app>, and the installer
-/// makes AppData\Local\Programs itself when it isn't there yet.
+/// Catalog run 38742495727: VS Code, Signal and GIMP each reported `AppData\Local\Programs` as a
+/// leftover (empty), and Opera sized it as its own. A folder every app shares is never one app's,
+/// however it holds the app's programs or install dir, and whatever its name.
 #[test]
-fn a_new_folder_made_to_hold_the_install_dir_is_the_apps() {
+fn a_shared_parent_folder_is_never_the_apps() {
+    let shared = [
+        r"c:\program files",
+        r"c:\program files (x86)",
+        r"c:\programdata",
+        r"c:\users\a",
+        r"c:\users\a\appdata\local",
+        r"c:\users\a\appdata\roaming",
+        r"c:\users\a\appdata\local\programs",
+    ];
+    for dir in shared {
+        let app_dir = format!(r"{dir}\opera");
+        let opera = Subject {
+            name: "Opera".into(),
+            publisher: Some("Opera Software".into()),
+            install_dirs: vec![app_dir.clone()],
+            ..Default::default()
+        };
+        let folder = |key: &str| Change::Added(item(key, None, &[("kind", "folder")]));
+        let d = Delta {
+            sources: BTreeMap::from([
+                (SourceKind::Folders, vec![folder(dir), folder(&app_dir)]),
+                (
+                    SourceKind::Services,
+                    vec![Change::Added(item(
+                        "operasvc",
+                        Some(&format!(r"{app_dir}\svc.exe")),
+                        &[("signer", "Opera Software")],
+                    ))],
+                ),
+            ]),
+            ..Default::default()
+        };
+        let r = attribute(&d, &opera, &NoiseList::builtin(), &BTreeMap::new());
+        let parent = r.iter().find(|a| a.change.item().key == dir).unwrap();
+        assert_eq!(parent.reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()), "{dir}");
+        assert_eq!(parent.owner, Owner::Windows, "{dir}");
+        let own = r.iter().find(|a| a.change.item().key == app_dir).unwrap();
+        assert_eq!(own.owner, Owner::App, "{app_dir}");
+    }
+    // Even a name that matches the app doesn't make a shared folder its own.
+    let programs = Subject {
+        name: "Programs".into(),
+        ..Default::default()
+    };
+    let d = Delta {
+        sources: BTreeMap::from([(
+            SourceKind::Folders,
+            vec![Change::Added(item(
+                r"c:\users\a\appdata\local\programs",
+                None,
+                &[("kind", "folder")],
+            ))],
+        )]),
+        ..Default::default()
+    };
+    let r = attribute(&d, &programs, &NoiseList::builtin(), &BTreeMap::new());
+    assert_eq!(r[0].reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()));
+}
+
+/// GIMP, VS Code, Signal and Opera install into AppData\Local\Programs\<app>, and the installer
+/// makes AppData\Local\Programs itself when it isn't there yet. That shared parent isn't theirs.
+#[test]
+fn a_new_folder_made_to_hold_the_install_dir_is_not_the_apps() {
     let gimp = Subject {
         name: "GIMP".into(),
         publisher: Some("The GIMP Team".into()),
@@ -913,10 +978,8 @@ fn a_new_folder_made_to_hold_the_install_dir_is_the_apps() {
         .iter()
         .find(|a| a.change.item().key == r"c:\users\a\appdata\local\programs")
         .unwrap();
-    assert_eq!(
-        (programs.owner, &programs.reason),
-        (Owner::App, &Reason::HoldsAppProgram)
-    );
+    // The shared parent of every per-user install is nobody's: not the app's folder.
+    assert_eq!(programs.reason, Reason::Noise(copy::NOTE_SHARED_FOLDER.into()));
     assert_eq!(find(&r, r"programs\gimp 3").reason, Reason::ItemInInstallDir);
     assert_eq!(find(&r, "crashdumps").owner, Owner::Unknown);
     // Holding it doesn't make it an install dir: everything else under it isn't claimed.
