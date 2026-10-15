@@ -862,3 +862,47 @@ fn programs_added_by_the_install_are_its_own() {
     assert_eq!(find(&r, "{ea-app}").reason, Reason::SubjectEntry);
     assert_eq!(find(&r, "mozillamaintenanceservice").owner, Owner::Unknown);
 }
+
+/// GIMP, VS Code, Signal and Opera install into AppData\Local\Programs\<app>, and the installer
+/// makes AppData\Local\Programs itself when it isn't there yet.
+#[test]
+fn a_new_folder_made_to_hold_the_install_dir_is_the_apps() {
+    let gimp = Subject {
+        name: "GIMP".into(),
+        publisher: Some("The GIMP Team".into()),
+        install_dirs: vec![r"c:\users\a\appdata\local\programs\gimp 3".into()],
+        ..Default::default()
+    };
+    let folder = |key: &str, root: &str| Change::Added(item(key, None, &[("root", root), ("kind", "folder")]));
+    let d = added(SourceKind::Folders, vec![]);
+    let d = Delta {
+        sources: BTreeMap::from([(
+            SourceKind::Folders,
+            vec![
+                folder(r"c:\users\a\appdata\local\programs", r"AppData\Local"),
+                folder(r"c:\users\a\appdata\local\programs\gimp 3", r"AppData\Local\Programs"),
+                folder(r"c:\users\a\appdata\local\crashdumps", r"AppData\Local"),
+            ],
+        )]),
+        ..d
+    };
+    let r = attribute(&d, &gimp, &NoiseList::builtin(), &BTreeMap::new());
+    let programs = r
+        .iter()
+        .find(|a| a.change.item().key == r"c:\users\a\appdata\local\programs")
+        .unwrap();
+    assert_eq!(
+        (programs.owner, &programs.reason),
+        (Owner::App, &Reason::HoldsAppProgram)
+    );
+    assert_eq!(find(&r, r"programs\gimp 3").reason, Reason::ItemInInstallDir);
+    assert_eq!(find(&r, "crashdumps").owner, Owner::Unknown);
+    // Holding it doesn't make it an install dir: everything else under it isn't claimed.
+    let subject = find_subject(&d, None, &[]);
+    assert!(
+        !subject
+            .install_dirs
+            .iter()
+            .any(|d| d == r"c:\users\a\appdata\local\programs")
+    );
+}

@@ -106,14 +106,19 @@ pub fn attribute(delta: &Delta, subject: &Subject, noise: &NoiseList, env: &Env)
             })
         })
         .collect();
-    claim_folders_holding_app_programs(&mut attributed);
+    claim_folders_holding_app_programs(&mut attributed, subject);
     attributed
 }
 
 /// A new top-level folder that no rule placed, but that holds a program R2–R4 gave to the app,
 /// is the app's too: Logitech G HUB's service is signed by Logitech, but its `Program Files\LGHUB`
 /// isn't named after "Logitech". One pass is enough: a folder doesn't make another one the app's.
-fn claim_folders_holding_app_programs(attributed: &mut [Attributed]) {
+///
+/// A new folder that holds one of the app's install dirs is the app's too, even a broad one: an
+/// installer that puts the app in `AppData\Local\Programs\<app>` makes `Programs` when it's
+/// missing. This only labels the folder; it doesn't make it an install dir, so the broad-folder
+/// guard isn't needed here.
+fn claim_folders_holding_app_programs(attributed: &mut [Attributed], subject: &Subject) {
     let programs: Vec<String> = attributed
         .iter()
         .filter(|a| {
@@ -130,11 +135,16 @@ fn claim_folders_holding_app_programs(attributed: &mut [Attributed]) {
             && matches!(a.change, Change::Added(_))
             && item.props.get("kind").map(String::as_str) != Some("shortcut")
             && !item.key.ends_with(".lnk");
-        if a.owner == Owner::Unknown
-            && is_new_folder
-            && !crate::subject::is_too_broad(&item.key)
-            && programs.iter().any(|p| is_under(p, &item.key))
-        {
+        let holds_program = !crate::subject::is_too_broad(&item.key) && programs.iter().any(|p| is_under(p, &item.key));
+        // Of the broad folders, only AppData\Local\Programs is ever made by an installer; the
+        // others (Program Files, a profile, AppData) are on every PC.
+        let always_there = crate::subject::is_too_broad(&item.key) && !item.key.ends_with(r"\appdata\local\programs");
+        let holds_install_dir = !always_there
+            && subject
+                .install_dirs
+                .iter()
+                .any(|dir| dir != &item.key && is_under(dir, &item.key));
+        if a.owner == Owner::Unknown && is_new_folder && (holds_program || holds_install_dir) {
             a.reason = Reason::HoldsAppProgram;
             a.owner = Owner::App;
         }
