@@ -30,8 +30,11 @@ jobs:
         shell: pwsh
         run: |
           winget --version
-          winget validate --manifest $env:MANIFEST
-          if ($LASTEXITCODE -ne 0) { exit 1 }
+          # A runner's winget can be older than the manifest schema; that's a warning with a
+          # non-zero exit code, so go by the result line instead.
+          $out = winget validate --manifest $env:MANIFEST
+          $out
+          if (-not ($out -match '^Manifest validation succeeded')) { exit 1 }
       - name: Install from the manifest
         shell: pwsh
         run: |
