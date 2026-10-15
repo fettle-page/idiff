@@ -162,7 +162,7 @@ jobs:
     name: ${{ matrix.app.id }}
     runs-on: windows-2025
     # Setup, then catalog-run.ps1's own limits: 25 minutes to install, 15 to uninstall.
-    timeout-minutes: 50
+    timeout-minutes: 40
     permissions:
       contents: read
     strategy:

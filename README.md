@@ -29,6 +29,8 @@ Windows 10 and 11, 64-bit. Free and open source (MIT).
 
 Download `idiff-<version>-x64.zip` from [Releases](../../releases), unzip it, and put `idiff.exe` somewhere on your PATH. Check the download against `SHA256SUMS.txt` and its [build attestation](https://docs.github.com/actions/security-for-github-actions/using-artifact-attestations). The program isn't code-signed yet, so Windows SmartScreen may warn the first time.
 
+OpenImageIO also has a command called `idiff` (an image comparison tool). If you have both, run this one by its full path.
+
 ## Use
 
 ```

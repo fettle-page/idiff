@@ -131,12 +131,14 @@ try {
         $installFailed = $meta.failed
         $meta.failed = $installFailed ?? 'leftovers: didn''t finish'
         Save-Meta
-        $code = Invoke-Idiff -Log 'leftovers.log' -Minutes 15 -IdiffArgs @(
-            'leftovers', 'last', '--yes', '--settle', '30', '--timeout', '12', '--',
+        # Uninstallers that work finish in a minute or two; on runners many wait for a dialog nobody
+        # can click, forever. Five minutes tells them apart without spending Actions minutes on waiting.
+        $code = Invoke-Idiff -Log 'leftovers.log' -Minutes 8 -IdiffArgs @(
+            'leftovers', 'last', '--yes', '--settle', '30', '--timeout', '5', '--',
             'winget', 'uninstall', '--id', $Id, '--exact', '--silent',
             '--accept-source-agreements', '--disable-interactivity')
         Save-Receipts
-        $leftoversFailed = if ($null -eq $code) { 'leftovers: stopped after 15 minutes' } elseif ($code -ne 0) { "leftovers: exit $code" }
+        $leftoversFailed = if ($null -eq $code) { 'leftovers: stopped after 8 minutes' } elseif ($code -ne 0) { "leftovers: exit $code" }
         # The first step that went wrong is the one to report.
         $meta.failed = $installFailed ?? $leftoversFailed
         Save-Meta
