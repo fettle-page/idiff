@@ -992,3 +992,31 @@ fn a_runonce_entry_runs_once_and_is_not_a_startup_program() {
     );
     assert!(!r.lines.iter().any(|l| l.text == "Starts with Windows"), "{r:#?}");
 }
+
+/// EA app: the registry name "Microsoft Visual C++ 2010  x86 Redistributable" has two spaces.
+#[test]
+fn runs_of_spaces_in_program_names_are_one_space() {
+    let subject = Subject {
+        name: "EA app".into(),
+        also_installed: vec!["Microsoft Visual C++ 2010  x86 Redistributable - 10.0.40219".into()],
+        ..Default::default()
+    };
+    let attributed = vec![app_added(
+        SourceKind::Services,
+        item("svc", "Some   Update\tService", None, &[]),
+    )];
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &BTreeMap::new(),
+    );
+    let text: Vec<&str> = r.lines.iter().map(|l| l.text.as_str()).collect();
+    assert!(
+        text.contains(&"Also installed: Microsoft Visual C++ 2010 x86 Redistributable - 10.0.40219"),
+        "{text:?}"
+    );
+    assert!(text.iter().any(|t| t.ends_with("Some Update Service")), "{text:?}");
+}

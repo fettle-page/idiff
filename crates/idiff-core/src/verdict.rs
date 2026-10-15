@@ -181,11 +181,16 @@ fn kind_in_sentence(kind: SourceKind, item: &Item) -> String {
 }
 
 /// The name people know an item by: a task's name without its folder, else the label.
-fn display_label(kind: SourceKind, item: &Item) -> &str {
+/// Names as people read them: a registry name's runs of spaces ("Visual C++ 2010  x86") are one.
+fn tidy(s: &str) -> String {
+    s.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+fn display_label(kind: SourceKind, item: &Item) -> String {
     let label = if item.label.is_empty() { &item.key } else { &item.label };
     match kind {
-        SourceKind::Tasks => label.rsplit('\\').next().unwrap_or(label),
-        _ => label,
+        SourceKind::Tasks => tidy(label.rsplit('\\').next().unwrap_or(label)),
+        _ => tidy(label),
     }
 }
 
@@ -201,7 +206,7 @@ fn change_line(a: &Attributed) -> Line {
         template,
         &[
             ("kind", &kind_in_sentence(a.kind, item)),
-            ("label", display_label(a.kind, item)),
+            ("label", &display_label(a.kind, item)),
         ],
     );
     about(Level::Note, text, &[a])
@@ -263,9 +268,10 @@ fn title(subject: &Subject) -> String {
 
 /// The name with its version, unless the name has it already ("7-Zip 24.08 (x64)").
 fn name_and_version(subject: &Subject) -> String {
+    let name = tidy(&subject.name);
     match &subject.version {
-        Some(v) if !subject.name.contains(v.as_str()) => format!("{} {v}", subject.name),
-        _ => subject.name.clone(),
+        Some(v) if !name.contains(v.as_str()) => format!("{name} {v}"),
+        _ => name,
     }
 }
 
@@ -295,12 +301,7 @@ pub fn install_receipt(
             .filter(|a| a.kind == kind && matches!(a.change, Change::Added(_)))
             .collect()
     };
-    let labels = |list: &[&Attributed]| {
-        unique_join(
-            list.iter().map(|a| display_label(a.kind, a.change.item()).to_string()),
-            ", ",
-        )
-    };
+    let labels = |list: &[&Attributed]| unique_join(list.iter().map(|a| display_label(a.kind, a.change.item())), ", ");
     let mut lines = Vec::new();
 
     match exit_code {
@@ -314,7 +315,7 @@ pub fn install_receipt(
         let subject_name = display_label(a.kind, a.change.item());
         lines.push(about(
             Level::Bad,
-            fill(copy::CERT_ADDED, &[("subject", subject_name)]),
+            fill(copy::CERT_ADDED, &[("subject", &subject_name)]),
             &[a],
         ));
     }
@@ -322,7 +323,7 @@ pub fn install_receipt(
         let path = display_label(a.kind, a.change.item());
         lines.push(about(
             Level::Bad,
-            fill(copy::DEFENDER_EXCLUSION, &[("path", path)]),
+            fill(copy::DEFENDER_EXCLUSION, &[("path", &path)]),
             &[a],
         ));
     }
@@ -523,7 +524,12 @@ pub fn install_receipt(
     }
 
     if !subject.also_installed.is_empty() {
-        let names = subject.also_installed.join(", ");
+        let names = subject
+            .also_installed
+            .iter()
+            .map(|n| tidy(n))
+            .collect::<Vec<_>>()
+            .join(", ");
         lines.push(plain(Level::Note, fill(copy::ALSO_INSTALLED, &[("names", &names)])));
     }
     // The app's own entry changing version is what the title says already.
@@ -536,7 +542,7 @@ pub fn install_receipt(
             copy::CHANGES_ITEM,
             &[
                 ("kind", &kind_in_sentence(a.kind, item)),
-                ("label", display_label(a.kind, item)),
+                ("label", &display_label(a.kind, item)),
             ],
         );
         lines.push(about(Level::Note, text, &[a]));
@@ -651,11 +657,7 @@ pub fn leftovers_receipt(
             && subject.own_entry.as_deref() != Some(item.key.as_str())
             && prop(item, "publisher").is_some_and(publisher::is_microsoft)
         {
-            runtimes.push((
-                display_label(a.kind, item).to_string(),
-                item.key.clone(),
-                a.reason.text(),
-            ));
+            runtimes.push((display_label(a.kind, item), item.key.clone(), a.reason.text()));
             continue;
         }
         left += 1;
@@ -668,20 +670,20 @@ pub fn leftovers_receipt(
                     copy::STILL_THERE,
                     &[
                         ("kind", kind_name(a.kind, item)),
-                        ("label", display_label(a.kind, item)),
+                        ("label", &display_label(a.kind, item)),
                     ],
                 );
                 format!("{still}{}", copy::EMPTY_SUFFIX)
             }
             Some(&bytes) => fill(
                 copy::FOLDER_LEFT,
-                &[("size", &format_size(bytes)), ("path", display_label(a.kind, item))],
+                &[("size", &format_size(bytes)), ("path", &display_label(a.kind, item))],
             ),
             None => fill(
                 copy::STILL_THERE,
                 &[
                     ("kind", kind_name(a.kind, item)),
-                    ("label", display_label(a.kind, item)),
+                    ("label", &display_label(a.kind, item)),
                 ],
             ),
         };
@@ -718,7 +720,7 @@ pub fn leftovers_receipt(
             copy::UNINSTALLER_ADDED,
             &[
                 ("kind", &kind_in_sentence(a.kind, item)),
-                ("label", display_label(a.kind, item)),
+                ("label", &display_label(a.kind, item)),
             ],
         );
         lines.push(about(Level::Note, text, &[a]));
