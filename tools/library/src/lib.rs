@@ -4,6 +4,8 @@
 //! Pages use only the receipts' own words plus the fixed text below: no rankings, scores or
 //! words about vendors. Every page says how it was made.
 
+pub mod findings;
+
 use idiff_core::copy;
 use idiff_core::render::{markdown_section, md_escape};
 use idiff_core::verdict::{Level, Receipt, hidden_count_text};
