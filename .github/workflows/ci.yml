@@ -42,6 +42,19 @@ jobs:
       # Rust's own lints: any warning fails the run.
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
 
+  # The same tests built and run natively on ARM64 Windows, where the ARM64 download runs.
+  # Formatting and lints don't depend on the machine, so the x64 job alone checks those.
+  test-arm64:
+    runs-on: windows-11-arm
+    env:
+      RUSTUP_TOOLCHAIN: "1.99.0-aarch64-pc-windows-msvc"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: rustup toolchain install 1.99.0-aarch64-pc-windows-msvc --profile minimal
+      - run: cargo test --workspace --locked --no-fail-fast
+
   # Real installs on a fresh runner: `idiff run` with VLC, checked against what VLC is known to
   # add, and PuTTY installed and uninstalled for `idiff leftovers`. Installs only ever happen
   # here, never on a developer's PC.
