@@ -243,3 +243,214 @@ name = "Notion"
 # [[app]]
 # id = "AnyDesk.AnyDesk"
 # name = "AnyDesk"
+
+# Added 2026-11-04, checked with `winget show`.
+# Proposed additions to catalog/apps.toml (52 apps), each checked with
+# `winget show --id <id> --exact --source winget` on 2026-11-04.
+
+# Browsers
+[[app]]
+id = "Mozilla.Firefox"
+name = "Mozilla Firefox"
+
+[[app]]
+id = "Google.Chrome"
+name = "Google Chrome"
+
+# Chat
+[[app]]
+id = "Rakuten.Viber"
+name = "Viber"
+
+[[app]]
+id = "Cisco.Webex"
+name = "Webex"
+
+[[app]]
+id = "Mattermost.MattermostDesktop"
+name = "Mattermost"
+
+[[app]]
+id = "wire.wire"
+name = "Wire"
+
+# Dev tools
+[[app]]
+id = "Git.Git"
+name = "Git"
+
+[[app]]
+id = "Python.Python.3.14"
+name = "Python 3.14"
+
+[[app]]
+id = "OpenJS.NodeJS.LTS"
+name = "Node.js"
+
+[[app]]
+id = "SublimeHQ.SublimeText.4"
+name = "Sublime Text"
+
+[[app]]
+id = "Anysphere.Cursor"
+name = "Cursor"
+
+[[app]]
+id = "WiresharkFoundation.Wireshark"
+name = "Wireshark"
+
+[[app]]
+id = "Ollama.Ollama"
+name = "Ollama"
+
+[[app]]
+id = "Figma.Figma"
+name = "Figma"
+
+# Media and creative
+[[app]]
+id = "clsid2.mpc-hc"
+name = "MPC-HC"
+
+[[app]]
+id = "XBMCFoundation.Kodi"
+name = "Kodi"
+
+[[app]]
+id = "Apple.iTunes"
+name = "iTunes"
+
+[[app]]
+id = "Plex.PlexMediaServer"
+name = "Plex Media Server"
+
+[[app]]
+id = "KDE.Krita"
+name = "Krita"
+
+[[app]]
+id = "dotPDN.PaintDotNet"
+name = "paint.net"
+
+# Office and documents
+[[app]]
+id = "TheDocumentFoundation.LibreOffice"
+name = "LibreOffice"
+
+[[app]]
+id = "ONLYOFFICE.DesktopEditors"
+name = "ONLYOFFICE"
+
+[[app]]
+id = "Kingsoft.WPSOffice"
+name = "WPS Office"
+
+[[app]]
+id = "Foxit.FoxitReader"
+name = "Foxit PDF Reader"
+
+# Password managers
+[[app]]
+id = "DominikReichl.KeePass"
+name = "KeePass"
+
+[[app]]
+id = "NordSecurity.NordPass"
+name = "NordPass"
+
+[[app]]
+id = "LastPass.LastPass"
+name = "LastPass"
+
+# Utilities
+[[app]]
+id = "7zip.7zip"
+name = "7-Zip"
+
+[[app]]
+id = "CPUID.CPU-Z"
+name = "CPU-Z"
+
+[[app]]
+id = "REALiX.HWiNFO"
+name = "HWiNFO"
+
+[[app]]
+id = "WinDirStat.WinDirStat"
+name = "WinDirStat"
+
+[[app]]
+id = "RevoUninstaller.RevoUninstaller"
+name = "Revo Uninstaller"
+
+[[app]]
+id = "AutoHotkey.AutoHotkey"
+name = "AutoHotkey"
+
+# Gaming launchers
+[[app]]
+id = "Ubisoft.Connect"
+name = "Ubisoft Connect"
+
+[[app]]
+id = "RockstarGames.Launcher"
+name = "Rockstar Games Launcher"
+
+[[app]]
+id = "Playnite.Playnite"
+name = "Playnite"
+
+[[app]]
+id = "Overwolf.CurseForge"
+name = "CurseForge"
+
+# Cloud sync
+[[app]]
+id = "Mega.MEGASync"
+name = "MEGAsync"
+
+[[app]]
+id = "Nextcloud.NextcloudDesktop"
+name = "Nextcloud"
+
+[[app]]
+id = "Proton.ProtonDrive"
+name = "Proton Drive"
+
+[[app]]
+id = "pCloudAG.pCloudDrive"
+name = "pCloud Drive"
+
+# VPNs
+[[app]]
+id = "Proton.ProtonVPN"
+name = "Proton VPN"
+
+[[app]]
+id = "MullvadVPN.MullvadVPN"
+name = "Mullvad VPN"
+
+[[app]]
+id = "ExpressVPN.ExpressVPN"
+name = "ExpressVPN"
+
+[[app]]
+id = "Surfshark.Surfshark"
+name = "Surfshark"
+
+[[app]]
+id = "Tailscale.Tailscale"
+name = "Tailscale"
+
+# Remote desktop
+[[app]]
+id = "Google.ChromeRemoteDesktopHost"
+name = "Chrome Remote Desktop Host"
+
+[[app]]
+id = "GlavSoft.TightVNC"
+name = "TightVNC"
+
+[[app]]
+id = "Parsec.Parsec"
+name = "Parsec"
