@@ -1,6 +1,6 @@
-# A version tag (v1.0.0) builds the download here, in the open, from that tag's source: the zip and
-# SHA256SUMS.txt, with a build attestation. It makes a draft release; a maintainer reads it and
-# publishes it.
+# A version tag (v1.0.0) builds the downloads here, in the open, from that tag's source: the x64 and
+# ARM64 zips and SHA256SUMS.txt, with a build attestation. It makes a draft release; a maintainer
+# reads it and publishes it.
 #
 # Two jobs: "build" runs every build script (cargo) and can only read the repository; "publish"
 # holds the write rights and runs none of them. It only checks the files against SHA256SUMS.txt,
@@ -14,31 +14,62 @@ on:
 
 permissions: {}
 
-env:
-  RUSTUP_TOOLCHAIN: "1.99.0-x86_64-pc-windows-msvc"
-
 jobs:
+  # Each zip is built, tested and started on its own kind of machine.
   build:
-    runs-on: windows-2025
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            runner: windows-2025
+            toolchain: "1.99.0-x86_64-pc-windows-msvc"
+            # The PE header's machine field idiff.exe must have.
+            machine: "8664"
+          - arch: arm64
+            runner: windows-11-arm
+            toolchain: "1.99.0-aarch64-pc-windows-msvc"
+            machine: "AA64"
+    runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
+    env:
+      RUSTUP_TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Nothing here pushes, so the token needn't stay where cargo build scripts can read it.
           persist-credentials: false
-      - run: rustup toolchain install 1.99.0-x86_64-pc-windows-msvc --profile minimal
+      - run: rustup toolchain install ${{ matrix.toolchain }} --profile minimal
       # Every test program runs, so one run shows every failure.
       - run: cargo test --workspace --locked --no-fail-fast
+      # package.ps1 always names its zip -x64; the ARM64 one is renamed here. Each arch lists its
+      # zip in its own SHA256SUMS-<arch>.txt, and publish joins them into one SHA256SUMS.txt.
       - name: Package
         shell: pwsh
-        run: ./scripts/package.ps1 -Version $env:GITHUB_REF_NAME.TrimStart('v')
+        env:
+          ARCH: ${{ matrix.arch }}
+          MACHINE: ${{ matrix.machine }}
+        run: |
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          ./scripts/package.ps1 -Version $version
+
+          # The exe must be built for this arch, so a zip never carries the other one's.
+          $exe = [IO.File]::ReadAllBytes((Resolve-Path target\release\idiff.exe).Path)
+          $machine = '{0:X4}' -f [BitConverter]::ToUInt16($exe, [BitConverter]::ToInt32($exe, 0x3C) + 4)
+          if ($machine -ne $env:MACHINE) { throw "idiff.exe is for machine $machine, not $env:MACHINE ($env:ARCH)" }
+
+          $zip = "target\package\idiff-$version-$env:ARCH.zip"
+          if ($env:ARCH -ne 'x64') { Move-Item "target\package\idiff-$version-x64.zip" $zip }
+          $hash = (Get-FileHash -Algorithm SHA256 $zip).Hash.ToLowerInvariant()
+          # sha256sum's format, one line ending in LF, so the lists join cleanly.
+          Set-Content -Path "target\package\SHA256SUMS-$env:ARCH.txt" -Value "$hash  $(Split-Path $zip -Leaf)`n" -Encoding ascii -NoNewline
+          Remove-Item target\package\SHA256SUMS.txt
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: downloads
+          name: downloads-${{ matrix.arch }}
           path: |
-            target/package/idiff-*-x64.zip
-            target/package/SHA256SUMS.txt
+            target/package/idiff-*-${{ matrix.arch }}.zip
+            target/package/SHA256SUMS-${{ matrix.arch }}.txt
           if-no-files-found: error
           retention-days: 7
 
@@ -52,19 +83,26 @@ jobs:
     steps:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          name: downloads
+          pattern: downloads-*
+          merge-multiple: true
           path: downloads
 
-      # The files must be exactly what the build made.
+      # The files must be exactly what the builds made. Both lists must be there: cat fails on a
+      # missing one.
       - working-directory: downloads
-        run: sha256sum -c SHA256SUMS.txt
+        run: |
+          cat SHA256SUMS-x64.txt SHA256SUMS-arm64.txt > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+          sha256sum -c --strict SHA256SUMS.txt
 
       # GitHub keeps attestations for public repositories only (on this plan), so a release made
       # while the repository is private has the checksums alone.
       - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         if: ${{ !github.event.repository.private }}
         with:
-          subject-path: downloads/idiff-*-x64.zip
+          subject-path: |
+            downloads/idiff-*-x64.zip
+            downloads/idiff-*-arm64.zip
 
       - name: Draft the release
         env:
@@ -76,4 +114,4 @@ jobs:
           case "$version" in 0.*|*-*) prerelease="--prerelease" ;; esac
           gh release create "$GITHUB_REF_NAME" --draft $prerelease --title "Install diff $version" \
             --notes "Unsigned for now. Check the download against SHA256SUMS.txt and the build attestation." \
-            "downloads/idiff-$version-x64.zip" downloads/SHA256SUMS.txt
+            "downloads/idiff-$version-x64.zip" "downloads/idiff-$version-arm64.zip" downloads/SHA256SUMS.txt

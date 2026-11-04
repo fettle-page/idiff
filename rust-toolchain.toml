@@ -1,2 +1,4 @@
 [toolchain]
-channel = "stable-x86_64-pc-windows-msvc"
+# No host triple, so rustup picks this machine's own: x64 or ARM64. The workflows pin the exact
+# version and host with RUSTUP_TOOLCHAIN, which overrides this file.
+channel = "stable"
