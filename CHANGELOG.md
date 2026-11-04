@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0 (unreleased)
+## 1.1.0 (2026-11-04)
 
 - New: link handlers. The receipt says which links an app now opens (`· Opens discord:// links`), and warns when it takes over links another program opened before.
 - New: system hooks. The receipt warns about an Image File Execution Options debugger, a change to what Windows runs at sign-in (Winlogon `Shell` and `Userinit`), and DLLs added to `AppInit_DLLs`.
