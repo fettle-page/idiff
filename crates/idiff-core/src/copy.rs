@@ -99,7 +99,9 @@ pub const NETWORK_WINSOCK: &str = "Winsock";
 pub const HOOK_DEBUGGER: &str = "Runs \"{debugger}\" whenever \"{program}\" starts";
 /// Winlogon's `Shell` or `Userinit`, by value name.
 pub const HOOK_SIGN_IN: &str = "Changes what Windows runs when you sign in ({names})";
+/// Only when `LoadAppInit_DLLs` is 1; otherwise Windows doesn't load them, and it's `HOOK_APPINIT_OFF`.
 pub const HOOK_APPINIT: &str = "Loads \"{dll}\" into every program that shows windows";
+pub const HOOK_APPINIT_OFF: &str = "Lists \"{dll}\" in AppInit_DLLs, which is turned off on this PC";
 /// A link handler that already existed now runs the app. `{schemes}` are like `discord://`.
 pub const PROTOCOLS_TAKEN_OVER: &str = "Takes over {schemes} links";
 pub const DRIVERS_ONE: &str = "Installs 1 driver: {names}";

@@ -420,14 +420,23 @@ pub fn install_receipt(
             &sign_in,
         ));
     }
-    push_each(
-        &mut lines,
-        Level::Warn,
-        hooks_of("appinit").into_iter().map(|a| {
-            let dll = file_name(&a.change.item().label).to_string();
-            (fill(copy::HOOK_APPINIT, &[("dll", &dll)]), a)
-        }),
-    );
+    // Windows loads AppInit DLLs only when LoadAppInit_DLLs is 1; a missing flag means 0.
+    let (loaded, listed): (Vec<&Attributed>, Vec<&Attributed>) = hooks_of("appinit")
+        .into_iter()
+        .partition(|a| prop(a.change.item(), "load") == Some("1"));
+    for (level, template, these) in [
+        (Level::Warn, copy::HOOK_APPINIT, loaded),
+        (Level::Note, copy::HOOK_APPINIT_OFF, listed),
+    ] {
+        push_each(
+            &mut lines,
+            level,
+            these.into_iter().map(|a| {
+                let dll = file_name(&a.change.item().label).to_string();
+                (fill(template, &[("dll", &dll)]), a)
+            }),
+        );
+    }
     let taken: Vec<&Attributed> = app.iter().copied().filter(|a| is_takeover(a)).collect();
     if !taken.is_empty() {
         let schemes = unique_join(taken.iter().map(|a| scheme(a.change.item())), ", ");

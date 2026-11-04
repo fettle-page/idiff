@@ -1086,6 +1086,25 @@ fn hooks_and_link_handlers_in_their_own_words() {
                 &[("load", "1")],
             ),
         ),
+        // With LoadAppInit_DLLs 0 or missing, Windows doesn't load them.
+        app_added(
+            SourceKind::Hooks,
+            item(
+                r"appinit|32|c:\tool\off.dll",
+                r"C:\Tool\off.dll",
+                Some(r"c:\tool\off.dll"),
+                &[("load", "0")],
+            ),
+        ),
+        app_added(
+            SourceKind::Hooks,
+            item(
+                r"appinit|64|c:\tool\unset.dll",
+                r"C:\Tool\unset.dll",
+                Some(r"c:\tool\unset.dll"),
+                &[],
+            ),
+        ),
     ];
     let r = install_receipt(
         &subject,
@@ -1101,6 +1120,14 @@ fn hooks_and_link_handlers_in_their_own_words() {
             (Level::Warn, "Runs \"tool.exe\" whenever \"notepad.exe\" starts"),
             (Level::Warn, "Changes what Windows runs when you sign in (Userinit)"),
             (Level::Warn, "Loads \"hook.dll\" into every program that shows windows"),
+            (
+                Level::Note,
+                "Lists \"off.dll\" in AppInit_DLLs, which is turned off on this PC"
+            ),
+            (
+                Level::Note,
+                "Lists \"unset.dll\" in AppInit_DLLs, which is turned off on this PC"
+            ),
             (Level::Warn, "Takes over mailto:// links"),
             (Level::Good, "No services, drivers or firewall rules"),
             (Level::Note, "Opens tool://, tool-sso:// links"),
