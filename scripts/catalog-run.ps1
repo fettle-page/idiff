@@ -2,7 +2,13 @@
 # uninstall it with `idiff leftovers`, and leave everything in <Out>/<id>/ for the library
 # generator. Never run this on your own PC: it installs and uninstalls software.
 #
-#   pwsh -File scripts/catalog-run.ps1 -Id VideoLAN.VLC -Name VLC -Out results [-Idiff target\release\idiff.exe]
+#   pwsh -File scripts/catalog-run.ps1 -Id VideoLAN.VLC -Name VLC -Out results [-UninstallArgs /S] [-Idiff target\release\idiff.exe]
+#
+# -UninstallArgs is the app's uninstall_args from catalog/apps.toml. Without it the uninstall is
+# `winget uninstall --silent`, which runs the app's QuietUninstallString if it has one and its
+# plain UninstallString if not, adding no switches; many exe uninstallers then wait for a dialog.
+# With it, the uninstall runs the UninstallString of the app's Uninstall entry with these
+# arguments added after its own, and falls back to winget if there's no such entry.
 #
 # <Out>/<id>/ gets:
 #   meta.json       written first and updated after each step. `failed` names the step that
@@ -16,6 +22,8 @@ param(
     [Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._+-]*$')][string]$Id,
     [Parameter(Mandatory)][string]$Name,
     [Parameter(Mandatory)][string]$Out,
+    # The same characters the workflow allows: these reach a command line unquoted.
+    [ValidatePattern('^[A-Za-z0-9 /_=:.-]*$')][string]$UninstallArgs = '',
     [string]$Idiff = 'idiff'
 )
 
@@ -45,9 +53,28 @@ function Find-SessionFile([string]$File) {
         Select-Object -First 1
 }
 
+# The windows of processes started since $Since, in the job log: the dialog an uninstaller that
+# ran out of time was waiting on. Only the job log; the receipts stay as idiff made them.
+function Write-OpenWindows([datetime]$Since) {
+    $open = @(Get-Process | Where-Object {
+            $p = $_
+            # StartTime can't be read for some system processes; none of those is the uninstaller.
+            $p.MainWindowTitle -and $(try { $p.StartTime -ge $Since } catch { $false })
+        })
+    if (-not $open) {
+        Write-Host 'No process started since the uninstall has a window open.'
+        return
+    }
+    foreach ($p in $open) {
+        Write-Host "Window still open: `"$($p.MainWindowTitle)`" from $($p.ProcessName) (pid $($p.Id), $($p.Path))"
+    }
+}
+
 # Runs idiff with a deadline, copying before.json out of the session as soon as it appears.
-# Returns the exit code, or $null if it had to be stopped.
-function Invoke-Idiff([string[]]$IdiffArgs, [string]$Log, [int]$Minutes) {
+# Returns the exit code, or $null if it had to be stopped. With -ShowWindows, a run that didn't
+# succeed writes the windows still open to the job log, before anything is stopped.
+function Invoke-Idiff([string[]]$IdiffArgs, [string]$Log, [int]$Minutes, [switch]$ShowWindows) {
+    $started = Get-Date
     $p = Start-Process -FilePath $Idiff -ArgumentList $IdiffArgs -NoNewWindow -PassThru `
         -RedirectStandardOutput (Join-Path $dir $Log) -RedirectStandardError (Join-Path $dir "$Log.err")
     $null = $p.Handle # keeps ExitCode readable after the process ends
@@ -61,12 +88,15 @@ function Invoke-Idiff([string[]]$IdiffArgs, [string]$Log, [int]$Minutes) {
         Start-Sleep -Seconds 2
     }
     if (-not $p.HasExited) {
+        if ($ShowWindows) { Write-OpenWindows $started }
         taskkill /PID $p.Id /T /F 2>&1 | Out-Null
         return $null
     }
     if (-not $copied -and ($before = Find-SessionFile 'before.json')) {
         Copy-Item $before.FullName (Join-Path $dir 'before.json')
     }
+    # idiff leaves an uninstaller that outlived its --timeout running, so its window is still there.
+    if ($ShowWindows -and $p.ExitCode -ne 0) { Write-OpenWindows $started }
     $p.ExitCode
 }
 
@@ -115,6 +145,84 @@ function Get-InstalledVersion([object]$ExitCode, [string]$AppId) {
     $null
 }
 
+# The app's Uninstall entry: of the program entries the install added, the one named like the app
+# (named exactly first, then the biggest), else any entry in the registry whose DisplayName has the
+# app's name in it. Returns the key's values, or $null if none has an UninstallString. Only reads.
+function Find-UninstallEntry {
+    $roots = @{
+        'hklm\native'      = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
+        'hklm\wow6432node' = 'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
+        'hkcu\native'      = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
+    }
+    $hasName = { param($label) "$label".IndexOf($Name, [StringComparison]::OrdinalIgnoreCase) -ge 0 }
+    $paths = @()
+    $beforeFile, $afterFile = (Find-SessionFile 'before.json'), (Find-SessionFile 'after.json')
+    if ($beforeFile -and $afterFile) {
+        $before = Get-Content $beforeFile.FullName -Raw | ConvertFrom-Json -AsHashtable
+        $after = Get-Content $afterFile.FullName -Raw | ConvertFrom-Json -AsHashtable
+        $old = @{}
+        foreach ($i in $before.sources['Programs'].items) { $old[$i.key] = $true }
+        $paths = @($after.sources['Programs'].items |
+                Where-Object { -not $old.ContainsKey($_.key) -and $_.props.system_component -ne '1' -and (& $hasName $_.label) } |
+                Sort-Object @{ Expression = { "$($_.label)" -eq $Name }; Descending = $true },
+                @{ Expression = { [long]($_.props.size_kb ?? 0) }; Descending = $true } |
+                ForEach-Object {
+                    # Keys are "<hive>\<view>\<subkey>", as idiff's Programs source writes them.
+                    $hive, $view, $subkey = $_.key -split '\\', 3
+                    $root = $roots["$hive\$view"]
+                    if ($root -and $subkey) { Join-Path $root $subkey }
+                })
+    }
+    if (-not $paths) {
+        $paths = @(foreach ($root in $roots.Values) {
+                Get-ChildItem -Path $root -ErrorAction SilentlyContinue |
+                    Where-Object { (& $hasName $_.GetValue('DisplayName')) -and $_.GetValue('SystemComponent') -ne 1 } |
+                    ForEach-Object PSPath
+            })
+    }
+    foreach ($path in $paths) {
+        $entry = Get-ItemProperty -LiteralPath $path -ErrorAction SilentlyContinue
+        if ($entry -and "$($entry.UninstallString)".Trim()) { return $entry }
+    }
+    $null
+}
+
+# An UninstallString split into the program and the arguments it already has. Most quote the
+# program; some don't though its path has spaces (WinRAR's), so an unquoted one ends at ".exe".
+function Split-CommandLine([string]$Line) {
+    $Line = $Line.Trim()
+    if ($Line -match '^"([^"]+)"\s*(.*)$') { return $Matches[1], $Matches[2] }
+    if ($Line -match '^(.+?\.exe)(?:\s+(.*))?$') { return $Matches[1], "$($Matches[2])" }
+    $Line, ''
+}
+
+# What `idiff leftovers` runs after the `--`: the app's own uninstaller with -UninstallArgs when
+# there are some and its entry has an UninstallString, else winget. Says which in the job log.
+function Get-UninstallCommand {
+    $winget = @('winget', 'uninstall', '--id', $Id, '--exact', '--silent',
+        '--accept-source-agreements', '--disable-interactivity')
+    $entry = Find-UninstallEntry
+    if ($entry) {
+        Write-Host "Uninstall entry $($entry.PSChildName) ($($entry.DisplayName)): UninstallString $($entry.UninstallString); QuietUninstallString $($entry.QuietUninstallString ?? '(none)')"
+    }
+    if (-not $UninstallArgs.Trim()) { return $winget }
+    if (-not $entry) {
+        Write-Host "No Uninstall entry named like `"$Name`"; uninstalling with winget instead."
+        return $winget
+    }
+    $program, $own = Split-CommandLine $entry.UninstallString
+    # An MSI's entry runs msiexec /I or /X with its product code; winget already uninstalls
+    # those quietly, and switches added after /I would repair it instead.
+    if ((Split-Path -Leaf $program) -match '^msiexec(\.exe)?$' -or -not (Test-Path -LiteralPath $program -PathType Leaf)) {
+        Write-Host "UninstallString doesn't run an uninstaller to add arguments to ($program); uninstalling with winget instead."
+        return $winget
+    }
+    Write-Host "Uninstalling with `"$program`" $own $UninstallArgs"
+    # Start-Process joins these with spaces as they are: the program is quoted here, and the
+    # UninstallString's own arguments stay as the installer wrote them.
+    @("`"$program`"", $own, $UninstallArgs) | Where-Object { $_ }
+}
+
 try {
     Save-Meta
     # What the runner image changes by itself (its preinstalled Firefox) is hidden, and counted,
@@ -144,11 +252,10 @@ try {
         $meta.failed = $installFailed ?? 'leftovers: didn''t finish'
         Save-Meta
         # Uninstallers that work finish in a minute or two; on runners many wait for a dialog nobody
-        # can click, forever. Five minutes tells them apart without spending Actions minutes on waiting.
-        $code = Invoke-Idiff -Log 'leftovers.log' -Minutes 8 -IdiffArgs @(
-            'leftovers', 'last', '--yes', '--settle', '30', '--timeout', '5', '--',
-            'winget', 'uninstall', '--id', $Id, '--exact', '--silent',
-            '--accept-source-agreements', '--disable-interactivity')
+        # can click, forever. Five minutes tells them apart without spending Actions minutes on waiting,
+        # and the job log then names the windows still open.
+        $code = Invoke-Idiff -Log 'leftovers.log' -Minutes 8 -ShowWindows -IdiffArgs (@(
+                'leftovers', 'last', '--yes', '--settle', '30', '--timeout', '5', '--') + @(Get-UninstallCommand))
         Save-Receipts
         $leftoversFailed = if ($null -eq $code) { 'leftovers: stopped after 8 minutes' } elseif ($code -ne 0) { "leftovers: exit $code" }
         # The first step that went wrong is the one to report.

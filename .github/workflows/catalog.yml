@@ -63,16 +63,28 @@ jobs:
               print(f"::error::{message}")
               sys.exit(1)
 
-          # Ids and names reach command lines and artifact names: only these characters.
+          # Ids, names and uninstall arguments reach command lines and artifact names: only these
+          # characters. Uninstall arguments go on the uninstaller's command line unquoted.
           ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
           NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 .+&()-]*$")
+          ARGS = re.compile(r"^[A-Za-z0-9 /_=:.-]*$")
           TAG = re.compile(r"^v\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$")
+          FIELDS = {"id", "name", "uninstall_args"}
 
           with open("catalog/apps.toml", "rb") as f:
-              apps = [{"id": a["id"], "name": a["name"]} for a in tomllib.load(f)["app"]]
+              listed = tomllib.load(f)["app"]
+          for a in listed:
+              unknown_fields = set(a) - FIELDS
+              if unknown_fields:
+                  fail(f"catalog/apps.toml: unknown field {', '.join(sorted(unknown_fields))} in {a}")
+          apps = [{"id": a["id"], "name": a["name"], "uninstall_args": a.get("uninstall_args", "")} for a in listed]
           for a in apps:
+              if not all(isinstance(a[k], str) for k in a):
+                  fail(f"catalog/apps.toml: not a string: {a}")
               if not ID.match(a["id"]) or not NAME.match(a["name"]):
                   fail(f"catalog/apps.toml: not a safe id or name: {a}")
+              if not ARGS.fullmatch(a["uninstall_args"]):
+                  fail(f"catalog/apps.toml: not safe uninstall arguments: {a}")
           ids = [a["id"] for a in apps]
           if len(set(ids)) != len(ids):
               fail("catalog/apps.toml lists an id twice")
@@ -193,7 +205,8 @@ jobs:
         env:
           APP_ID: ${{ matrix.app.id }}
           APP_NAME: ${{ matrix.app.name }}
-        run: ./scripts/catalog-run.ps1 -Id $env:APP_ID -Name $env:APP_NAME -Out out -Idiff (Resolve-Path bin\idiff.exe).Path
+          APP_UNINSTALL_ARGS: ${{ matrix.app.uninstall_args }}
+        run: ./scripts/catalog-run.ps1 -Id $env:APP_ID -Name $env:APP_NAME -UninstallArgs "$env:APP_UNINSTALL_ARGS" -Out out -Idiff (Resolve-Path bin\idiff.exe).Path
       # If the job ran out of time, catalog-run.ps1 never finished, but its meta.json says where it stopped.
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()

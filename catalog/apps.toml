@@ -1,5 +1,10 @@
 # The apps the Receipts Library installs on fresh GitHub runners, one per runner.
 # The apps that installed in the kill test, plus well-known apps checked with `winget show`.
+#
+# uninstall_args (optional): arguments for the app's own uninstaller. Then catalog-run.ps1 runs
+# the UninstallString of the app's Uninstall entry with these added after its own arguments,
+# instead of `winget uninstall --silent`, which adds none and so leaves many exe uninstallers
+# waiting for a dialog on the runner. Only letters, digits, spaces and / _ = : . - are allowed.
 [[app]]
 id = "Discord.Discord"
 name = "Discord"
@@ -7,6 +12,8 @@ name = "Discord"
 [[app]]
 id = "Valve.Steam"
 name = "Steam"
+# NSIS uninstaller.
+uninstall_args = "/S"
 
 [[app]]
 id = "Zoom.Zoom"
@@ -19,18 +26,27 @@ name = "Slack"
 [[app]]
 id = "Brave.Brave"
 name = "Brave"
+# Chromium's setup.exe; its UninstallString has --uninstall, and this skips the "Uninstall?" prompt.
+uninstall_args = "--force-uninstall"
 
 [[app]]
 id = "Opera.Opera"
 name = "Opera"
+# Opera's launcher.exe; Opera dropped its silent switch, and --runimmediately skips the prompt
+# (progress window only). Keeps the profile, as a default uninstall does.
+uninstall_args = "--uninstall --runimmediately --deleteuserprofile=0"
 
 [[app]]
 id = "Vivaldi.Vivaldi"
 name = "Vivaldi"
+# Chromium's setup.exe, as Vivaldi's help gives it: --uninstall --vivaldi --force-uninstall.
+uninstall_args = "--vivaldi --force-uninstall"
 
 [[app]]
 id = "VideoLAN.VLC"
 name = "VLC"
+# winget picks the NSIS installer on runners (the receipt's entry is "VLC media player", not an MSI).
+uninstall_args = "/S"
 
 [[app]]
 id = "Notepad++.Notepad++"
@@ -51,6 +67,8 @@ name = "Audacity"
 [[app]]
 id = "qBittorrent.qBittorrent"
 name = "qBittorrent"
+# NSIS uninstaller.
+uninstall_args = "/S"
 
 [[app]]
 id = "WireGuard.WireGuard"
@@ -63,22 +81,33 @@ name = "Epic Games Launcher"
 [[app]]
 id = "ElectronicArts.EADesktop"
 name = "EA app"
+# No uninstall_args: a Burn bundle, whose quiet uninstall winget already runs; it exits without
+# removing the app rather than hanging.
 
 [[app]]
 id = "Nvidia.GeForceNow"
 name = "GeForce NOW"
+# No uninstall_args yet: NVIDIA documents no silent uninstall for it. The job log shows its
+# UninstallString to pick them from.
 
 [[app]]
 id = "Logitech.GHUB"
 name = "Logitech G HUB"
+# No uninstall_args yet: sources disagree on which exe uninstalls it (lghub_updater.exe
+# --uninstall --full is the likeliest). The job log shows its UninstallString to check.
 
 [[app]]
 id = "Dropbox.Dropbox"
 name = "Dropbox"
+# The "Dropbox" entry's DropboxUninstaller.exe (NSIS), not the Enterprise MSI winget uninstalls;
+# Dropbox doesn't document it, deployment guides give these switches.
+uninstall_args = "/InstallType:MACHINE /S"
 
 [[app]]
 id = "Google.GoogleDrive"
 name = "Google Drive"
+# Drive's uninstall.exe, as Google's admin help gives it: no prompts, and stops Drive if running.
+uninstall_args = "--silent --force_stop"
 
 [[app]]
 id = "Adobe.Acrobat.Reader.64-bit"
@@ -87,6 +116,8 @@ name = "Adobe Acrobat Reader"
 [[app]]
 id = "RARLab.WinRAR"
 name = "WinRAR"
+# WinRAR's own uninstall.exe, whose /S is in WinRAR's help.
+uninstall_args = "/S"
 
 [[app]]
 id = "TeamViewer.TeamViewer"
@@ -99,10 +130,15 @@ name = "OBS Studio"
 [[app]]
 id = "Malwarebytes.Malwarebytes"
 name = "Malwarebytes"
+# Inno Setup (its entry ends in _is1). Inno's QuietUninstallString, which winget runs, is /SILENT,
+# which still shows message boxes; these suppress them too.
+uninstall_args = "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART"
 
 [[app]]
 id = "Mozilla.Thunderbird"
 name = "Thunderbird"
+# Mozilla's uninstall\helper.exe (NSIS).
+uninstall_args = "/S"
 
 [[app]]
 id = "OpenWhisperSystems.Signal"
@@ -135,6 +171,8 @@ name = "GOG Galaxy"
 [[app]]
 id = "JetBrains.Toolbox"
 name = "JetBrains Toolbox"
+# Toolbox's bin\Uninstall.exe, as JetBrains' help gives it: uninstalls in the background, no UI.
+uninstall_args = "/headless"
 
 [[app]]
 id = "Postman.Postman"
@@ -163,6 +201,8 @@ name = "ShareX"
 [[app]]
 id = "Greenshot.Greenshot"
 name = "Greenshot"
+# Inno Setup, as Malwarebytes.
+uninstall_args = "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART"
 
 [[app]]
 id = "KeePassXCTeam.KeePassXC"
@@ -179,6 +219,8 @@ name = "1Password"
 [[app]]
 id = "HandBrake.HandBrake"
 name = "HandBrake"
+# NSIS uninstaller.
+uninstall_args = "/S"
 
 [[app]]
 id = "Inkscape.Inkscape"
