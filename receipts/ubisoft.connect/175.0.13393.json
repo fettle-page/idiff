@@ -1,0 +1,161 @@
+{
+  "meta": {
+    "id": "Ubisoft.Connect",
+    "name": "Ubisoft Connect",
+    "version": "175.0.13393",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Ubisoft Connect 175.0.13393: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: Ubisoft UPC Elevation Service (full system rights)",
+        "items": [
+          "upcelevationservice"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens uplay:// links",
+        "items": [
+          "protocol|hklm|uplay"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (460 MB)",
+        "items": [
+          "c:\\program files (x86)\\ubisoft"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData",
+        "items": [
+          "c:\\programdata\\ubisoft"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (1 KB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\ubisoft game launcher"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\ubisoft connect.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\ubisoft\\ubisoft connect\\ubisoft connect.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "3 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Ubisoft Connect 175.0.13393: after uninstall, 2 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Folder \"Program Files (x86)\\Ubisoft\" is still there (empty)",
+        "items": [
+          "c:\\program files (x86)\\ubisoft"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Folder \"ProgramData\\Ubisoft\" is still there (empty)",
+        "items": [
+          "c:\\programdata\\ubisoft"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

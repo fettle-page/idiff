@@ -1,32 +1,41 @@
-# Adobe Acrobat Reader 26.002.22031
+# Adobe Acrobat Reader 26.003.22075
 
-## Adobe Acrobat Reader 26.002.22031: installed
+## Adobe Acrobat Reader 26.003.22075: installed
 
 - ⚠ Adds 1 background service: Adobe Acrobat Update Service \(starts with Windows\) \(full system rights\)
 - ⚠ 1 scheduled task: runs adobearm.exe at sign-in
 - ✓ No drivers or firewall rules
 - · Adds right-click menu entries
-- · Files in Program Files \(1.2 GB\)
+- · Opens acrobat://, acrobat2018://, acrobat2019://, acrobat2021.oauth2://, acrobat2024://, launchreader:// links
+- · Files in Program Files \(1007 MB\)
 - · Adds a desktop shortcut
 - · Adds a Start menu entry
-- · 5 Windows background changes hidden \(listed below\)
+- · 3 Windows background changes hidden \(listed below\)
 
 ### Hidden: Windows background changes
 
+- · Changed service "BITS"
 - · Changed service "PcaSvc"
-- · Changed scheduled task "PrintJobCleanupTask"
-- · Added folder "AppData\\Local\\Mozilla"
-- · Added folder "AppData\\Roaming\\Mozilla"
 - · Added store app "Windows Package Manager Source \(winget\) V2"
 
 ## After uninstall
 
-### Adobe Acrobat Reader 26.002.22031: after uninstall, no leftovers
+### Adobe Acrobat Reader 26.003.22075: after uninstall, no leftovers
 
 - ✓ Nothing left behind
 
+## Changed since the previous version
+
+- \+ Opens acrobat://, acrobat2018://, acrobat2019://, acrobat2021.oauth2://, acrobat2024://, launchreader:// links
+- \+ Files in Program Files \(1007 MB\)
+- \- Files in Program Files \(1.2 GB\)
+
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261007.264.1) by idiff 1.0.0 on 2026-10-15, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/38780384255). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [26.002.22031](26.002.22031.md) (2026-10-15)

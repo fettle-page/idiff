@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "id": "Plex.PlexMediaServer",
+    "name": "Plex Media Server",
+    "version": "1.43.5.11079",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Plex Media Server 1.43.5.11079: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: Plex Update Service (starts with Windows) (full system rights)",
+        "items": [
+          "plexupdateservice"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for plexscripthost.exe, plex media server.exe, plex dlna server.exe, plex tuner service.exe",
+        "items": [
+          "{040c2323-1bac-407f-8baf-db9b58cb2739}",
+          "{41397bb6-c565-4a80-bbc9-813ef76ec83c}",
+          "{493be33a-fbd7-47b4-a3a8-7a59f264db60}",
+          "{7d3b0462-e356-4766-899c-2d25ec30d3ec}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (227 MB)",
+        "items": [
+          "c:\\program files\\plex"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (3 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\plex media server"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\plex media server.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "6 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\PeerDistRepub\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\peerdistrepub"
+        ],
+        "why": [
+          "Windows background change: BranchCache, Windows' download cache"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Programs\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\programs"
+        ],
+        "why": [
+          "Windows background change: a folder many apps share"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Programs\\Common\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\programs\\common"
+        ],
+        "why": [
+          "Windows background change: a folder many apps share"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Plex Media Server 1.43.5.11079: after uninstall, 2 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Folder \"Program Files\\Plex\" is still there (empty)",
+        "items": [
+          "c:\\program files\\plex"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "4 MB in AppData\\Local\\Plex Media Server",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\plex media server"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

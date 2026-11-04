@@ -1,0 +1,544 @@
+{
+  "meta": {
+    "id": "Kingsoft.WPSOffice",
+    "name": "WPS Office",
+    "version": "12.2.0.23196",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": "leftovers: exit 2"
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "WPS Office 12.2.0.23196: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: WPS Office Cloud Service (full system rights)",
+        "items": [
+          "wpscloudsvr"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "4 scheduled tasks: runs wpscloudsvr.exe once; runs wpscloudsvr.exe at sign-in; runs an updater once; runs ksolaunch.exe at sign-in",
+        "items": [
+          "\\wpsexternal_runneradmin_20261104141230",
+          "\\wpsexternal_runneradmin_startup",
+          "\\wpsupdatetask_runneradmin",
+          "\\wpswakewnslogontask"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for wpspdf.exe, et.exe, wpscloudsvr.exe, wpp.exe, promecefpluginhost.exe, wps.exe",
+        "items": [
+          "{1135bde4-ed22-4c66-a016-b798aa86491d}",
+          "{1fd62f48-820c-47b9-b692-dc303b908316}",
+          "{3e488f84-ade3-4a7a-90c3-c1b26c974654}",
+          "{43360ab6-2cc1-4f1f-b905-6e8c27d6fdc2}",
+          "{ac7fcb1f-1b18-454a-be76-eed15b7a088a}",
+          "{f6e92ed5-471b-487c-8d0e-eed1a21be69c}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Adds right-click menu entries",
+        "items": [
+          "*|handler|          kwpsshellext",
+          "directory|handler|          kwpsshellext"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Opens ksoqing:// links",
+        "items": [
+          "protocol|hkcu|ksoqing"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (1 MB)",
+        "items": [
+          "c:\\program files (x86)\\kingsoft",
+          "c:\\program files (x86)\\microsoft office"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (30 KB)",
+        "items": [
+          "c:\\programdata\\kingsoft"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (1.1 GB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\kingsoft",
+          "c:\\users\\runneradmin\\appdata\\roaming\\kingsoft"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\wps office.lnk",
+          "c:\\users\\runneradmin\\desktop\\wps pdf.lnk"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps office.lnk",
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps office\\wps office tools\\wps office configuration tools.lnk",
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps pdf.lnk",
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps sheets.lnk",
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps slides.lnk",
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps docs.lnk"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "5 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added store app \"Microsoft Visual C++ 2015 UWP Runtime Package\"",
+        "items": [
+          "microsoft.vclibs.140.00_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"wpsappext1\"",
+        "items": [
+          "wpsappext1_km9wtz8rh8me0"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"wpsappext2\"",
+        "items": [
+          "wpsappext2_km9wtz8rh8me0"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"wpsappext3\"",
+        "items": [
+          "wpsappext3_km9wtz8rh8me0"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed store app \"Windows Security\"",
+        "items": [
+          "microsoft.sechealthui_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: a Microsoft Store app updated itself"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added link handler \"windowsdefender\"",
+        "items": [
+          "protocol|hkcu|windowsdefender"
+        ],
+        "why": [
+          "Windows background change: Windows Security registering its own link handler"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "WPS Office 12.2.0.23196: after uninstall, 28 leftovers",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "The uninstall was still running after 5 minutes, so this list may include things it would have removed",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Bad",
+        "text": "Program \"WPS Office (12.2.0.23196)\" is still there",
+        "items": [
+          "hkcu\\native\\kingsoft office"
+        ],
+        "why": [
+          "the installed program's own entry"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Service \"WPS Office Cloud Service\" is still there",
+        "items": [
+          "wpscloudsvr"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"WpsExternal_runneradmin_20261104141230\" is still there",
+        "items": [
+          "\\wpsexternal_runneradmin_20261104141230"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"WpsExternal_runneradmin_startup\" is still there",
+        "items": [
+          "\\wpsexternal_runneradmin_startup"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"WpsUpdateTask_runneradmin\" is still there",
+        "items": [
+          "\\wpsupdatetask_runneradmin"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"WpsWakeWnsLogonTask\" is still there",
+        "items": [
+          "\\wpswakewnslogontask"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"wpspdf.exe\" is still there",
+        "items": [
+          "{1135bde4-ed22-4c66-a016-b798aa86491d}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"et.exe\" is still there",
+        "items": [
+          "{1fd62f48-820c-47b9-b692-dc303b908316}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"wpscloudsvr.exe\" is still there",
+        "items": [
+          "{3e488f84-ade3-4a7a-90c3-c1b26c974654}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"wpp.exe\" is still there",
+        "items": [
+          "{43360ab6-2cc1-4f1f-b905-6e8c27d6fdc2}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"promecefpluginhost.exe\" is still there",
+        "items": [
+          "{ac7fcb1f-1b18-454a-be76-eed15b7a088a}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"wps.exe\" is still there",
+        "items": [
+          "{f6e92ed5-471b-487c-8d0e-eed1a21be69c}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Right-click menu entry \"kwpsshellext\" is still there (2 items)",
+        "items": [
+          "*|handler|          kwpsshellext",
+          "directory|handler|          kwpsshellext"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "1 MB in Program Files (x86)\\Kingsoft",
+        "items": [
+          "c:\\program files (x86)\\kingsoft"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Folder \"Program Files (x86)\\Microsoft Office\" is still there (empty)",
+        "items": [
+          "c:\\program files (x86)\\microsoft office"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "30 KB in ProgramData\\kingsoft",
+        "items": [
+          "c:\\programdata\\kingsoft"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "1014 MB in AppData\\Local\\kingsoft",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\kingsoft"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "99 MB in AppData\\Roaming\\kingsoft",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\kingsoft"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu\\WPS Office.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps office.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu\\WPS Office\\WPS Office Tools\\WPS Office Configuration Tools.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps office\\wps office tools\\wps office configuration tools.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu\\WPS PDF.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps pdf.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu\\WPS Sheets.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps sheets.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu\\WPS Slides.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps slides.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu\\WPS Docs.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\wps docs.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Desktop\\WPS Office.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\wps office.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Desktop\\WPS PDF.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\wps pdf.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"ksoqing\" is still there",
+        "items": [
+          "protocol|hkcu|ksoqing"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

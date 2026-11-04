@@ -1,0 +1,248 @@
+{
+  "meta": {
+    "id": "Parsec.Parsec",
+    "name": "Parsec",
+    "version": "150-104a",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": "leftovers: exit 2"
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Parsec 150-104a: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: Parsec (starts with Windows) (full system rights)",
+        "items": [
+          "parsec"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for parsecd.exe",
+        "items": [
+          "{39cde9af-e6f1-46f1-a4c8-7a9f2fdd767d}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens parsec://, parsecd:// links",
+        "items": [
+          "protocol|hklm|parsec",
+          "protocol|hklm|parsecd"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (10 MB)",
+        "items": [
+          "c:\\program files\\parsec",
+          "c:\\program files\\parsec virtual usb adapter driver"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\parsec\\parsec.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Also installed: Parsec Virtual USB Adapter Driver",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "3 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added driver \"parsecvirtualds\"",
+        "items": [
+          "parsecvirtualds"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added driver \"parsecvusba\"",
+        "items": [
+          "parsecvusba"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\PeerDistRepub\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\peerdistrepub"
+        ],
+        "why": [
+          "Windows background change: BranchCache, Windows' download cache"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Parsec 150-104a: after uninstall, 9 leftovers",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "The uninstall was still running after 5 minutes, so this list may include things it would have removed",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Bad",
+        "text": "Program \"Parsec Virtual USB Adapter Driver\" is still there",
+        "items": [
+          "hklm\\native\\parsecvud"
+        ],
+        "why": [
+          "the installed program's own entry"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Program \"Parsec\" is still there",
+        "items": [
+          "hklm\\wow6432node\\parsec"
+        ],
+        "why": [
+          "the installed program's own entry"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Service \"Parsec\" is still there",
+        "items": [
+          "parsec"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"Parsec\" is still there",
+        "items": [
+          "{39cde9af-e6f1-46f1-a4c8-7a9f2fdd767d}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "9 MB in Program Files\\Parsec",
+        "items": [
+          "c:\\program files\\parsec"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "2 MB in Program Files\\Parsec Virtual USB Adapter Driver",
+        "items": [
+          "c:\\program files\\parsec virtual usb adapter driver"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu (all users)\\Parsec\\Parsec.lnk\" is still there",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\parsec\\parsec.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"parsec\" is still there",
+        "items": [
+          "protocol|hklm|parsec"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"parsecd\" is still there",
+        "items": [
+          "protocol|hklm|parsecd"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

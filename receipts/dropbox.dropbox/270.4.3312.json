@@ -1,0 +1,248 @@
+{
+  "meta": {
+    "id": "Dropbox.Dropbox",
+    "name": "Dropbox",
+    "version": "270.4.3312",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261103.298.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Dropbox 270.4.3312: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 4 background services: DbxSvc, Dropbox Elevation Service (DropboxElevationService), DropboxUpdater InternalService 123.0.6299.117 (DropboxUpdaterInternalService123.0.6299.117), DropboxUpdater Service 123.0.6299.117 (DropboxUpdaterService123.0.6299.117) (starts with Windows) (full system rights)",
+        "items": [
+          "dbxsvc",
+          "dropboxelevationservice",
+          "dropboxupdaterinternalservice123.0.6299.117",
+          "dropboxupdaterservice123.0.6299.117"
+        ],
+        "why": [
+          "signed by the app's publisher",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "1 scheduled task: runs an updater at sign-in, as SYSTEM",
+        "items": [
+          "\\dropboxsystem\\dropboxupdater\\dropboxupdatertasksystem123.0.6299.117{6b21664c-ab4f-4326-9bfd-e9151d88ecac}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hklm|software\\wow6432node\\microsoft\\windows\\currentversion\\run|dropbox"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for dropbox.exe",
+        "items": [
+          "{8b7f39ec-9c4f-4f4f-aa0e-e4506774d93f}",
+          "{b206f304-cc0b-47ad-9969-221893a5ad12}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Adds right-click menu entries",
+        "items": [
+          "*|handler|dropboxext",
+          "directory\\background|handler|dropboxext",
+          "directory|handler|dropboxext",
+          "dropboxinc.dropbox_wkt425jdc3sga"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Opens dropbox-client:// links",
+        "items": [
+          "protocol|hklm|dropbox-client"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (641 MB)",
+        "items": [
+          "c:\\program files (x86)\\dropbox",
+          "c:\\program files\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\dropbox\\dropbox.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "4 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added store app \"Microsoft Visual C++ 2015 UWP Runtime Package\"",
+        "items": [
+          "microsoft.vclibs.140.00_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed store app \"Windows Security\"",
+        "items": [
+          "microsoft.sechealthui_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: a Microsoft Store app updated itself"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added link handler \"windowsdefender\"",
+        "items": [
+          "protocol|hkcu|windowsdefender"
+        ],
+        "why": [
+          "Windows background change: Windows Security registering its own link handler"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Dropbox 270.4.3312: after uninstall, 6 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Service \"DropboxUpdater InternalService 123.0.6299.117 (DropboxUpdaterInternalService123.0.6299.117)\" is still there",
+        "items": [
+          "dropboxupdaterinternalservice123.0.6299.117"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Service \"DropboxUpdater Service 123.0.6299.117 (DropboxUpdaterService123.0.6299.117)\" is still there",
+        "items": [
+          "dropboxupdaterservice123.0.6299.117"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"DropboxUpdaterTaskSystem123.0.6299.117{6B21664C-AB4F-4326-9BFD-E9151D88ECAC}\" is still there",
+        "items": [
+          "\\dropboxsystem\\dropboxupdater\\dropboxupdatertasksystem123.0.6299.117{6b21664c-ab4f-4326-9bfd-e9151d88ecac}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "6 MB in Program Files (x86)\\Dropbox",
+        "items": [
+          "c:\\program files (x86)\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "6 MB in Program Files\\Dropbox",
+        "items": [
+          "c:\\program files\\dropbox"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Store app \"Dropbox\" is still there",
+        "items": [
+          "dropboxinc.dropbox_wkt425jdc3sga"
+        ],
+        "why": [
+          "name matches the app (a weak sign)"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

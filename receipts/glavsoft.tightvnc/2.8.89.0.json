@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "id": "GlavSoft.TightVNC",
+    "name": "TightVNC",
+    "version": "2.8.89.0",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "TightVNC 2.8.89.0: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: TightVNC Server (starts with Windows) (full system rights)",
+        "items": [
+          "tvnserver"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hklm|software\\microsoft\\windows\\currentversion\\run|tvncontrol"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for tvnserver.exe",
+        "items": [
+          "{515aa014-8a5b-41c0-8845-e11be2f9615e}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (3 MB)",
+        "items": [
+          "c:\\program files\\tightvnc"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData",
+        "items": [
+          "c:\\programdata\\tightvnc"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc server (application mode)\\run tightvnc server.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc server (application mode)\\tightvnc server - control interface.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc server (application mode)\\tightvnc server - offline configuration.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc server (service mode)\\register tightvnc service.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc server (service mode)\\start tightvnc service.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc server (service mode)\\stop tightvnc service.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc server (service mode)\\tightvnc service - control interface.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc server (service mode)\\tightvnc service - offline configuration.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc server (service mode)\\unregister tightvnc service.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\tightvnc viewer.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\tightvnc\\visit tightvnc web site.lnk"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "TightVNC 2.8.89.0: after uninstall, no leftovers",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "Nothing left behind",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

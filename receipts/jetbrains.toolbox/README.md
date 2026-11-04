@@ -1,9 +1,9 @@
-# JetBrains Toolbox 3.8.1.0
+# JetBrains Toolbox 3.9.1.0
 
-## JetBrains Toolbox 3.8.1.0: installed
+## JetBrains Toolbox 3.9.1.0: installed
 
 - ✓ No services, drivers or firewall rules
-- ✓ Files only in your user folder \(184 MB\)
+- ✓ Files only in your user folder \(189 MB\)
 - · Adds a Start menu entry
 - · 2 Windows background changes hidden \(listed below\)
 
@@ -14,17 +14,21 @@
 
 ## After uninstall
 
-The uninstall didn't finish on the test machine, so these may include things it would have removed.
+### JetBrains Toolbox 3.9.1.0: after uninstall, 1 leftover
 
-### JetBrains Toolbox 3.8.1.0: after uninstall, 3 leftovers
+- ✗ 911 KB in AppData\\Local\\JetBrains
 
-- ⚠ The uninstall was still running after 5 minutes, so this list may include things it would have removed
-- ✗ Program "JetBrains Toolbox" is still there
-- ✗ 184 MB in AppData\\Local\\JetBrains
-- ✗ Shortcut "Start menu\\JetBrains Toolbox\\JetBrains Toolbox.lnk" is still there
+## Changed since the previous version
+
+- \+ Files only in your user folder \(189 MB\)
+- \- Files only in your user folder \(184 MB\)
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261007.264.1) by idiff 1.0.0 on 2026-10-15, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/38780384255). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [3.8.1.0](3.8.1.0.md) (2026-10-15)

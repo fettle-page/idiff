@@ -1,37 +1,43 @@
-# qBittorrent 5.2.4
+# qBittorrent 5.3.0
 
-## qBittorrent 5.2.4: installed
+## qBittorrent 5.3.0: installed
 
 - ⚠ Allows incoming connections for qbittorrent.exe
 - ✓ No services or drivers
-- · Files in Program Files \(209 MB\)
+- · Files in Program Files \(309 MB\)
 - · Adds a Start menu entry
-- · 6 Windows background changes hidden \(listed below\)
+- · 5 Windows background changes hidden \(listed below\)
+
+### Also changed while installing \(couldn't tell if it was this app\)
+
+- · Added store app "Microsoft Visual C++ 2015 UWP Runtime Package"
+- · Added link handler "magnet"
 
 ### Hidden: Windows background changes
 
 - · Changed service "BITS"
 - · Changed service "PcaSvc"
-- · Changed scheduled task "PrintJobCleanupTask"
-- · Added folder "AppData\\Local\\Mozilla"
-- · Added folder "AppData\\Roaming\\Mozilla"
+- · Changed store app "Windows Security"
 - · Added store app "Windows Package Manager Source \(winget\) V2"
+- · Added link handler "windowsdefender"
 
 ## After uninstall
 
-The uninstall didn't finish on the test machine, so these may include things it would have removed.
+### qBittorrent 5.3.0: after uninstall, no leftovers
 
-### qBittorrent 5.2.4: after uninstall, 6 leftovers
+- ✓ Nothing left behind
 
-- ⚠ The uninstall was still running after 5 minutes, so this list may include things it would have removed
-- ✗ Program "qBittorrent" is still there
-- ✗ Firewall rule "qBittorrent" is still there \(2 rules\)
-- ✗ 209 MB in Program Files\\qBittorrent
-- ✗ Shortcut "Start menu \(all users\)\\qBittorrent\\qBittorrent.lnk" is still there
-- ✗ Shortcut "Start menu \(all users\)\\qBittorrent\\Uninstall qBittorrent.lnk" is still there
+## Changed since the previous version
+
+- \+ Files in Program Files \(309 MB\)
+- \- Files in Program Files \(209 MB\)
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261007.264.1) by idiff 1.0.0 on 2026-10-15, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/38780384255). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [5.2.4](5.2.4.md) (2026-10-15)

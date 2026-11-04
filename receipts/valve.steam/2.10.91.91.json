@@ -3,11 +3,11 @@
     "id": "Valve.Steam",
     "name": "Steam",
     "version": "2.10.91.91",
-    "date": "2026-10-15",
-    "idiff_version": "1.0.0",
-    "runner_image": "win25-vs2026 20261007.264.1",
-    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
-    "failed": "leftovers: exit 2"
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
   },
   "receipt": {
     "mode": "Install",
@@ -37,8 +37,8 @@
         "level": "Warn",
         "text": "Allows incoming connections for steam.exe",
         "items": [
-          "{b569f354-1580-4c9e-80e3-c0dce97dd624}",
-          "{e9f0e615-3c54-4a4d-8e2b-4500af8a68b4}"
+          "{10618e75-a00a-4875-8774-1299a8d61c80}",
+          "{1b5e64e2-a635-42dc-9f34-93625547ec27}"
         ],
         "why": [
           "runs from the app's folder",
@@ -50,6 +50,22 @@
         "text": "No drivers",
         "items": [],
         "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens steam://, steamlink:// links",
+        "items": [
+          "protocol|hkcu|steam",
+          "protocol|hkcu|steamlink",
+          "protocol|hklm|steam",
+          "protocol|hklm|steamlink"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
       },
       {
         "level": "Note",
@@ -83,13 +99,34 @@
       },
       {
         "level": "Note",
-        "text": "2 Windows background changes hidden (idiff show --all)",
+        "text": "5 Windows background changes hidden (idiff show --all)",
         "items": [],
         "why": []
       }
     ],
-    "unknown": [],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added store app \"Microsoft Visual C++ 2015 UWP Runtime Package\"",
+        "items": [
+          "microsoft.vclibs.140.00_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
     "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
       {
         "level": "Note",
         "text": "Changed service \"PcaSvc\"",
@@ -102,6 +139,16 @@
       },
       {
         "level": "Note",
+        "text": "Changed store app \"Windows Security\"",
+        "items": [
+          "microsoft.sechealthui_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: a Microsoft Store app updated itself"
+        ]
+      },
+      {
+        "level": "Note",
         "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
         "items": [
           "microsoft.winget.source_8wekyb3d8bbwe"
@@ -109,55 +156,29 @@
         "why": [
           "Windows background change: winget refreshing its package list"
         ]
+      },
+      {
+        "level": "Note",
+        "text": "Added link handler \"windowsdefender\"",
+        "items": [
+          "protocol|hkcu|windowsdefender"
+        ],
+        "why": [
+          "Windows background change: Windows Security registering its own link handler"
+        ]
       }
     ]
   },
   "leftovers": {
     "mode": "Leftovers",
-    "title": "Steam 2.10.91.91: after uninstall, 8 leftovers",
+    "title": "Steam 2.10.91.91: after uninstall, 6 leftovers",
     "lines": [
-      {
-        "level": "Warn",
-        "text": "The uninstall was still running after 5 minutes, so this list may include things it would have removed",
-        "items": [],
-        "why": []
-      },
-      {
-        "level": "Bad",
-        "text": "Program \"Steam\" is still there",
-        "items": [
-          "hklm\\wow6432node\\steam"
-        ],
-        "why": [
-          "the installed program's own entry"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Service \"Steam Client Service\" is still there",
-        "items": [
-          "steam client service"
-        ],
-        "why": [
-          "name matches the app (a weak sign)"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Startup entry \"Steam\" is still there",
-        "items": [
-          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|steam"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
       {
         "level": "Bad",
         "text": "Firewall rule \"Steam\" is still there (2 rules)",
         "items": [
-          "{b569f354-1580-4c9e-80e3-c0dce97dd624}",
-          "{e9f0e615-3c54-4a4d-8e2b-4500af8a68b4}"
+          "{10618e75-a00a-4875-8774-1299a8d61c80}",
+          "{1b5e64e2-a635-42dc-9f34-93625547ec27}"
         ],
         "why": [
           "runs from the app's folder",
@@ -166,31 +187,25 @@
       },
       {
         "level": "Bad",
-        "text": "7 MB in Program Files (x86)\\Steam",
+        "text": "Link handler \"steam\" is still there (2 items)",
         "items": [
-          "c:\\program files (x86)\\steam"
+          "protocol|hkcu|steam",
+          "protocol|hklm|steam"
         ],
         "why": [
-          "inside the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu (all users)\\Steam\\Steam.lnk\" is still there",
-        "items": [
-          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\steam\\steam.lnk"
-        ],
-        "why": [
+          "runs from the app's folder",
           "runs from the app's folder"
         ]
       },
       {
         "level": "Bad",
-        "text": "Shortcut \"Public Desktop\\Steam.lnk\" is still there",
+        "text": "Link handler \"steamlink\" is still there (2 items)",
         "items": [
-          "c:\\users\\public\\desktop\\steam.lnk"
+          "protocol|hkcu|steamlink",
+          "protocol|hklm|steamlink"
         ],
         "why": [
+          "runs from the app's folder",
           "runs from the app's folder"
         ]
       }

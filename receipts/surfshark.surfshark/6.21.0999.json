@@ -1,0 +1,312 @@
+{
+  "meta": {
+    "id": "Surfshark.Surfshark",
+    "name": "Surfshark",
+    "version": "6.21.0999",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": "leftovers: exit 2"
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Surfshark 6.21.0999: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Installs 1 driver: SharkDivert",
+        "items": [
+          "sharkdivert"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: Surfshark Service (starts with Windows) (full system rights)",
+        "items": [
+          "surfshark service"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens surfshark:// links",
+        "items": [
+          "protocol|hklm|surfshark"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (400 MB)",
+        "items": [
+          "c:\\program files\\surfshark"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (544 KB)",
+        "items": [
+          "c:\\programdata\\surfshark"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (613 KB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\surfshark",
+          "c:\\users\\runneradmin\\appdata\\roaming\\surfshark"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\surfshark.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\surfshark\\surfshark\\surfshark.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "6 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added driver \"ovpn-dco\"",
+        "items": [
+          "ovpn-dco"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Microsoft Visual C++ 2015 UWP Runtime Package\"",
+        "items": [
+          "microsoft.vclibs.140.00_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\PeerDistRepub\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\peerdistrepub"
+        ],
+        "why": [
+          "Windows background change: BranchCache, Windows' download cache"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed store app \"Windows Security\"",
+        "items": [
+          "microsoft.sechealthui_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: a Microsoft Store app updated itself"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added link handler \"windowsdefender\"",
+        "items": [
+          "protocol|hkcu|windowsdefender"
+        ],
+        "why": [
+          "Windows background change: Windows Security registering its own link handler"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Surfshark 6.21.0999: after uninstall, 11 leftovers",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "The uninstall was still running after 5 minutes, so this list may include things it would have removed",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Bad",
+        "text": "Program \"Surfshark\" is still there (2 items)",
+        "items": [
+          "hklm\\native\\surfshark 6.21.0999",
+          "hklm\\native\\{09b83c41-ee1c-4f50-9ad5-a604484a3d4d}"
+        ],
+        "why": [
+          "the installed program's own entry",
+          "added by this install"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Service \"Surfshark Service\" is still there",
+        "items": [
+          "surfshark service"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Driver \"SharkDivert\" is still there",
+        "items": [
+          "sharkdivert"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "400 MB in Program Files\\Surfshark",
+        "items": [
+          "c:\\program files\\surfshark"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu (all users)\\Surfshark\\Surfshark\\Surfshark.lnk\" is still there",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\surfshark\\surfshark\\surfshark.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "544 KB in ProgramData\\Surfshark",
+        "items": [
+          "c:\\programdata\\surfshark"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Public Desktop\\Surfshark.lnk\" is still there",
+        "items": [
+          "c:\\users\\public\\desktop\\surfshark.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "1 KB in AppData\\Local\\Surfshark",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\surfshark"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "616 KB in AppData\\Roaming\\Surfshark",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\surfshark"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"Surfshark\" is still there",
+        "items": [
+          "protocol|hklm|surfshark"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

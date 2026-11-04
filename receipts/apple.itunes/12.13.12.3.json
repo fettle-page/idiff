@@ -1,0 +1,191 @@
+{
+  "meta": {
+    "id": "Apple.iTunes",
+    "name": "iTunes",
+    "version": "12.13.12.3",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "iTunes 12.13.12.3: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hklm|software\\microsoft\\windows\\currentversion\\run|ituneshelper"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for itunes.exe",
+        "items": [
+          "{795352b4-bc50-4ec6-97e0-8deb3c5ae3fa}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services or drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens daap://, itals://, italss://, itls://, itlss://, itms://, itmss://, itpc://, itsradio://, itunes://, itunes.assocprotocol.daap://, itunes.assocprotocol.itals://, itunes.assocprotocol.italss://, itunes.assocprotocol.itls://, itunes.assocprotocol.itlss://, itunes.assocprotocol.itms://, itunes.assocprotocol.itmss://, itunes.assocprotocol.itpc://, itunes.assocprotocol.itsradio://, itunes.assocprotocol.itvls://, itunes.assocprotocol.itvlss://, itunes.assocprotocol.pcast://, itunesradio://, itvls://, itvlss://, pcast:// links",
+        "items": [
+          "protocol|hklm|daap",
+          "protocol|hklm|itals",
+          "protocol|hklm|italss",
+          "protocol|hklm|itls",
+          "protocol|hklm|itlss",
+          "protocol|hklm|itms",
+          "protocol|hklm|itmss",
+          "protocol|hklm|itpc",
+          "protocol|hklm|itsradio",
+          "protocol|hklm|itunes",
+          "protocol|hklm|itunes.assocprotocol.daap",
+          "protocol|hklm|itunes.assocprotocol.itals",
+          "protocol|hklm|itunes.assocprotocol.italss",
+          "protocol|hklm|itunes.assocprotocol.itls",
+          "protocol|hklm|itunes.assocprotocol.itlss",
+          "protocol|hklm|itunes.assocprotocol.itms",
+          "protocol|hklm|itunes.assocprotocol.itmss",
+          "protocol|hklm|itunes.assocprotocol.itpc",
+          "protocol|hklm|itunes.assocprotocol.itsradio",
+          "protocol|hklm|itunes.assocprotocol.itvls",
+          "protocol|hklm|itunes.assocprotocol.itvlss",
+          "protocol|hklm|itunes.assocprotocol.pcast",
+          "protocol|hklm|itunesradio",
+          "protocol|hklm|itvls",
+          "protocol|hklm|itvlss",
+          "protocol|hklm|pcast"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (414 MB)",
+        "items": [
+          "c:\\program files\\itunes"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (167 MB)",
+        "items": [
+          "c:\\programdata\\apple computer"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\itunes.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\itunes\\itunes.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "iTunes 12.13.12.3: after uninstall, 1 leftover",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Folder \"ProgramData\\Apple Computer\" is still there (empty)",
+        "items": [
+          "c:\\programdata\\apple computer"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

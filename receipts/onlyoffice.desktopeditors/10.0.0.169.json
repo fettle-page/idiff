@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "id": "ONLYOFFICE.DesktopEditors",
+    "name": "ONLYOFFICE",
+    "version": "10.0.0.169",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "ONLYOFFICE 10.0.0.169: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: ONLYOFFICE Update Service (starts with Windows) (full system rights)",
+        "items": [
+          "onlyoffice update service"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens oo-office:// links",
+        "items": [
+          "protocol|hklm|oo-office"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (1.0 GB)",
+        "items": [
+          "c:\\program files\\onlyoffice"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\onlyoffice.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\onlyoffice\\new document.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\onlyoffice\\new pdf.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\onlyoffice\\new presentation.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\onlyoffice\\new spreadsheet.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\onlyoffice\\onlyoffice.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\onlyoffice\\uninstall.lnk"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "3 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "ONLYOFFICE 10.0.0.169: after uninstall, no leftovers",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "Nothing left behind",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

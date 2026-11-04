@@ -1,33 +1,43 @@
-# Google Drive 132.0.0.0
+# Google Drive 133.0.2.0
 
-## Google Drive 132.0.0.0: installed
+## Google Drive 133.0.2.0: installed
 
-- ⚠ Installs 1 driver: googledrivefs31931
+- ⚠ Installs 1 driver: googledrivefs32452
 - ⚠ Starts with Windows
 - ✓ No services or firewall rules
 - · Adds right-click menu entries
 - · Adds a Start menu entry
-- · 3 Windows background changes hidden \(listed below\)
+- · 5 Windows background changes hidden \(listed below\)
+
+### Also changed while installing \(couldn't tell if it was this app\)
+
+- · Added store app "Microsoft Visual C++ 2015 UWP Runtime Package"
 
 ### Hidden: Windows background changes
 
 - · Changed service "BITS"
 - · Changed service "PcaSvc"
+- · Changed store app "Windows Security"
 - · Added store app "Windows Package Manager Source \(winget\) V2"
+- · Added link handler "windowsdefender"
 
 ## After uninstall
 
-The uninstall didn't finish on the test machine, so these may include things it would have removed.
+### Google Drive 133.0.2.0: after uninstall, no leftovers
 
-### Google Drive 132.0.0.0: after uninstall, 3 leftovers
+- ✓ Nothing left behind
 
-- ⚠ The uninstall was still running after 5 minutes, so this list may include things it would have removed
-- ✗ Program "Google Drive" is still there
-- ✗ Startup entry "GoogleDriveFS" is still there
-- ✗ Shortcut "Start menu \(all users\)\\Google Drive.lnk" is still there
+## Changed since the previous version
+
+- \+ Installs 1 driver: googledrivefs32452
+- \- Installs 1 driver: googledrivefs31931
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261007.264.1) by idiff 1.0.0 on 2026-10-15, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/38780384255). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [132.0.0.0](132.0.0.0.md) (2026-10-15)

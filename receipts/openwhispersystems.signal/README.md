@@ -1,27 +1,43 @@
-# Signal 8.31.0
+# Signal 8.33.0
 
-## Signal 8.31.0: installed
+## Signal 8.33.0: installed
 
 - ✓ No services, drivers or firewall rules
-- ✓ Files only in your user folder \(476 MB\)
+- ✓ Files only in your user folder \(479 MB\)
 - · Adds a desktop shortcut
 - · Adds a Start menu entry
-- · 3 Windows background changes hidden \(listed below\)
+- · 6 Windows background changes hidden \(listed below\)
+
+### Also changed while installing \(couldn't tell if it was this app\)
+
+- · Added store app "Microsoft Visual C++ 2015 UWP Runtime Package"
 
 ### Hidden: Windows background changes
 
+- · Changed service "BITS"
 - · Changed service "PcaSvc"
 - · Added folder "AppData\\Local\\Programs"
+- · Changed store app "Windows Security"
 - · Added store app "Windows Package Manager Source \(winget\) V2"
+- · Added link handler "windowsdefender"
 
 ## After uninstall
 
-### Signal 8.31.0: after uninstall, no leftovers
+### Signal 8.33.0: after uninstall, no leftovers
 
 - ✓ Nothing left behind
 
+## Changed since the previous version
+
+- \+ Files only in your user folder \(479 MB\)
+- \- Files only in your user folder \(476 MB\)
+
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261007.264.1) by idiff 1.0.0 on 2026-10-15, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/38780384255). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [8.31.0](8.31.0.md) (2026-10-15)

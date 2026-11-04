@@ -3,11 +3,11 @@
     "id": "RARLab.WinRAR",
     "name": "WinRAR",
     "version": "7.23.0",
-    "date": "2026-10-15",
-    "idiff_version": "1.0.0",
-    "runner_image": "win25-vs2026 20261007.264.1",
-    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
-    "failed": "leftovers: exit 2"
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261103.298.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
   },
   "receipt": {
     "mode": "Install",
@@ -106,123 +106,13 @@
   },
   "leftovers": {
     "mode": "Leftovers",
-    "title": "WinRAR 7.23.0: after uninstall, 11 leftovers",
+    "title": "WinRAR 7.23.0: after uninstall, no leftovers",
     "lines": [
       {
-        "level": "Warn",
-        "text": "The uninstall was still running after 5 minutes, so this list may include things it would have removed",
+        "level": "Good",
+        "text": "Nothing left behind",
         "items": [],
         "why": []
-      },
-      {
-        "level": "Bad",
-        "text": "Program \"WinRAR 7.23 (64-bit)\" is still there",
-        "items": [
-          "hklm\\native\\winrar archiver"
-        ],
-        "why": [
-          "the installed program's own entry"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "9 MB in Program Files\\WinRAR",
-        "items": [
-          "c:\\program files\\winrar"
-        ],
-        "why": [
-          "inside the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu (all users)\\WinRAR\\Console RAR manual.lnk\" is still there",
-        "items": [
-          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\winrar\\console rar manual.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu (all users)\\WinRAR\\What is new in the latest version.lnk\" is still there",
-        "items": [
-          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\winrar\\what is new in the latest version.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu (all users)\\WinRAR\\WinRAR help.lnk\" is still there",
-        "items": [
-          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\winrar\\winrar help.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu (all users)\\WinRAR\\WinRAR.lnk\" is still there",
-        "items": [
-          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\winrar\\winrar.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu\\WinRAR\\Console RAR manual.lnk\" is still there",
-        "items": [
-          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\winrar\\console rar manual.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu\\WinRAR\\What is new in the latest version.lnk\" is still there",
-        "items": [
-          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\winrar\\what is new in the latest version.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu\\WinRAR\\WinRAR help.lnk\" is still there",
-        "items": [
-          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\winrar\\winrar help.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu\\WinRAR\\WinRAR.lnk\" is still there",
-        "items": [
-          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\winrar\\winrar.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Store app \"WinRAR\" is still there",
-        "items": [
-          "winrar.shellextension_d9ma7nkbkv4rp"
-        ],
-        "why": [
-          "name matches the app (a weak sign)"
-        ]
       }
     ],
     "unknown": [],

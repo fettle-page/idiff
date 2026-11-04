@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "id": "Foxit.FoxitReader",
+    "name": "Foxit PDF Reader",
+    "version": "2026.2.1.39815",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Foxit PDF Reader 2026.2.1.39815: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: Foxit PDF Reader Update Service (starts with Windows) (full system rights)",
+        "items": [
+          "foxitreaderupdateservice"
+        ],
+        "why": [
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens foxitpdfreader://, foxitreader:// links",
+        "items": [
+          "protocol|hklm|foxitpdfreader",
+          "protocol|hklm|foxitreader"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (648 MB)",
+        "items": [
+          "c:\\program files\\foxit software"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (3 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\foxit software"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\foxit pdf reader.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\foxit pdf reader\\activate plugins.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\foxit pdf reader\\foxit pdf reader.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\foxit pdf reader\\uninstall foxit pdf reader.lnk"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "3 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Foxit PDF Reader 2026.2.1.39815: after uninstall, no leftovers",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "Nothing left behind",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

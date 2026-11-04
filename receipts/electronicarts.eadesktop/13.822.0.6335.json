@@ -1,0 +1,558 @@
+{
+  "meta": {
+    "id": "ElectronicArts.EADesktop",
+    "name": "EA app",
+    "version": "13.822.0.6335",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": "leftovers: exit 2"
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "EA app 13.822.0.6335: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: EABackgroundService (full system rights)",
+        "items": [
+          "eabackgroundservice"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|eadm"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for eabackgroundservice.exe, eaconnect_microsoft.exe, eagep.exe, eadesktop.exe, ealocalhostsvc.exe",
+        "items": [
+          "{3d94ff76-f67e-4f30-94b6-5f44eadfae01}",
+          "{9d2ebe0a-52e9-4c98-a5c3-fa01604716d0}",
+          "{d210d3fa-24d3-4dac-96ae-20fbf0340b8c}",
+          "{d5f307f3-4a5a-4fb7-b4e4-72d0eb52d6f3}",
+          "{e7960950-30db-4d1e-8b94-00fb15f170c2}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds outbound firewall rules for ealaunchhelper.exe",
+        "items": [
+          "{d5e1dc3c-f9bf-4267-950d-d71937598abc}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens eaconnect.microsoft://, ealink://, epic2ea://, link2ea://, luna2ea://, origin://, origin2://, steam2ea:// links",
+        "items": [
+          "protocol|hklm|eaconnect.microsoft",
+          "protocol|hklm|ealink",
+          "protocol|hklm|epic2ea",
+          "protocol|hklm|link2ea",
+          "protocol|hklm|luna2ea",
+          "protocol|hklm|origin",
+          "protocol|hklm|origin2",
+          "protocol|hklm|steam2ea"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (607 MB)",
+        "items": [
+          "c:\\program files\\electronic arts"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (1 MB)",
+        "items": [
+          "c:\\programdata\\ea desktop"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (8 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\eadesktop",
+          "c:\\users\\runneradmin\\appdata\\local\\electronic arts"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\ea.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\ea\\app recovery.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\ea\\ea app updater.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\ea\\ea error reporter.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\ea\\ea.lnk"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Also installed: Microsoft Visual C++ 2012 Redistributable (x86) - 11.0.61030, Microsoft Visual C++ 2013 Redistributable (x86) - 12.0.40664, Microsoft Visual C++ 2010 x86 Redistributable - 10.0.40219",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added folder \"Program Files\\EA Games\"",
+        "items": [
+          "c:\\program files\\ea games"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\cache\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\cache"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Origin\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\origin"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "EA app 13.822.0.6335: after uninstall, 20 leftovers",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "The app is still listed in Installed programs, so the uninstall may not have run or finished; this list may include things it would have removed",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Bad",
+        "text": "Program \"EA app\" is still there (2 items)",
+        "items": [
+          "hklm\\native\\{c2622085-abd2-49e5-8ab9-d3d6a642c091}",
+          "hklm\\wow6432node\\{0db7eafe-352f-4471-99c3-56b7ced4ce0a}"
+        ],
+        "why": [
+          "added by this install",
+          "the installed program's own entry"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Service \"EABackgroundService\" is still there",
+        "items": [
+          "eabackgroundservice"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "611 MB in Program Files\\Electronic Arts",
+        "items": [
+          "c:\\program files\\electronic arts"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "2 MB in ProgramData\\EA Desktop",
+        "items": [
+          "c:\\programdata\\ea desktop"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu (all users)\\EA\\App Recovery.lnk\" is still there",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\ea\\app recovery.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu (all users)\\EA\\EA app Updater.lnk\" is still there",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\ea\\ea app updater.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu (all users)\\EA\\EA Error Reporter.lnk\" is still there",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\ea\\ea error reporter.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu (all users)\\EA\\EA.lnk\" is still there",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\ea\\ea.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Public Desktop\\EA.lnk\" is still there",
+        "items": [
+          "c:\\users\\public\\desktop\\ea.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "795 KB in AppData\\Local\\EADesktop",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\eadesktop"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "8 MB in AppData\\Local\\Electronic Arts",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\electronic arts"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"eaconnect.microsoft\" is still there",
+        "items": [
+          "protocol|hklm|eaconnect.microsoft"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"ealink\" is still there",
+        "items": [
+          "protocol|hklm|ealink"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"epic2ea\" is still there",
+        "items": [
+          "protocol|hklm|epic2ea"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"link2ea\" is still there",
+        "items": [
+          "protocol|hklm|link2ea"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"luna2ea\" is still there",
+        "items": [
+          "protocol|hklm|luna2ea"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"origin\" is still there",
+        "items": [
+          "protocol|hklm|origin"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"origin2\" is still there",
+        "items": [
+          "protocol|hklm|origin2"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"steam2ea\" is still there",
+        "items": [
+          "protocol|hklm|steam2ea"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EABackgroundService) (Outbound)\"",
+        "items": [
+          "{0cbbd81c-0219-4425-ae0d-a56814e82d8f}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EADesktop)\"",
+        "items": [
+          "{0db7b412-b743-4213-9906-1ea050324a90}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EALocalHostSvc) (Outbound)\"",
+        "items": [
+          "{1ab2fe6c-ad2c-4c9e-abe9-96f89deae95a}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EABackgroundService)\"",
+        "items": [
+          "{4307f100-6a10-4c05-ad35-2c3a9643bb57}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EAConnect_microsoft) (Outbound)\"",
+        "items": [
+          "{785be500-36e2-4a9f-ac28-11a7f0dfa005}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EADesktop) (Outbound)\"",
+        "items": [
+          "{7a0021c7-2ca3-4c32-a698-84f9d77fe46e}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EAConnect_microsoft)\"",
+        "items": [
+          "{836c3c74-48ec-4ff7-86f1-fc2fc674721d}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EAGEP)\"",
+        "items": [
+          "{b12ba776-7aba-4387-9abb-dd9a53f328db}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EALocalHostSvc)\"",
+        "items": [
+          "{b631d172-4987-4106-ad5f-0e52b75b01a1}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EALaunchHelper) (Outbound)\"",
+        "items": [
+          "{bb987945-6998-40df-9915-ec0f232a318b}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "The uninstaller added firewall rule \"EA app (EAGEP) (Outbound)\"",
+        "items": [
+          "{e456a38c-0961-43da-b46c-14a97032d782}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Left installed: Microsoft Visual C++ 2012 Redistributable (x86) - 11.0.61030, Microsoft Visual C++ 2013 x86 Minimum Runtime - 12.0.40664, Microsoft Visual C++ 2013 Redistributable (x86) - 12.0.40664, Microsoft Visual C++ 2012 x86 Additional Runtime - 11.0.61030, Microsoft Visual C++ 2012 x86 Minimum Runtime - 11.0.61030, Microsoft Visual C++ 2013 x86 Additional Runtime - 12.0.40664, Microsoft Visual C++ 2010 x86 Redistributable - 10.0.40219. They came with the app, and other apps may use them.",
+        "items": [
+          "hklm\\wow6432node\\{33d1fd90-4274-48a1-9bc1-97e33d9c2d6f}",
+          "hklm\\wow6432node\\{8122dab1-ed4d-3676-bb0a-ca368196543e}",
+          "hklm\\wow6432node\\{9dff3540-fc85-4ed5-ac84-9e3c7fd8bece}",
+          "hklm\\wow6432node\\{b175520c-86a2-35a7-8619-86dc379688b9}",
+          "hklm\\wow6432node\\{bd95a8cd-1d9f-35ad-981a-3e7925026ebb}",
+          "hklm\\wow6432node\\{d401961d-3a20-3ac7-943b-6139d5bd490a}",
+          "hklm\\wow6432node\\{f0c3e5d1-1ade-321e-8167-68ef0de699a5}"
+        ],
+        "why": [
+          "the installed program's own entry",
+          "added by this install",
+          "the installed program's own entry",
+          "added by this install",
+          "added by this install",
+          "added by this install",
+          "the installed program's own entry"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

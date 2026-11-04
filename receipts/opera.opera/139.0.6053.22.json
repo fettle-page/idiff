@@ -1,0 +1,316 @@
+{
+  "meta": {
+    "id": "Opera.Opera",
+    "name": "Opera",
+    "version": "139.0.6053.22",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": "leftovers: exit 2"
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Opera 139.0.6053.22: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "2 scheduled tasks: runs an updater every day",
+        "items": [
+          "\\opera scheduled assistant autoupdate 1793800427",
+          "\\opera scheduled autoupdate 1793800427"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|opera browser assistant",
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|opera stable"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for opera.exe",
+        "items": [
+          "{9cdf5fa7-7066-4672-b852-72726a6fa37e}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services or drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens operastable:// links",
+        "items": [
+          "protocol|hkcu|operastable"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "Files only in your user folder (488 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\opera software",
+          "c:\\users\\runneradmin\\appdata\\local\\programs\\opera",
+          "c:\\users\\runneradmin\\appdata\\roaming\\opera software"
+        ],
+        "why": [
+          "inside the app's folder",
+          "inside the app's folder",
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\opera browser.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\opera browser.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "6 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added store app \"Microsoft Visual C++ 2015 UWP Runtime Package\"",
+        "items": [
+          "microsoft.vclibs.140.00_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Programs\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\programs"
+        ],
+        "why": [
+          "Windows background change: a folder many apps share"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed store app \"Windows Security\"",
+        "items": [
+          "microsoft.sechealthui_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: a Microsoft Store app updated itself"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added link handler \"windowsdefender\"",
+        "items": [
+          "protocol|hkcu|windowsdefender"
+        ],
+        "why": [
+          "Windows background change: Windows Security registering its own link handler"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Opera 139.0.6053.22: after uninstall, 12 leftovers",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "The uninstall was still running after 5 minutes, so this list may include things it would have removed",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Bad",
+        "text": "Program \"Opera Stable 139.0.6053.22\" is still there",
+        "items": [
+          "hkcu\\native\\opera 139.0.6053.22"
+        ],
+        "why": [
+          "the installed program's own entry"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"Opera scheduled assistant Autoupdate 1793800427\" is still there",
+        "items": [
+          "\\opera scheduled assistant autoupdate 1793800427"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"Opera scheduled Autoupdate 1793800427\" is still there",
+        "items": [
+          "\\opera scheduled autoupdate 1793800427"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Startup entry \"Opera Browser Assistant\" is still there",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|opera browser assistant"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Startup entry \"Opera Stable\" is still there",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|opera stable"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"Opera Internet Browser (mDNS-In)\" is still there",
+        "items": [
+          "{9cdf5fa7-7066-4672-b852-72726a6fa37e}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "12 MB in AppData\\Local\\Opera Software",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\opera software"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "447 MB in AppData\\Local\\Programs\\Opera",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\programs\\opera"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Start menu\\Opera Browser.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\opera browser.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "107 MB in AppData\\Roaming\\Opera Software",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\opera software"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Shortcut \"Desktop\\Opera Browser.lnk\" is still there",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\opera browser.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"OperaStable\" is still there",
+        "items": [
+          "protocol|hkcu|operastable"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

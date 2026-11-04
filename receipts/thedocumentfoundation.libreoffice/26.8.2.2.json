@@ -1,0 +1,145 @@
+{
+  "meta": {
+    "id": "TheDocumentFoundation.LibreOffice",
+    "name": "LibreOffice",
+    "version": "26.8.2.2",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "LibreOffice 26.8.2.2: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: LibreOffice Maintenance Service (full system rights)",
+        "items": [
+          "libreofficemaintenance"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens vnd.libreoffice.command:// links",
+        "items": [
+          "protocol|hklm|vnd.libreoffice.command"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (700 MB)",
+        "items": [
+          "c:\\program files\\libreoffice"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\libreoffice 26.8.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\libreoffice\\libreoffice (troubleshoot mode).lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\libreoffice\\libreoffice base.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\libreoffice\\libreoffice calc.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\libreoffice\\libreoffice draw.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\libreoffice\\libreoffice impress.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\libreoffice\\libreoffice math.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\libreoffice\\libreoffice writer.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\libreoffice\\libreoffice.lnk"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "LibreOffice 26.8.2.2: after uninstall, 2 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Service \"LibreOffice Maintenance Service\" is still there",
+        "items": [
+          "libreofficemaintenance"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "1 KB in Program Files\\LibreOffice",
+        "items": [
+          "c:\\program files\\libreoffice"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

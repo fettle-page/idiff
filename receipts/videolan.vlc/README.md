@@ -16,25 +16,12 @@
 
 ## After uninstall
 
-The uninstall didn't finish on the test machine, so these may include things it would have removed.
+### VLC 3.0.24: after uninstall, 1 leftover
 
-### VLC 3.0.24: after uninstall, 11 leftovers
-
-- ⚠ The uninstall was still running after 5 minutes, so this list may include things it would have removed
-- ✗ Program "VLC media player" is still there
-- ✗ Right-click menu entry "AddToPlaylistVLC" is still there
-- ✗ Right-click menu entry "PlayWithVLC" is still there
-- ✗ 188 MB in Program Files\\VideoLAN
-- ✗ Shortcut "Start menu \(all users\)\\VideoLAN\\Documentation.lnk" is still there
-- ✗ Shortcut "Start menu \(all users\)\\VideoLAN\\Release Notes.lnk" is still there
-- ✗ Shortcut "Start menu \(all users\)\\VideoLAN\\VideoLAN Website.lnk" is still there
-- ✗ Shortcut "Start menu \(all users\)\\VideoLAN\\VLC media player - reset preferences and cache files.lnk" is still there
-- ✗ Shortcut "Start menu \(all users\)\\VideoLAN\\VLC media player skinned.lnk" is still there
-- ✗ Shortcut "Start menu \(all users\)\\VideoLAN\\VLC media player.lnk" is still there
-- ✗ Shortcut "Public Desktop\\VLC media player.lnk" is still there
+- ✗ Folder "Program Files\\VideoLAN" is still there \(empty\)
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261007.264.1) by idiff 1.0.0 on 2026-10-15, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/38780384255). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)

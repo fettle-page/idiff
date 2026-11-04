@@ -1,26 +1,41 @@
-# KeePassXC 2.7.12
+# KeePassXC 2.8.0
 
-## KeePassXC 2.7.12: installed
+## KeePassXC 2.8.0: installed
 
 - ⚠ Starts with Windows
 - ✓ No services, drivers or firewall rules
 - · Adds to PATH: C:\\Program Files\\KeePassXC\\
-- · Files in Program Files \(78 MB\)
+- · Files in Program Files \(137 MB\)
 - · Adds a Start menu entry
-- · 1 Windows background change hidden \(listed below\)
+- · 3 Windows background changes hidden \(listed below\)
+
+### Also changed while installing \(couldn't tell if it was this app\)
+
+- · Added store app "Microsoft Visual C++ 2015 UWP Runtime Package"
 
 ### Hidden: Windows background changes
 
+- · Changed store app "Windows Security"
 - · Added store app "Windows Package Manager Source \(winget\) V2"
+- · Added link handler "windowsdefender"
 
 ## After uninstall
 
-### KeePassXC 2.7.12: after uninstall, no leftovers
+### KeePassXC 2.8.0: after uninstall, no leftovers
 
 - ✓ Nothing left behind
 
+## Changed since the previous version
+
+- \+ Files in Program Files \(137 MB\)
+- \- Files in Program Files \(78 MB\)
+
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261007.264.1) by idiff 1.0.0 on 2026-10-15, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/38780384255). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [2.7.12](2.7.12.md) (2026-10-15)

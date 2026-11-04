@@ -1,10 +1,10 @@
-# Slack 4.52.178
+# Slack 4.53.280
 
-## Slack 4.52.178: installed
+## Slack 4.53.280: installed
 
 - ⚠ Starts with Windows
 - ✓ No services, drivers or firewall rules
-- ✓ Files only in your user folder \(550 MB\)
+- ✓ Files only in your user folder \(539 MB\)
 - · Adds a desktop shortcut
 - · Adds a Start menu entry
 - · 3 Windows background changes hidden \(listed below\)
@@ -17,14 +17,23 @@
 
 ## After uninstall
 
-### Slack 4.52.178: after uninstall, 3 leftovers
+### Slack 4.53.280: after uninstall, 3 leftovers
 
 - ✗ 2 MB in AppData\\Local\\slack
 - ✗ 4 KB in AppData\\Local\\SquirrelTemp
 - ✗ 1 MB in AppData\\Roaming\\Slack
 
+## Changed since the previous version
+
+- \+ Files only in your user folder \(539 MB\)
+- \- Files only in your user folder \(550 MB\)
+
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261007.264.1) by idiff 1.0.0 on 2026-10-15, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/38780384255). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [4.52.178](4.52.178.md) (2026-10-15)

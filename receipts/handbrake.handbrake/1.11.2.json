@@ -3,11 +3,11 @@
     "id": "HandBrake.HandBrake",
     "name": "HandBrake",
     "version": "1.11.2",
-    "date": "2026-10-15",
-    "idiff_version": "1.0.0",
-    "runner_image": "win25-vs2026 20261007.264.1",
-    "run_url": "https://github.com/fettle-page/idiff/actions/runs/38780384255",
-    "failed": "leftovers: exit 2"
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
   },
   "receipt": {
     "mode": "Install",
@@ -43,40 +43,19 @@
       },
       {
         "level": "Note",
-        "text": "Also installed: Microsoft Windows Desktop Runtime 10.0.13 (x64)",
+        "text": "Also installed: Microsoft Windows Desktop Runtime 10.0.14 (x64)",
         "items": [],
         "why": []
       },
       {
         "level": "Note",
-        "text": "6 Windows background changes hidden (idiff show --all)",
+        "text": "2 Windows background changes hidden (idiff show --all)",
         "items": [],
         "why": []
       }
     ],
-    "unknown": [
-      {
-        "level": "Note",
-        "text": "Removed program \"Microsoft .NET Host - 10.0.12 (x64)\"",
-        "items": [
-          "hklm\\native\\{17d94539-a423-48d9-bd4a-69a9186c5b66}"
-        ],
-        "why": [
-          "no rule matched"
-        ]
-      }
-    ],
+    "unknown": [],
     "hidden": [
-      {
-        "level": "Note",
-        "text": "Changed service \"BITS\"",
-        "items": [
-          "bits"
-        ],
-        "why": [
-          "part of Windows"
-        ]
-      },
       {
         "level": "Note",
         "text": "Changed service \"PcaSvc\"",
@@ -85,36 +64,6 @@
         ],
         "why": [
           "part of Windows"
-        ]
-      },
-      {
-        "level": "Note",
-        "text": "Changed scheduled task \"PrintJobCleanupTask\"",
-        "items": [
-          "\\microsoft\\windows\\printing\\printjobcleanuptask"
-        ],
-        "why": [
-          "Windows background change: Windows' own scheduled tasks"
-        ]
-      },
-      {
-        "level": "Note",
-        "text": "Added folder \"AppData\\Local\\Mozilla\"",
-        "items": [
-          "c:\\users\\runneradmin\\appdata\\local\\mozilla"
-        ],
-        "why": [
-          "Windows background change: GitHub runner: preinstalled Firefox"
-        ]
-      },
-      {
-        "level": "Note",
-        "text": "Added folder \"AppData\\Roaming\\Mozilla\"",
-        "items": [
-          "c:\\users\\runneradmin\\appdata\\roaming\\mozilla"
-        ],
-        "why": [
-          "Windows background change: GitHub runner: preinstalled Firefox"
         ]
       },
       {
@@ -131,69 +80,21 @@
   },
   "leftovers": {
     "mode": "Leftovers",
-    "title": "HandBrake 1.11.2: after uninstall, 4 leftovers",
+    "title": "HandBrake 1.11.2: after uninstall, no leftovers",
     "lines": [
       {
-        "level": "Warn",
-        "text": "The uninstall was still running after 5 minutes, so this list may include things it would have removed",
+        "level": "Good",
+        "text": "Nothing left behind",
         "items": [],
         "why": []
       },
       {
-        "level": "Bad",
-        "text": "Program \"HandBrake 1.11.2\" is still there",
-        "items": [
-          "hklm\\wow6432node\\handbrake"
-        ],
-        "why": [
-          "the installed program's own entry"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "106 MB in Program Files\\HandBrake",
-        "items": [
-          "c:\\program files\\handbrake"
-        ],
-        "why": [
-          "inside the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu (all users)\\HandBrake\\HandBrake.lnk\" is still there",
-        "items": [
-          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\handbrake\\handbrake.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
-        "level": "Bad",
-        "text": "Shortcut \"Start menu (all users)\\HandBrake\\Uninstall.lnk\" is still there",
-        "items": [
-          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\handbrake\\uninstall.lnk"
-        ],
-        "why": [
-          "runs from the app's folder"
-        ]
-      },
-      {
         "level": "Note",
-        "text": "Left installed: Microsoft .NET Runtime - 10.0.13 (x64), Microsoft Windows Desktop Runtime - 10.0.13 (x64), Microsoft .NET Host - 10.0.13 (x64), Microsoft .NET Host FX Resolver - 10.0.13 (x64), Microsoft Windows Desktop Runtime 10.0.13 (x64). They came with the app, and other apps may use them.",
+        "text": "Left installed: Microsoft Windows Desktop Runtime 10.0.14 (x64). It came with the app, and other apps may use it.",
         "items": [
-          "hklm\\native\\{8bad77ec-3bdb-4f74-b5e9-f8c9cf2e5044}",
-          "hklm\\native\\{9b54a545-583e-413b-9ee3-36dae0a429f8}",
-          "hklm\\native\\{c7176b71-ae94-4dd0-bdae-1bb274cae6a9}",
-          "hklm\\native\\{d03467f7-2366-46e4-a6cb-66fd9ba9b91f}",
-          "hklm\\wow6432node\\{3a4d9e06-6029-4cbb-bb9f-2799a6af4ac1}"
+          "hklm\\wow6432node\\{29a18b06-b190-4463-9ffc-bc0d70d80b7c}"
         ],
         "why": [
-          "added by this install",
-          "added by this install",
-          "added by this install",
-          "added by this install",
           "the installed program's own entry"
         ]
       }

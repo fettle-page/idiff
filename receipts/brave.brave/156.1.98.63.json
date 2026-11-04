@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "id": "Brave.Brave",
+    "name": "Brave",
+    "version": "156.1.98.63",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Brave 156.1.98.63: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "2 scheduled tasks: runs an updater every day",
+        "items": [
+          "\\bravesoftwareupdatetaskusers-1-5-21-3077485881-3661871218-4154919024-500core{73361dbb-9f21-4293-8177-56a7b6f2187d}",
+          "\\bravesoftwareupdatetaskusers-1-5-21-3077485881-3661871218-4154919024-500ua{0d61cf3b-8af0-4631-9243-f398271a02ad}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|bravesoftware update"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for brave.exe",
+        "items": [
+          "{e7d12949-70d8-4814-8985-1a8a9cf5aedd}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services or drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens brave-browser:// links",
+        "items": [
+          "protocol|hkcu|brave-browser"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "Files only in your user folder (1.4 GB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\bravesoftware"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\brave.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\brave.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added store app \"WindowsAppRuntime.2\"",
+        "items": [
+          "microsoft.windowsappruntime.2_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Brave 156.1.98.63: after uninstall, 4 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"BraveSoftwareUpdateTaskUserS-1-5-21-3077485881-3661871218-4154919024-500Core{73361DBB-9F21-4293-8177-56A7B6F2187D}\" is still there",
+        "items": [
+          "\\bravesoftwareupdatetaskusers-1-5-21-3077485881-3661871218-4154919024-500core{73361dbb-9f21-4293-8177-56a7b6f2187d}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"BraveSoftwareUpdateTaskUserS-1-5-21-3077485881-3661871218-4154919024-500UA{0D61CF3B-8AF0-4631-9243-F398271A02AD}\" is still there",
+        "items": [
+          "\\bravesoftwareupdatetaskusers-1-5-21-3077485881-3661871218-4154919024-500ua{0d61cf3b-8af0-4631-9243-f398271a02ad}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Startup entry \"BraveSoftware Update\" is still there",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|bravesoftware update"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "321 MB in AppData\\Local\\BraveSoftware",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\bravesoftware"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

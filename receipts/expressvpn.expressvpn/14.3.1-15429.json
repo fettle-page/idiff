@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "id": "ExpressVPN.ExpressVPN",
+    "name": "ExpressVPN",
+    "version": "14.3.1+15429",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "ExpressVPN 14.3.1+15429: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Installs 3 drivers: expressvpn-ovpn-dco, expressvpn-pkf, ExpressVPN WFP Callout",
+        "items": [
+          "expressvpn-ovpn-dco",
+          "expressvpn-pkf",
+          "expressvpnwfpcallout"
+        ],
+        "why": [
+          "signed by the app's publisher",
+          "signed by the app's publisher",
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Adds 2 background services: ExpressVPN Service, ExpressVPN WireGuard Service (starts with Windows) (full system rights)",
+        "items": [
+          "expressvpnservice",
+          "expressvpnwireguard"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|expressvpn"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens expressvpn://, expressvpn-desktop:// links",
+        "items": [
+          "protocol|hklm|expressvpn",
+          "protocol|hklm|expressvpn-desktop"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (197 MB)",
+        "items": [
+          "c:\\program files\\expressvpn"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder (5 MB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\expressvpn"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\expressvpn.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "3 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "ExpressVPN 14.3.1+15429: after uninstall, 1 leftover",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Driver \"expressvpn-ovpn-dco\" is still there",
+        "items": [
+          "expressvpn-ovpn-dco"
+        ],
+        "why": [
+          "name matches the app (a weak sign)"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

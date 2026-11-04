@@ -1,0 +1,191 @@
+{
+  "meta": {
+    "id": "Zoom.Zoom",
+    "name": "Zoom Workplace",
+    "version": "7.2.51704",
+    "date": "2026-11-04",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261030.294.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/41841853441",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Zoom Workplace 7.2.51704: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: Zoom Sharing Service (starts with Windows) (full system rights)",
+        "items": [
+          "zoomcptservice"
+        ],
+        "why": [
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Runs once at the next sign-in",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\runonce|zoommsirepair"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for zoom.exe, airhost.exe, zoomhybridconf.exe",
+        "items": [
+          "{3819c8ec-4e57-4450-b7c0-60fef2d47805}",
+          "{75280f45-a1ab-4f78-9b83-930fd066a503}",
+          "{9af8ae6f-5c3e-4ab6-972d-0f39820ae22e}",
+          "{f36166c9-4ba4-4c43-a119-eedf6b3ab396}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens zoompbx.zoomphonecall://, zoomphonecall://, zoommtg://, zoomus:// links",
+        "items": [
+          "protocol|hkcu|zoompbx.zoomphonecall",
+          "protocol|hkcu|zoomphonecall",
+          "protocol|hklm|zoommtg",
+          "protocol|hklm|zoompbx.zoomphonecall",
+          "protocol|hklm|zoomphonecall",
+          "protocol|hklm|zoomus"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (563 MB)",
+        "items": [
+          "c:\\program files\\zoom"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\public\\desktop\\zoom workplace.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\zoom\\zoom workplace.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"BITS\"",
+        "items": [
+          "bits"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Zoom Workplace 7.2.51704: after uninstall, 6 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"Zoom Video Meeting\" is still there",
+        "items": [
+          "{3819c8ec-4e57-4450-b7c0-60fef2d47805}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"Airhost service for Zoom Video Meetings\" is still there (2 rules)",
+        "items": [
+          "{75280f45-a1ab-4f78-9b83-930fd066a503}",
+          "{9af8ae6f-5c3e-4ab6-972d-0f39820ae22e}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Firewall rule \"Hybrid Conference for Zoom Video Meetings\" is still there",
+        "items": [
+          "{f36166c9-4ba4-4c43-a119-eedf6b3ab396}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Link handler \"ZoomPhoneCall\" is still there (2 items)",
+        "items": [
+          "protocol|hkcu|zoomphonecall",
+          "protocol|hklm|zoomphonecall"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}
