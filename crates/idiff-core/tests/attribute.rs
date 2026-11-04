@@ -812,6 +812,7 @@ fn added_microsoft_signed_services_and_drivers_are_not_hidden() {
         SourceKind::Certs,
         SourceKind::Defender,
         SourceKind::Network,
+        SourceKind::Hooks,
     ] {
         for signer in ["Microsoft Corporation", "Microsoft Windows"] {
             assert_ne!(one(kind, signer).owner, Owner::Windows, "{kind:?} {signer}");
@@ -823,6 +824,7 @@ fn added_microsoft_signed_services_and_drivers_are_not_hidden() {
         SourceKind::ShellExt,
         SourceKind::Path,
         SourceKind::Packaged,
+        SourceKind::Protocols,
     ] {
         assert_eq!(
             one(kind, "Microsoft Windows").reason,

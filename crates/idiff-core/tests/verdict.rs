@@ -1,6 +1,6 @@
 use idiff_core::attribute::{Attributed, Owner, Reason, attribute};
 use idiff_core::diff::{Change, Delta, diff};
-use idiff_core::model::{Env, Item, Snapshot, SourceKind};
+use idiff_core::model::{Env, Item, Snapshot, SourceKind, SourceSnap};
 use idiff_core::noise::NoiseList;
 use idiff_core::subject::{Subject, find_subject};
 use idiff_core::verdict::{Level, Mode, Receipt, format_size, install_receipt, leftovers_receipt, trigger_summary};
@@ -1019,4 +1019,151 @@ fn runs_of_spaces_in_program_names_are_one_space() {
         "{text:?}"
     );
     assert!(text.iter().any(|t| t.ends_with("Some Update Service")), "{text:?}");
+}
+
+fn app_modified(kind: SourceKind, before: Item, after: Item, fields: &[&str]) -> Attributed {
+    Attributed {
+        kind,
+        change: Change::Modified {
+            before,
+            after,
+            fields: fields.iter().map(|f| f.to_string()).collect(),
+        },
+        owner: Owner::App,
+        reason: Reason::TargetInInstallDir,
+    }
+}
+
+#[test]
+fn hooks_and_link_handlers_in_their_own_words() {
+    let subject = Subject {
+        name: "Tool".into(),
+        ..Default::default()
+    };
+    let exe = r"c:\program files\tool\tool.exe";
+    let tool = Some(exe);
+    let debugger = |key: &str| {
+        item(
+            key,
+            "notepad.exe",
+            tool,
+            &[("debugger", r"C:\Program Files\Tool\tool.exe")],
+        )
+    };
+    let userinit =
+        |value: &str, target: &str| item("winlogon|hklm|userinit", "Userinit", Some(target), &[("value", value)]);
+    let mailto = |target: &str| item("protocol|hklm|mailto", "mailto", Some(target), &[("command", target)]);
+    let attributed = vec![
+        app_added(SourceKind::Protocols, item("protocol|hklm|tool", "Tool", tool, &[])),
+        app_added(
+            SourceKind::Protocols,
+            item("protocol|hkcu|tool-sso", "tool-sso", tool, &[]),
+        ),
+        app_modified(
+            SourceKind::Protocols,
+            mailto(r"c:\program files\mail\mail.exe"),
+            mailto(r"c:\program files\tool\tool.exe"),
+            &["command", "target"],
+        ),
+        // The same debugger in both registry views is one line.
+        app_added(SourceKind::Hooks, debugger("ifeo|64|notepad.exe")),
+        app_added(SourceKind::Hooks, debugger("ifeo|32|notepad.exe")),
+        app_modified(
+            SourceKind::Hooks,
+            userinit(
+                r"C:\Windows\system32\userinit.exe,",
+                r"c:\windows\system32\userinit.exe",
+            ),
+            userinit(r"C:\Windows\system32\userinit.exe,C:\Program Files\Tool\tool.exe", exe),
+            &["target", "value"],
+        ),
+        app_added(
+            SourceKind::Hooks,
+            item(
+                r"appinit|64|c:\progra~1\tool\hook.dll",
+                r"C:\PROGRA~1\Tool\hook.dll",
+                Some(r"c:\progra~1\tool\hook.dll"),
+                &[("load", "1")],
+            ),
+        ),
+    ];
+    let r = install_receipt(
+        &subject,
+        &attributed,
+        &BTreeMap::new(),
+        &BTreeSet::new(),
+        Some(0),
+        &Env::new(),
+    );
+    assert_eq!(
+        texts(&r),
+        [
+            (Level::Warn, "Runs \"tool.exe\" whenever \"notepad.exe\" starts"),
+            (Level::Warn, "Changes what Windows runs when you sign in (Userinit)"),
+            (Level::Warn, "Loads \"hook.dll\" into every program that shows windows"),
+            (Level::Warn, "Takes over mailto:// links"),
+            (Level::Good, "No services, drivers or firewall rules"),
+            (Level::Note, "Opens tool://, tool-sso:// links"),
+        ]
+    );
+    assert_eq!(r.lines[0].items, ["ifeo|64|notepad.exe", "ifeo|32|notepad.exe"]);
+
+    // Left after the uninstall, they're named by kind like any other leftover.
+    let (before, ..) = discord();
+    let mut uninstalled = before.clone();
+    for (kind, a) in [
+        (SourceKind::Protocols, &attributed[0]),
+        (SourceKind::Hooks, &attributed[3]),
+    ] {
+        uninstalled.sources.insert(
+            kind,
+            SourceSnap {
+                ok: true,
+                items: vec![a.change.item().clone()],
+                ..Default::default()
+            },
+        );
+    }
+    let r = leftovers_receipt(&subject, &attributed, &uninstalled, &[], &BTreeMap::new());
+    assert_eq!(
+        texts(&r),
+        [
+            (Level::Bad, "Link handler \"Tool\" is still there"),
+            (Level::Bad, "System hook \"notepad.exe\" is still there"),
+        ]
+    );
+}
+
+/// A snapshot from idiff 1.0 has no link handlers or hooks: compared with a newer one, they're
+/// "couldn't check", never every handler on the PC as new.
+#[test]
+fn a_snapshot_without_the_newer_sources_isnt_compared_on_them() {
+    let before = load(include_str!("fixtures/discord-before.json"));
+    let mut after = load(include_str!("fixtures/discord-after.json"));
+    assert!(!before.sources.contains_key(&SourceKind::Protocols));
+    for (kind, key) in [
+        (SourceKind::Protocols, "protocol|hklm|mailto"),
+        (SourceKind::Hooks, "winlogon|hklm|shell"),
+    ] {
+        after.sources.insert(
+            kind,
+            SourceSnap {
+                ok: true,
+                items: vec![item(key, key, None, &[])],
+                ..Default::default()
+            },
+        );
+    }
+    let d = diff(&before, &after);
+    assert!(!d.sources.contains_key(&SourceKind::Protocols) && !d.sources.contains_key(&SourceKind::Hooks));
+    let subject = find_subject(&d, None, &[], &NoiseList::builtin());
+    let attributed = attribute(&d, &subject, &NoiseList::builtin(), &after.env);
+    let r = install_receipt(&subject, &attributed, &d.notes, &d.partial, Some(0), &after.env);
+    let lines = texts(&r);
+    for text in [
+        "Couldn't check link handlers: it wasn't read in both snapshots",
+        "Couldn't check system hooks: it wasn't read in both snapshots",
+    ] {
+        assert!(lines.contains(&(Level::Note, text)), "{lines:?}");
+    }
 }

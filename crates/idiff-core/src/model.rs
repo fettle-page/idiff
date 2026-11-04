@@ -22,10 +22,12 @@ pub enum SourceKind {
     Certs,
     Defender,
     Network,
+    Protocols,
+    Hooks,
 }
 
 impl SourceKind {
-    pub const ALL: [SourceKind; 13] = [
+    pub const ALL: [SourceKind; 15] = [
         SourceKind::Programs,
         SourceKind::Services,
         SourceKind::Drivers,
@@ -39,6 +41,8 @@ impl SourceKind {
         SourceKind::Certs,
         SourceKind::Defender,
         SourceKind::Network,
+        SourceKind::Protocols,
+        SourceKind::Hooks,
     ];
 
     /// Only complete when read by an administrator.
@@ -61,6 +65,8 @@ impl SourceKind {
             SourceKind::Certs => copy::SOURCE_CERTS,
             SourceKind::Defender => copy::SOURCE_DEFENDER,
             SourceKind::Network => copy::SOURCE_NETWORK,
+            SourceKind::Protocols => copy::SOURCE_PROTOCOLS,
+            SourceKind::Hooks => copy::SOURCE_HOOKS,
         }
     }
 }
