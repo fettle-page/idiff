@@ -5,10 +5,12 @@ pub mod certs;
 pub mod defender;
 pub mod firewall;
 pub mod folders;
+pub mod hooks;
 pub mod network;
 pub mod packaged;
 pub mod path;
 pub mod programs;
+pub mod protocols;
 pub mod services;
 pub mod shellext;
 pub mod startup;
@@ -32,6 +34,8 @@ pub fn source(kind: SourceKind) -> crate::runner::Source {
         SourceKind::ShellExt => shellext::read,
         SourceKind::Firewall => firewall::read,
         SourceKind::Network => network::read,
+        SourceKind::Protocols => protocols::read,
+        SourceKind::Hooks => hooks::read,
         SourceKind::Folders => folders::read,
         SourceKind::Packaged => packaged::read,
         SourceKind::Certs => certs::read,

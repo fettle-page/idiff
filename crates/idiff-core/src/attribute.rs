@@ -238,9 +238,10 @@ impl Rules<'_> {
 /// or is signed as Windows. Something new needs Windows' own signature: apps put drivers and
 /// services in System32 too (Malwarebytes, Dropbox), and their uninstall shortcuts point at
 /// msiexec, so a new folder or shortcut is never Windows' by this rule. Nor is a new service,
-/// driver, task, startup entry, certificate, exclusion or network setting: installers bring
-/// Microsoft's redistributables with them (Epic's "GameInput Redist Service"), and hiding one of
-/// those would hide what the install did. Windows' own new ones are in the noise list.
+/// driver, task, startup entry, certificate, exclusion, network setting or system hook:
+/// installers bring Microsoft's redistributables with them (Epic's "GameInput Redist Service"),
+/// and hiding one of those would hide what the install did. Windows' own new ones are in the
+/// noise list.
 fn is_windows_component(
     kind: SourceKind,
     change: &Change,
@@ -259,6 +260,7 @@ fn is_windows_component(
                         | SourceKind::Path
                         | SourceKind::Packaged
                         | SourceKind::Programs
+                        | SourceKind::Protocols
                 )
         }
         Change::Modified { .. } | Change::Removed(_) => {

@@ -165,6 +165,8 @@ fn kind_name(kind: SourceKind, item: &Item) -> &'static str {
         SourceKind::Certs => copy::KIND_CERT,
         SourceKind::Defender => copy::KIND_DEFENDER,
         SourceKind::Network => copy::KIND_NETWORK,
+        SourceKind::Protocols => copy::KIND_PROTOCOL,
+        SourceKind::Hooks => copy::KIND_HOOK,
     }
 }
 
@@ -192,6 +194,35 @@ fn display_label(kind: SourceKind, item: &Item) -> String {
         SourceKind::Tasks => tidy(label.rsplit('\\').next().unwrap_or(label)),
         _ => tidy(label),
     }
+}
+
+/// `discord://` for a link handler, as links start.
+fn scheme(item: &Item) -> String {
+    format!("{}://", tidy(&item.label).to_lowercase())
+}
+
+/// A system hook's part: `ifeo`, `winlogon` or `appinit`, from its key.
+fn hook_part(item: &Item) -> &str {
+    item.key.split('|').next().unwrap_or("")
+}
+
+/// A link handler that was there before and now runs something else.
+fn is_takeover(a: &Attributed) -> bool {
+    a.kind == SourceKind::Protocols
+        && matches!(&a.change, Change::Modified { fields, .. } if fields.iter().any(|f| f == "command" || f == "target"))
+}
+
+/// One line per distinct text, about every change that reads the same (a hook in both registry
+/// views is one line).
+fn push_each<'a>(lines: &mut Vec<Line>, level: Level, changes: impl IntoIterator<Item = (String, &'a Attributed)>) {
+    let mut by_text: Vec<(String, Vec<&Attributed>)> = Vec::new();
+    for (text, a) in changes {
+        match by_text.iter_mut().find(|(t, _)| *t == text) {
+            Some((_, list)) => list.push(a),
+            None => by_text.push((text, vec![a])),
+        }
+    }
+    lines.extend(by_text.into_iter().map(|(text, list)| about(level, text, &list)));
 }
 
 /// "Added service "Foo Service"" and the like, for the unknown and hidden lists.
@@ -351,6 +382,71 @@ pub fn install_receipt(
         ));
     }
 
+    // A hook the app added or changed: either way, Windows now runs the app's program.
+    let hooks: Vec<&Attributed> = app
+        .iter()
+        .copied()
+        .filter(|a| a.kind == SourceKind::Hooks && !matches!(a.change, Change::Removed(_)))
+        .collect();
+    let hooks_of = |part: &str| -> Vec<&Attributed> {
+        hooks
+            .iter()
+            .copied()
+            .filter(|a| hook_part(a.change.item()) == part)
+            .collect()
+    };
+    push_each(
+        &mut lines,
+        Level::Warn,
+        hooks_of("ifeo").into_iter().map(|a| {
+            let item = a.change.item();
+            let debugger = item
+                .target
+                .as_deref()
+                .map(file_name)
+                .filter(|d| !d.is_empty())
+                .or(prop(item, "debugger"))
+                .unwrap_or_default();
+            let program = display_label(a.kind, item);
+            let text = fill(copy::HOOK_DEBUGGER, &[("debugger", debugger), ("program", &program)]);
+            (text, a)
+        }),
+    );
+    let sign_in = hooks_of("winlogon");
+    if !sign_in.is_empty() {
+        lines.push(about(
+            Level::Warn,
+            fill(copy::HOOK_SIGN_IN, &[("names", &labels(&sign_in))]),
+            &sign_in,
+        ));
+    }
+    // Windows loads AppInit DLLs only when LoadAppInit_DLLs is 1; a missing flag means 0.
+    let (loaded, listed): (Vec<&Attributed>, Vec<&Attributed>) = hooks_of("appinit")
+        .into_iter()
+        .partition(|a| prop(a.change.item(), "load") == Some("1"));
+    for (level, template, these) in [
+        (Level::Warn, copy::HOOK_APPINIT, loaded),
+        (Level::Note, copy::HOOK_APPINIT_OFF, listed),
+    ] {
+        push_each(
+            &mut lines,
+            level,
+            these.into_iter().map(|a| {
+                let dll = file_name(&a.change.item().label).to_string();
+                (fill(template, &[("dll", &dll)]), a)
+            }),
+        );
+    }
+    let taken: Vec<&Attributed> = app.iter().copied().filter(|a| is_takeover(a)).collect();
+    if !taken.is_empty() {
+        let schemes = unique_join(taken.iter().map(|a| scheme(a.change.item())), ", ");
+        lines.push(about(
+            Level::Warn,
+            fill(copy::PROTOCOLS_TAKEN_OVER, &[("schemes", &schemes)]),
+            &taken,
+        ));
+    }
+
     let drivers = added(SourceKind::Drivers);
     if !drivers.is_empty() {
         let text = fill(
@@ -461,6 +557,15 @@ pub fn install_receipt(
     if !shell.is_empty() {
         lines.push(about(Level::Note, copy::SHELL_EXT_ADDED, &shell));
     }
+    let protocols = added(SourceKind::Protocols);
+    if !protocols.is_empty() {
+        let schemes = unique_join(protocols.iter().map(|a| scheme(a.change.item())), ", ");
+        lines.push(about(
+            Level::Note,
+            fill(copy::PROTOCOLS_ADDED, &[("schemes", &schemes)]),
+            &protocols,
+        ));
+    }
     let path = added(SourceKind::Path);
     if !path.is_empty() {
         lines.push(about(
@@ -532,11 +637,14 @@ pub fn install_receipt(
             .join(", ");
         lines.push(plain(Level::Note, fill(copy::ALSO_INSTALLED, &[("names", &names)])));
     }
-    // The app's own entry changing version is what the title says already.
-    for a in app
-        .iter()
-        .filter(|a| matches!(a.change, Change::Modified { .. }) && a.reason != Reason::SubjectEntry)
-    {
+    // The app's own entry changing version is what the title says already, and hooks and taken
+    // over link handlers have their own lines above.
+    for a in app.iter().filter(|a| {
+        matches!(a.change, Change::Modified { .. })
+            && a.reason != Reason::SubjectEntry
+            && a.kind != SourceKind::Hooks
+            && !is_takeover(a)
+    }) {
         let item = a.change.item();
         let text = fill(
             copy::CHANGES_ITEM,

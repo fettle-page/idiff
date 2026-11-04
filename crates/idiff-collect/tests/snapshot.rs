@@ -46,12 +46,15 @@ fn read_one(kind: SourceKind) -> idiff_core::model::SourceSnap {
 }
 
 #[test]
-fn real_snapshot_has_startup_path_shell_extensions_and_folders() {
+fn real_snapshot_has_startup_path_shell_extensions_folders_protocols_and_hooks() {
     for kind in [
         SourceKind::Startup,
         SourceKind::Path,
         SourceKind::ShellExt,
         SourceKind::Folders,
+        SourceKind::Protocols,
+        // Winlogon's Shell and Userinit are always there.
+        SourceKind::Hooks,
     ] {
         let snap = read_one(kind);
         assert!(snap.ok, "{kind:?}: {:?}", snap.error);

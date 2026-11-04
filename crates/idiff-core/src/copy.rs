@@ -55,6 +55,8 @@ pub const SOURCE_PACKAGED: &str = "Store apps";
 pub const SOURCE_CERTS: &str = "trusted root certificates";
 pub const SOURCE_DEFENDER: &str = "antivirus exclusions";
 pub const SOURCE_NETWORK: &str = "network settings";
+pub const SOURCE_PROTOCOLS: &str = "link handlers";
+pub const SOURCE_HOOKS: &str = "system hooks";
 
 // One item of each source, for "Scheduled task "X" is still there" and the change lists.
 pub const KIND_PROGRAM: &str = "Program";
@@ -71,6 +73,8 @@ pub const KIND_PACKAGED: &str = "Store app";
 pub const KIND_CERT: &str = "Trusted root certificate";
 pub const KIND_DEFENDER: &str = "Antivirus exclusion";
 pub const KIND_NETWORK: &str = "Network setting";
+pub const KIND_PROTOCOL: &str = "Link handler";
+pub const KIND_HOOK: &str = "System hook";
 
 // The receipt (spec §7). `{name}`-style parts are filled in by the verdict.
 pub const TITLE_INSTALLED: &str = "{name}: installed";
@@ -91,6 +95,15 @@ pub const NETWORK_CHANGED: &str = "Changes your network settings: {what}";
 pub const NETWORK_HOSTS: &str = "hosts file";
 pub const NETWORK_PROXY: &str = "proxy";
 pub const NETWORK_WINSOCK: &str = "Winsock";
+/// An Image File Execution Options debugger: Windows starts it instead of the program.
+pub const HOOK_DEBUGGER: &str = "Runs \"{debugger}\" whenever \"{program}\" starts";
+/// Winlogon's `Shell` or `Userinit`, by value name.
+pub const HOOK_SIGN_IN: &str = "Changes what Windows runs when you sign in ({names})";
+/// Only when `LoadAppInit_DLLs` is 1; otherwise Windows doesn't load them, and it's `HOOK_APPINIT_OFF`.
+pub const HOOK_APPINIT: &str = "Loads \"{dll}\" into every program that shows windows";
+pub const HOOK_APPINIT_OFF: &str = "Lists \"{dll}\" in AppInit_DLLs, which is turned off on this PC";
+/// A link handler that already existed now runs the app. `{schemes}` are like `discord://`.
+pub const PROTOCOLS_TAKEN_OVER: &str = "Takes over {schemes} links";
 pub const DRIVERS_ONE: &str = "Installs 1 driver: {names}";
 pub const DRIVERS_MANY: &str = "Installs {n} drivers: {names}";
 pub const SERVICES_ONE: &str = "Adds 1 background service: {names}";
@@ -105,6 +118,8 @@ pub const RUNS_ONCE: &str = "Runs once at the next sign-in";
 pub const FIREWALL_INBOUND: &str = "Allows incoming connections for {program}";
 pub const FIREWALL_OUTBOUND: &str = "Adds outbound firewall rules for {program}";
 pub const SHELL_EXT_ADDED: &str = "Adds right-click menu entries";
+/// `{schemes}` are like `discord://`, joined with ", ".
+pub const PROTOCOLS_ADDED: &str = "Opens {schemes} links";
 pub const PATH_ADDED: &str = "Adds to PATH: {entries}";
 pub const FILES_PROGRAM_FILES: &str = "Files in Program Files ({size})";
 pub const FILES_PROGRAM_DATA: &str = "Files in ProgramData ({size})";

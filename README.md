@@ -80,6 +80,8 @@ Exit codes: 0 when there's a receipt, 1 when idiff itself failed, 2 when the ins
 | Trusted root certificates | the machine and user Root stores |
 | Antivirus exclusions | Microsoft Defender's exclusion lists |
 | Network settings | the hosts file, the proxy, Winsock providers |
+| Link handlers | URL protocols such as `discord://`, machine and user |
+| System hooks | Image File Execution Options debuggers, Winlogon Shell and Userinit, AppInit_DLLs |
 
 Not the whole disk, and not the whole registry. A snapshot takes under a second.
 
