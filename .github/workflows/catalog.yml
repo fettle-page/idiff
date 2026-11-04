@@ -1,6 +1,6 @@
 # The Receipts Library: installs each app in catalog/apps.toml on its own fresh windows-2025
 # runner with `idiff run`, uninstalls it with `idiff leftovers`, and opens one pull request that
-# adds the new receipts to receipts/. Started by hand for now; a weekly schedule comes later.
+# adds the new receipts to receipts/. Runs every Monday, and can be started by hand:
 #
 #   gh workflow run catalog.yml -f only=VideoLAN.VLC,Discord.Discord   # a few apps
 #   gh workflow run catalog.yml                                         # the whole catalog
@@ -14,6 +14,9 @@
 name: Catalog
 
 on:
+  # Every Monday at 03:00 UTC, the whole catalog with idiff built from main.
+  schedule:
+    - cron: "0 3 * * 1"
   workflow_dispatch:
     inputs:
       only:
