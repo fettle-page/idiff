@@ -244,15 +244,13 @@ name = "Notion"
 # id = "AnyDesk.AnyDesk"
 # name = "AnyDesk"
 
-# Added 2026-11-04, checked with `winget show`.
+# Added 2026-11-04, checked with `winget show`. Left out after catalog run 41834960781: Firefox, Git
+# and 7-Zip (already on GitHub's runners, so winget has nothing to install) and Sublime Text (its
+# Uninstall entry has no version, so the library can't name a page).
 # Proposed additions to catalog/apps.toml (52 apps), each checked with
 # `winget show --id <id> --exact --source winget` on 2026-11-04.
 
 # Browsers
-[[app]]
-id = "Mozilla.Firefox"
-name = "Mozilla Firefox"
-
 [[app]]
 id = "Google.Chrome"
 name = "Google Chrome"
@@ -276,20 +274,12 @@ name = "Wire"
 
 # Dev tools
 [[app]]
-id = "Git.Git"
-name = "Git"
-
-[[app]]
 id = "Python.Python.3.14"
 name = "Python 3.14"
 
 [[app]]
 id = "OpenJS.NodeJS.LTS"
 name = "Node.js"
-
-[[app]]
-id = "SublimeHQ.SublimeText.4"
-name = "Sublime Text"
 
 [[app]]
 id = "Anysphere.Cursor"
@@ -363,10 +353,6 @@ id = "LastPass.LastPass"
 name = "LastPass"
 
 # Utilities
-[[app]]
-id = "7zip.7zip"
-name = "7-Zip"
-
 [[app]]
 id = "CPUID.CPU-Z"
 name = "CPU-Z"

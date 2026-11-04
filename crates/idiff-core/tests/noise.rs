@@ -98,6 +98,13 @@ fn builtin_list_covers_each_kind_of_noise() {
         None,
         &[("pfn", "spotifyab.spotifymusic_zpdnekdrzrea0")]
     ));
+    assert!(hit(SourceKind::Protocols, "protocol|hkcu|windowsdefender", None, &[]));
+    assert!(!hit(
+        SourceKind::Protocols,
+        "protocol|hkcu|windowsdefender-x",
+        None,
+        &[]
+    ));
     // A rule for one source never matches another.
     assert!(!hit(SourceKind::Services, "mpksl1a2b3c4d", None, &[]));
 }

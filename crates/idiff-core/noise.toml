@@ -86,6 +86,15 @@ source = "Packaged"
 key = '^microsoft\.winget\.source_'
 note = "winget refreshing its package list"
 
+# ---------- Link handlers ----------
+
+[[rule]]
+source = "Protocols"
+# Seen in 37 of 85 receipts of catalog run 41834960781: Windows Security registers its link for
+# the user while an install runs, with no command idiff could check the signature of.
+key = '^protocol\|hk(cu|lm)\|windowsdefender$'
+note = "Windows Security registering its own link handler"
+
 # ---------- Folders (top-level entries) ----------
 
 [[rule]]
