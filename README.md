@@ -36,7 +36,7 @@ Want to see results first? [`receipts/FINDINGS.md`](receipts/FINDINGS.md) has th
 
 ## Install
 
-Download `idiff-<version>-x64.zip` from the [latest release](../../releases/latest), then check it before you unzip it:
+Download `idiff-<version>-x64.zip` (or `idiff-<version>-arm64.zip` for an ARM PC) from the [latest release](../../releases/latest), then check it before you unzip it:
 
 - Compare its SHA-256 hash with the one in `SHA256SUMS.txt` from the same release: `(Get-FileHash idiff-<version>-x64.zip).Hash`
 - Check the [build attestation](https://docs.github.com/actions/security-for-github-actions/using-artifact-attestations), which shows the zip was built from this repo's source by its release workflow: `gh attestation verify <zip> -R fettle-page/idiff`
