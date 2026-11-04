@@ -60,6 +60,23 @@ pub fn exit_status(outcome: &RunOutcome) -> u8 {
     }
 }
 
+/// idiff's exit code for a finished uninstall: as `exit_status`, and also `0` for the code 19
+/// that Chromium's `setup.exe --uninstall` (Brave, Vivaldi, Opera) returns when it worked
+/// (`UNINSTALL_SUCCESSFUL`). Only for that program, since 19 means other things elsewhere.
+pub fn uninstall_exit_status(command: &[String], outcome: &RunOutcome) -> u8 {
+    let chromium_setup = command.first().is_some_and(|program| {
+        let name = program.rsplit(['\\', '/']).next().unwrap_or(program);
+        name.eq_ignore_ascii_case("setup.exe")
+    }) && command.iter().skip(1).any(|arg| arg == "--uninstall");
+    match outcome {
+        RunOutcome {
+            timed_out: false,
+            exit_code: Some(19),
+        } if chromium_setup => 0,
+        _ => exit_status(outcome),
+    }
+}
+
 /// How long no installer may run before an install or uninstall counts as done.
 pub const INSTALLERS_QUIET: std::time::Duration = std::time::Duration::from_secs(10);
 

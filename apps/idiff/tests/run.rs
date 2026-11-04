@@ -1,4 +1,4 @@
-use idiff::run::{RunOutcome, exit_status, quote_args};
+use idiff::run::{RunOutcome, exit_status, quote_args, uninstall_exit_status};
 
 fn strings(args: &[&str]) -> Vec<String> {
     args.iter().map(|a| a.to_string()).collect()
@@ -16,6 +16,35 @@ fn quote_args_follows_windows_rules() {
         quote_args(&strings(&["winget", "install", "--id", "VideoLAN.VLC"])),
         "winget install --id VideoLAN.VLC"
     );
+}
+
+#[test]
+fn chromium_uninstall_success_code_counts_only_for_its_setup() {
+    let exited = |code| RunOutcome {
+        exit_code: Some(code),
+        timed_out: false,
+    };
+    let brave = strings(&[
+        r"C:\Program Files\BraveSoftware\Brave-Browser\Application\155.1.97.56\Installer\setup.exe",
+        "--uninstall",
+        "--system-level",
+        "--force-uninstall",
+    ]);
+    assert_eq!(uninstall_exit_status(&brave, &exited(19)), 0);
+    assert_eq!(uninstall_exit_status(&brave, &exited(20)), 2);
+    assert_eq!(uninstall_exit_status(&brave, &exited(0)), 0);
+    // 19 from anything else, or from a setup.exe that isn't uninstalling, is still a failure.
+    let winget = strings(&["winget", "uninstall", "--id", "Brave.Brave"]);
+    assert_eq!(uninstall_exit_status(&winget, &exited(19)), 2);
+    assert_eq!(
+        uninstall_exit_status(&strings(&[r"C:\x\setup.exe", "/S"]), &exited(19)),
+        2
+    );
+    let timed_out = RunOutcome {
+        exit_code: Some(19),
+        timed_out: true,
+    };
+    assert_eq!(uninstall_exit_status(&brave, &timed_out), 2);
 }
 
 #[test]

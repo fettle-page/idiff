@@ -30,7 +30,7 @@ pub fn run(
     use super::{app_name, fill};
     use crate::elevate::snapshot_for_run;
     use crate::leftovers::leftovers_from_files;
-    use crate::run::{INSTALLERS_QUIET, exit_status, run_in_job, wait_for_installers, wait_for_msi_idle};
+    use crate::run::{INSTALLERS_QUIET, run_in_job, uninstall_exit_status, wait_for_installers, wait_for_msi_idle};
     use crate::session::{self, SessionMeta};
     use idiff_collect::sources::folders::folder_size;
     use idiff_core::copy;
@@ -63,7 +63,11 @@ pub fn run(
         if !timed_out {
             std::thread::sleep(Duration::from_secs(options.settle));
         }
-        status = if timed_out { 2 } else { exit_status(&outcome) };
+        status = if timed_out {
+            2
+        } else {
+            uninstall_exit_status(command, &outcome)
+        };
     } else if !options.yes {
         eprintln!("{}", fill(copy::UNINSTALL_NOW, &[("app", &app_name(&meta))]));
         let mut answer = String::new();
