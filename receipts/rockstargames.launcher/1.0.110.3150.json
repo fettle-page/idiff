@@ -1,0 +1,181 @@
+{
+  "meta": {
+    "id": "RockstarGames.Launcher",
+    "name": "Rockstar Games Launcher",
+    "version": "1.0.110.3150",
+    "date": "2026-11-09",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261103.298.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/42607580743",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Rockstar Games Launcher 1.0.110.3150: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Adds 1 background service: Rockstar Game Library Service (full system rights)",
+        "items": [
+          "rockstar service"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (100 MB)",
+        "items": [
+          "c:\\program files\\rockstar games"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in ProgramData (2 KB)",
+        "items": [
+          "c:\\programdata\\rockstar games"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Files in your user folder",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\rockstar games"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\rockstar games launcher.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\rockstar games\\rockstar games launcher.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "5 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed scheduled task \"PrintJobCleanupTask\"",
+        "items": [
+          "\\microsoft\\windows\\printing\\printjobcleanuptask"
+        ],
+        "why": [
+          "Windows background change: Windows' own scheduled tasks"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Mozilla\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\mozilla"
+        ],
+        "why": [
+          "Windows background change: GitHub runner: preinstalled Firefox"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Roaming\\Mozilla\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\mozilla"
+        ],
+        "why": [
+          "Windows background change: GitHub runner: preinstalled Firefox"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Rockstar Games Launcher 1.0.110.3150: after uninstall, 3 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Service \"Rockstar Game Library Service\" is still there",
+        "items": [
+          "rockstar service"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Folder \"Program Files\\Rockstar Games\" is still there (empty)",
+        "items": [
+          "c:\\program files\\rockstar games"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Folder \"ProgramData\\Rockstar Games\" is still there (empty)",
+        "items": [
+          "c:\\programdata\\rockstar games"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

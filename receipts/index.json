@@ -50,14 +50,14 @@
   {
     "id": "Bitwarden.Bitwarden",
     "name": "Bitwarden",
-    "version": "2026.10.3",
-    "date": "2026-11-04",
+    "version": "2026.10.4",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
-    "changed": true,
-    "path": "bitwarden.bitwarden/2026.10.3.md"
+    "changed": false,
+    "path": "bitwarden.bitwarden/2026.10.4.md"
   },
   {
     "id": "BlenderFoundation.Blender",
@@ -98,14 +98,14 @@
   {
     "id": "CPUID.CPU-Z",
     "name": "CPU-Z",
-    "version": "3.01",
-    "date": "2026-11-04",
+    "version": "3.02",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": false,
-    "path": "cpuid.cpu-z/3.01.md"
+    "path": "cpuid.cpu-z/3.02.md"
   },
   {
     "id": "Overwolf.CurseForge",
@@ -218,14 +218,14 @@
   {
     "id": "Figma.Figma",
     "name": "Figma",
-    "version": "126.11.7",
-    "date": "2026-11-04",
+    "version": "126.11.8",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 3,
     "leftovers_checked": true,
     "changed": false,
-    "path": "figma.figma/126.11.7.md"
+    "path": "figma.figma/126.11.8.md"
   },
   {
     "id": "Foxit.FoxitReader",
@@ -470,26 +470,26 @@
   {
     "id": "Logitech.GHUB",
     "name": "Logitech G HUB",
-    "version": "2026.7.992920",
-    "date": "2026-11-04",
+    "version": "2026.7.1011216",
+    "date": "2026-11-09",
     "warn": 2,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
     "changed": true,
-    "path": "logitech.ghub/2026.7.992920.md"
+    "path": "logitech.ghub/2026.7.1011216.md"
   },
   {
     "id": "Malwarebytes.Malwarebytes",
     "name": "Malwarebytes",
-    "version": "5.7.2.358",
-    "date": "2026-11-04",
+    "version": "5.7.3.376",
+    "date": "2026-11-09",
     "warn": 2,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "malwarebytes.malwarebytes/5.7.2.358.md"
+    "changed": true,
+    "path": "malwarebytes.malwarebytes/5.7.3.376.md"
   },
   {
     "id": "Mattermost.MattermostDesktop",
@@ -518,14 +518,14 @@
   {
     "id": "clsid2.mpc-hc",
     "name": "MPC-HC",
-    "version": "2.8.4",
-    "date": "2026-11-04",
+    "version": "2.8.5",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
-    "changed": false,
-    "path": "clsid2.mpc-hc/2.8.4.md"
+    "changed": true,
+    "path": "clsid2.mpc-hc/2.8.5.md"
   },
   {
     "id": "MullvadVPN.MullvadVPN",
@@ -542,14 +542,14 @@
   {
     "id": "Nextcloud.NextcloudDesktop",
     "name": "Nextcloud",
-    "version": "35.0.2.20261030",
-    "date": "2026-11-04",
+    "version": "35.0.3.20261104",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": false,
-    "path": "nextcloud.nextclouddesktop/35.0.2.20261030.md"
+    "path": "nextcloud.nextclouddesktop/35.0.3.20261104.md"
   },
   {
     "id": "OpenJS.NodeJS.LTS",
@@ -590,14 +590,14 @@
   {
     "id": "Notepad++.Notepad++",
     "name": "Notepad++",
-    "version": "8.9.8.1",
-    "date": "2026-10-15",
+    "version": "8.9.9",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
     "changed": false,
-    "path": "notepadplusplus.notepadplusplus/8.9.8.1.md"
+    "path": "notepadplusplus.notepadplusplus/8.9.9.md"
   },
   {
     "id": "Notion.Notion",
@@ -638,14 +638,14 @@
   {
     "id": "Ollama.Ollama",
     "name": "Ollama",
-    "version": "0.40.14",
-    "date": "2026-11-04",
+    "version": "0.40.15",
+    "date": "2026-11-09",
     "warn": 1,
     "bad": 0,
     "leftovers": 3,
     "leftovers_checked": true,
     "changed": false,
-    "path": "ollama.ollama/0.40.14.md"
+    "path": "ollama.ollama/0.40.15.md"
   },
   {
     "id": "ONLYOFFICE.DesktopEditors",
@@ -662,14 +662,14 @@
   {
     "id": "Opera.Opera",
     "name": "Opera",
-    "version": "139.0.6053.22",
-    "date": "2026-11-04",
+    "version": "139.0.6053.38",
+    "date": "2026-11-09",
     "warn": 3,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
     "changed": true,
-    "path": "opera.opera/139.0.6053.22.md"
+    "path": "opera.opera/139.0.6053.38.md"
   },
   {
     "id": "dotPDN.PaintDotNet",
@@ -710,14 +710,14 @@
   {
     "id": "Playnite.Playnite",
     "name": "Playnite",
-    "version": "10.58",
-    "date": "2026-11-04",
+    "version": "10.63",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
-    "changed": false,
-    "path": "playnite.playnite/10.58.md"
+    "changed": true,
+    "path": "playnite.playnite/10.63.md"
   },
   {
     "id": "Plex.PlexMediaServer",
@@ -734,26 +734,26 @@
   {
     "id": "Postman.Postman",
     "name": "Postman",
-    "version": "12.35.1",
-    "date": "2026-11-04",
+    "version": "12.36.0",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 2,
     "leftovers_checked": true,
     "changed": true,
-    "path": "postman.postman/12.35.1.md"
+    "path": "postman.postman/12.36.0.md"
   },
   {
     "id": "Microsoft.PowerToys",
     "name": "PowerToys",
-    "version": "0.102.3001.0",
-    "date": "2026-11-04",
+    "version": "0.102.3101.0",
+    "date": "2026-11-09",
     "warn": 1,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": true,
-    "path": "microsoft.powertoys/0.102.3001.0.md"
+    "changed": false,
+    "path": "microsoft.powertoys/0.102.3101.0.md"
   },
   {
     "id": "Proton.ProtonDrive",
@@ -830,38 +830,38 @@
   {
     "id": "RockstarGames.Launcher",
     "name": "Rockstar Games Launcher",
-    "version": "1.0.110.3139",
-    "date": "2026-11-04",
+    "version": "1.0.110.3150",
+    "date": "2026-11-09",
     "warn": 1,
     "bad": 0,
     "leftovers": 3,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "rockstargames.launcher/1.0.110.3139.md"
+    "changed": true,
+    "path": "rockstargames.launcher/1.0.110.3150.md"
   },
   {
     "id": "ShareX.ShareX",
     "name": "ShareX",
-    "version": "21.0.0",
-    "date": "2026-10-15",
+    "version": "22.4.0",
+    "date": "2026-11-09",
     "warn": 1,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "sharex.sharex/21.0.0.md"
+    "changed": true,
+    "path": "sharex.sharex/22.4.0.md"
   },
   {
     "id": "OpenWhisperSystems.Signal",
     "name": "Signal",
-    "version": "8.33.0",
-    "date": "2026-11-04",
+    "version": "8.34.0",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": true,
-    "path": "openwhispersystems.signal/8.33.0.md"
+    "path": "openwhispersystems.signal/8.34.0.md"
   },
   {
     "id": "SlackTechnologies.Slack",
@@ -926,14 +926,14 @@
   {
     "id": "Telegram.TelegramDesktop",
     "name": "Telegram Desktop",
-    "version": "7.3.3",
-    "date": "2026-11-04",
+    "version": "7.4.1",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
     "changed": true,
-    "path": "telegram.telegramdesktop/7.3.3.md"
+    "path": "telegram.telegramdesktop/7.4.1.md"
   },
   {
     "id": "Mozilla.Thunderbird",
@@ -962,26 +962,26 @@
   {
     "id": "Ubisoft.Connect",
     "name": "Ubisoft Connect",
-    "version": "175.0.13393",
-    "date": "2026-11-04",
+    "version": "175.1.13416",
+    "date": "2026-11-09",
     "warn": 1,
     "bad": 0,
     "leftovers": 2,
     "leftovers_checked": true,
     "changed": false,
-    "path": "ubisoft.connect/175.0.13393.md"
+    "path": "ubisoft.connect/175.1.13416.md"
   },
   {
     "id": "Rakuten.Viber",
     "name": "Viber",
-    "version": "29.3.0.0",
-    "date": "2026-11-04",
+    "version": "29.4.0.0",
+    "date": "2026-11-09",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": false,
-    "path": "rakuten.viber/29.3.0.0.md"
+    "path": "rakuten.viber/29.4.0.0.md"
   },
   {
     "id": "Microsoft.VisualStudioCode",
@@ -998,14 +998,14 @@
   {
     "id": "Vivaldi.Vivaldi",
     "name": "Vivaldi",
-    "version": "8.2.4133.96",
-    "date": "2026-11-04",
+    "version": "8.3.4191.30",
+    "date": "2026-11-09",
     "warn": 1,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
-    "changed": true,
-    "path": "vivaldi.vivaldi/8.2.4133.96.md"
+    "changed": false,
+    "path": "vivaldi.vivaldi/8.3.4191.30.md"
   },
   {
     "id": "VideoLAN.VLC",

@@ -1,6 +1,6 @@
-# Ollama 0.40.14
+# Ollama 0.40.15
 
-## Ollama 0.40.14: installed
+## Ollama 0.40.15: installed
 
 - ⚠ Starts with Windows
 - ✓ No services, drivers or firewall rules
@@ -21,7 +21,7 @@
 
 ## After uninstall
 
-### Ollama 0.40.14: after uninstall, 3 leftovers
+### Ollama 0.40.15: after uninstall, 3 leftovers
 
 - ✗ PATH entry "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\Ollama" is still there
 - ✗ 3 KB in User folder\\.ollama
@@ -29,6 +29,10 @@
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261103.298.1) by idiff 1.1.0 on 2026-11-09, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/42607580743). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [0.40.14](0.40.14.md) (2026-11-04)
