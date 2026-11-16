@@ -1,20 +1,20 @@
-# EA app 13.822.0.6335
+# EA app 13.827.2.6342
 
-## EA app 13.822.0.6335: installed
+## EA app 13.827.2.6342: installed
 
 - ⚠ Adds 1 background service: EABackgroundService \(full system rights\)
 - ⚠ Starts with Windows
-- ⚠ Allows incoming connections for eabackgroundservice.exe, eaconnect\_microsoft.exe, eagep.exe, eadesktop.exe, ealocalhostsvc.exe
+- ⚠ Allows incoming connections for ealocalhostsvc.exe, eabackgroundservice.exe, eaconnect\_microsoft.exe, eagep.exe, eadesktop.exe
 - · Adds outbound firewall rules for ealaunchhelper.exe
 - ✓ No drivers
 - · Opens eaconnect.microsoft://, ealink://, epic2ea://, link2ea://, luna2ea://, origin://, origin2://, steam2ea:// links
-- · Files in Program Files \(607 MB\)
+- · Files in Program Files \(647 MB\)
 - · Files in ProgramData \(1 MB\)
-- · Files in your user folder \(8 MB\)
+- · Files in your user folder \(11 MB\)
 - · Adds a desktop shortcut
 - · Adds a Start menu entry
 - · Also installed: Microsoft Visual C++ 2012 Redistributable \(x86\) - 11.0.61030, Microsoft Visual C++ 2013 Redistributable \(x86\) - 12.0.40664, Microsoft Visual C++ 2010 x86 Redistributable - 10.0.40219
-- · 2 Windows background changes hidden \(listed below\)
+- · 3 Windows background changes hidden \(listed below\)
 
 ### Also changed while installing \(couldn't tell if it was this app\)
 
@@ -24,6 +24,7 @@
 
 ### Hidden: Windows background changes
 
+- · Changed service "BITS"
 - · Changed service "PcaSvc"
 - · Added store app "Windows Package Manager Source \(winget\) V2"
 
@@ -31,20 +32,20 @@
 
 The uninstall didn't finish on the test machine, so these may include things it would have removed.
 
-### EA app 13.822.0.6335: after uninstall, 20 leftovers
+### EA app 13.827.2.6342: after uninstall, 20 leftovers
 
 - ⚠ The app is still listed in Installed programs, so the uninstall may not have run or finished; this list may include things it would have removed
 - ✗ Program "EA app" is still there \(2 items\)
 - ✗ Service "EABackgroundService" is still there
-- ✗ 611 MB in Program Files\\Electronic Arts
+- ✗ 650 MB in Program Files\\Electronic Arts
 - ✗ 2 MB in ProgramData\\EA Desktop
 - ✗ Shortcut "Start menu \(all users\)\\EA\\App Recovery.lnk" is still there
 - ✗ Shortcut "Start menu \(all users\)\\EA\\EA app Updater.lnk" is still there
 - ✗ Shortcut "Start menu \(all users\)\\EA\\EA Error Reporter.lnk" is still there
 - ✗ Shortcut "Start menu \(all users\)\\EA\\EA.lnk" is still there
 - ✗ Shortcut "Public Desktop\\EA.lnk" is still there
-- ✗ 795 KB in AppData\\Local\\EADesktop
-- ✗ 8 MB in AppData\\Local\\Electronic Arts
+- ✗ 796 KB in AppData\\Local\\EADesktop
+- ✗ 11 MB in AppData\\Local\\Electronic Arts
 - ✗ Link handler "eaconnect.microsoft" is still there
 - ✗ Link handler "ealink" is still there
 - ✗ Link handler "epic2ea" is still there
@@ -53,33 +54,35 @@ The uninstall didn't finish on the test machine, so these may include things it 
 - ✗ Link handler "origin" is still there
 - ✗ Link handler "origin2" is still there
 - ✗ Link handler "steam2ea" is still there
-- · The uninstaller added firewall rule "EA app \(EABackgroundService\) \(Outbound\)"
-- · The uninstaller added firewall rule "EA app \(EADesktop\)"
-- · The uninstaller added firewall rule "EA app \(EALocalHostSvc\) \(Outbound\)"
 - · The uninstaller added firewall rule "EA app \(EABackgroundService\)"
-- · The uninstaller added firewall rule "EA app \(EAConnect\_microsoft\) \(Outbound\)"
+- · The uninstaller added firewall rule "EA app \(EAGEP\)"
+- · The uninstaller added firewall rule "EA app \(EALaunchHelper\) \(Outbound\)"
+- · The uninstaller added firewall rule "EA app \(EALocalHostSvc\)"
 - · The uninstaller added firewall rule "EA app \(EADesktop\) \(Outbound\)"
 - · The uninstaller added firewall rule "EA app \(EAConnect\_microsoft\)"
-- · The uninstaller added firewall rule "EA app \(EAGEP\)"
-- · The uninstaller added firewall rule "EA app \(EALocalHostSvc\)"
-- · The uninstaller added firewall rule "EA app \(EALaunchHelper\) \(Outbound\)"
+- · The uninstaller added firewall rule "EA app \(EADesktop\)"
 - · The uninstaller added firewall rule "EA app \(EAGEP\) \(Outbound\)"
+- · The uninstaller added firewall rule "EA app \(EABackgroundService\) \(Outbound\)"
+- · The uninstaller added firewall rule "EA app \(EAConnect\_microsoft\) \(Outbound\)"
+- · The uninstaller added firewall rule "EA app \(EALocalHostSvc\) \(Outbound\)"
 - · Left installed: Microsoft Visual C++ 2012 Redistributable \(x86\) - 11.0.61030, Microsoft Visual C++ 2013 x86 Minimum Runtime - 12.0.40664, Microsoft Visual C++ 2013 Redistributable \(x86\) - 12.0.40664, Microsoft Visual C++ 2012 x86 Additional Runtime - 11.0.61030, Microsoft Visual C++ 2012 x86 Minimum Runtime - 11.0.61030, Microsoft Visual C++ 2013 x86 Additional Runtime - 12.0.40664, Microsoft Visual C++ 2010 x86 Redistributable - 10.0.40219. They came with the app, and other apps may use them.
 
 ## Changed since the previous version
 
-- \+ Allows incoming connections for eabackgroundservice.exe, eaconnect\_microsoft.exe, eagep.exe, eadesktop.exe, ealocalhostsvc.exe
-- \+ Opens eaconnect.microsoft://, ealink://, epic2ea://, link2ea://, luna2ea://, origin://, origin2://, steam2ea:// links
-- \+ Files in Program Files \(607 MB\)
-- \- Allows incoming connections for eadesktop.exe, ealocalhostsvc.exe, eabackgroundservice.exe, eagep.exe, eaconnect\_microsoft.exe
-- \- Files in Program Files \(605 MB\)
+- \+ Allows incoming connections for ealocalhostsvc.exe, eabackgroundservice.exe, eaconnect\_microsoft.exe, eagep.exe, eadesktop.exe
+- \+ Files in Program Files \(647 MB\)
+- \+ Files in your user folder \(11 MB\)
+- \- Allows incoming connections for eabackgroundservice.exe, eaconnect\_microsoft.exe, eagep.exe, eadesktop.exe, ealocalhostsvc.exe
+- \- Files in Program Files \(607 MB\)
+- \- Files in your user folder \(8 MB\)
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261103.298.1) by idiff 1.1.0 on 2026-11-16, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/43852972131). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
 
 ## Older versions
 
+- [13.822.0.6335](13.822.0.6335.md) (2026-11-04)
 - [13.809.0.6322](13.809.0.6322.md) (2026-10-15)

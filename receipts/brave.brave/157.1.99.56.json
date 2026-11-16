@@ -1,0 +1,214 @@
+{
+  "meta": {
+    "id": "Brave.Brave",
+    "name": "Brave",
+    "version": "157.1.99.56",
+    "date": "2026-11-16",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261103.298.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/43852972131",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Brave 157.1.99.56: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "2 scheduled tasks: runs an updater every day",
+        "items": [
+          "\\bravesoftwareupdatetaskusers-1-5-21-3289802278-1561746829-1498425070-500core{fb9f30a7-74b7-40c8-ae5c-002fe2a49e28}",
+          "\\bravesoftwareupdatetaskusers-1-5-21-3289802278-1561746829-1498425070-500ua{82192093-08b7-406b-a134-c57c483086bf}"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Starts with Windows",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|bravesoftware update"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for brave.exe",
+        "items": [
+          "{9b4a5780-fb40-4819-9d41-566d7a1481c2}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services or drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens brave-browser:// links",
+        "items": [
+          "protocol|hkcu|brave-browser"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "Files only in your user folder (1.4 GB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\bravesoftware"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\brave.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\brave.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "5 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added store app \"WindowsAppRuntime.2\"",
+        "items": [
+          "microsoft.windowsappruntime.2_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changed scheduled task \"PrintJobCleanupTask\"",
+        "items": [
+          "\\microsoft\\windows\\printing\\printjobcleanuptask"
+        ],
+        "why": [
+          "Windows background change: Windows' own scheduled tasks"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Local\\Mozilla\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\mozilla"
+        ],
+        "why": [
+          "Windows background change: GitHub runner: preinstalled Firefox"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added folder \"AppData\\Roaming\\Mozilla\"",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\mozilla"
+        ],
+        "why": [
+          "Windows background change: GitHub runner: preinstalled Firefox"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Brave 157.1.99.56: after uninstall, 4 leftovers",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"BraveSoftwareUpdateTaskUserS-1-5-21-3289802278-1561746829-1498425070-500Core{FB9F30A7-74B7-40C8-AE5C-002FE2A49E28}\" is still there",
+        "items": [
+          "\\bravesoftwareupdatetaskusers-1-5-21-3289802278-1561746829-1498425070-500core{fb9f30a7-74b7-40c8-ae5c-002fe2a49e28}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Scheduled task \"BraveSoftwareUpdateTaskUserS-1-5-21-3289802278-1561746829-1498425070-500UA{82192093-08B7-406B-A134-C57C483086BF}\" is still there",
+        "items": [
+          "\\bravesoftwareupdatetaskusers-1-5-21-3289802278-1561746829-1498425070-500ua{82192093-08b7-406b-a134-c57c483086bf}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "Startup entry \"BraveSoftware Update\" is still there",
+        "items": [
+          "run|hkcu|software\\microsoft\\windows\\currentversion\\run|bravesoftware update"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Bad",
+        "text": "323 MB in AppData\\Local\\BraveSoftware",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\bravesoftware"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

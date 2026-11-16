@@ -1,6 +1,6 @@
-# LibreOffice 26.8.2.2
+# LibreOffice 26.8.3.1
 
-## LibreOffice 26.8.2.2: installed
+## LibreOffice 26.8.3.1: installed
 
 - ⚠ Adds 1 background service: LibreOffice Maintenance Service \(full system rights\)
 - ✓ No drivers or firewall rules
@@ -17,13 +17,17 @@
 
 ## After uninstall
 
-### LibreOffice 26.8.2.2: after uninstall, 2 leftovers
+### LibreOffice 26.8.3.1: after uninstall, 2 leftovers
 
 - ✗ Service "LibreOffice Maintenance Service" is still there
 - ✗ 1 KB in Program Files\\LibreOffice
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261103.298.1) by idiff 1.1.0 on 2026-11-16, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/43852972131). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [26.8.2.2](26.8.2.2.md) (2026-11-04)

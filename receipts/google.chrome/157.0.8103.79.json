@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "id": "Google.Chrome",
+    "name": "Google Chrome",
+    "version": "157.0.8103.79",
+    "date": "2026-11-16",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261103.298.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/43852972131",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Google Chrome 157.0.8103.79: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for chrome.exe",
+        "items": [
+          "{21d2e80f-93d6-4167-adb0-d7ac063093bf}"
+        ],
+        "why": [
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services or drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Changes service \"Google Chrome Elevation Service (GoogleChromeElevationService)\"",
+        "items": [
+          "googlechromeelevationservice"
+        ],
+        "why": [
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changes service \"Google Updater Internal Service (GoogleUpdaterInternalService157.0.8089.0)\"",
+        "items": [
+          "googleupdaterinternalservice157.0.8089.0"
+        ],
+        "why": [
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changes service \"Google Updater Service (GoogleUpdaterService157.0.8089.0)\"",
+        "items": [
+          "googleupdaterservice157.0.8089.0"
+        ],
+        "why": [
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "1 Windows background change hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Google Chrome 157.0.8103.79: after uninstall, no leftovers",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "Nothing left behind",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

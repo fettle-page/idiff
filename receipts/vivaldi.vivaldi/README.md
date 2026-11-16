@@ -1,6 +1,6 @@
-# Vivaldi 8.2.4133.96
+# Vivaldi 8.3.4191.44
 
-## Vivaldi 8.2.4133.96: installed
+## Vivaldi 8.3.4191.44: installed
 
 - ⚠ Allows incoming connections for vivaldi.exe
 - ✓ No services or drivers
@@ -8,36 +8,26 @@
 - ✓ Files only in your user folder \(1.0 GB\)
 - · Adds a desktop shortcut
 - · Adds a Start menu entry
-- · 5 Windows background changes hidden \(listed below\)
-
-### Also changed while installing \(couldn't tell if it was this app\)
-
-- · Added store app "Microsoft Visual C++ 2015 UWP Runtime Package"
+- · 2 Windows background changes hidden \(listed below\)
 
 ### Hidden: Windows background changes
 
-- · Changed service "BITS"
 - · Changed service "PcaSvc"
-- · Changed store app "Windows Security"
 - · Added store app "Windows Package Manager Source \(winget\) V2"
-- · Added link handler "windowsdefender"
 
 ## After uninstall
 
-### Vivaldi 8.2.4133.96: after uninstall, 1 leftover
+### Vivaldi 8.3.4191.44: after uninstall, 1 leftover
 
 - ✗ Folder "AppData\\Local\\Vivaldi" is still there \(empty\)
 
-## Changed since the previous version
-
-- \+ Opens vivaldi-browser:// links
-
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261103.298.1) by idiff 1.1.0 on 2026-11-16, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/43852972131). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
 
 ## Older versions
 
+- [8.2.4133.96](8.2.4133.96.md) (2026-11-04)
 - [8.2.4133.87](8.2.4133.87.md) (2026-10-15)

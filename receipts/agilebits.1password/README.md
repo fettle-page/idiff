@@ -1,6 +1,6 @@
-# 1Password 8.12.42.36
+# 1Password 8.12.44.33
 
-## 1Password 8.12.42.36: installed
+## 1Password 8.12.44.33: installed
 
 - ⚠ Starts with Windows
 - ✓ No services, drivers or firewall rules
@@ -21,20 +21,17 @@
 
 ## After uninstall
 
-### 1Password 8.12.42.36: after uninstall, 1 leftover
+### 1Password 8.12.44.33: after uninstall, 1 leftover
 
 - ✗ Store app "Microsoft Visual C++ 2015 UWP Runtime Package" is still there
 
-## Changed since the previous version
-
-- \+ Also installed: Microsoft Visual C++ 2015 UWP Runtime Package
-
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261103.298.1) by idiff 1.1.0 on 2026-11-16, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/43852972131). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
 
 ## Older versions
 
+- [8.12.42.36](8.12.42.36.md) (2026-11-04)
 - [8.12.36.40](8.12.36.40.md) (2026-10-15)

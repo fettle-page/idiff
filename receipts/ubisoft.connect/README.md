@@ -1,6 +1,6 @@
-# Ubisoft Connect 175.0.13393
+# Ubisoft Connect 175.1.13416
 
-## Ubisoft Connect 175.0.13393: installed
+## Ubisoft Connect 175.1.13416: installed
 
 - ⚠ Adds 1 background service: Ubisoft UPC Elevation Service \(full system rights\)
 - ✓ No drivers or firewall rules
@@ -10,23 +10,33 @@
 - · Files in your user folder \(1 KB\)
 - · Adds a desktop shortcut
 - · Adds a Start menu entry
-- · 3 Windows background changes hidden \(listed below\)
+- · 5 Windows background changes hidden \(listed below\)
+
+### Also changed while installing \(couldn't tell if it was this app\)
+
+- · Added store app "Microsoft Visual C++ 2015 UWP Runtime Package"
 
 ### Hidden: Windows background changes
 
 - · Changed service "BITS"
 - · Changed service "PcaSvc"
+- · Changed store app "Windows Security"
 - · Added store app "Windows Package Manager Source \(winget\) V2"
+- · Added link handler "windowsdefender"
 
 ## After uninstall
 
-### Ubisoft Connect 175.0.13393: after uninstall, 2 leftovers
+### Ubisoft Connect 175.1.13416: after uninstall, 2 leftovers
 
 - ✗ Folder "Program Files \(x86\)\\Ubisoft" is still there \(empty\)
 - ✗ Folder "ProgramData\\Ubisoft" is still there \(empty\)
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261103.298.1) by idiff 1.1.0 on 2026-11-16, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/43852972131). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [175.0.13393](175.0.13393.md) (2026-11-04)
