@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "id": "AutoHotkey.AutoHotkey",
+    "name": "AutoHotkey",
+    "version": "2.0.32",
+    "date": "2026-11-23",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261116.315.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/45171434798",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "AutoHotkey 2.0.32: installed",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Adds a trusted root certificate: \"AutoHotkey\"",
+        "items": [
+          "lm|4f94fc7ed774c2af1bd271ee0848ac05b7fccdf4"
+        ],
+        "why": [
+          "name matches the app (a weak sign)"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services, drivers or firewall rules",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Files in Program Files (8 MB)",
+        "items": [
+          "c:\\program files\\autohotkey"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\autohotkey dash.lnk",
+          "c:\\programdata\\microsoft\\windows\\start menu\\programs\\autohotkey window spy.lnk"
+        ],
+        "why": [
+          "runs from the app's folder",
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "AutoHotkey 2.0.32: after uninstall, no leftovers",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "Nothing left behind",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

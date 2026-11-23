@@ -2,26 +2,26 @@
   {
     "id": "AgileBits.1Password",
     "name": "1Password",
-    "version": "8.12.42.36",
-    "date": "2026-11-04",
+    "version": "8.12.46.29",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
-    "leftovers": 1,
+    "leftovers": 0,
     "leftovers_checked": true,
     "changed": true,
-    "path": "agilebits.1password/8.12.42.36.md"
+    "path": "agilebits.1password/8.12.46.29.md"
   },
   {
     "id": "Adobe.Acrobat.Reader.64-bit",
     "name": "Adobe Acrobat Reader",
-    "version": "26.003.22075",
-    "date": "2026-11-04",
+    "version": "26.003.22110",
+    "date": "2026-11-23",
     "warn": 2,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": true,
-    "path": "adobe.acrobat.reader.64-bit/26.003.22075.md"
+    "path": "adobe.acrobat.reader.64-bit/26.003.22110.md"
   },
   {
     "id": "Audacity.Audacity",
@@ -38,50 +38,50 @@
   {
     "id": "AutoHotkey.AutoHotkey",
     "name": "AutoHotkey",
-    "version": "2.0.31",
-    "date": "2026-11-04",
+    "version": "2.0.32",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 1,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": false,
-    "path": "autohotkey.autohotkey/2.0.31.md"
+    "path": "autohotkey.autohotkey/2.0.32.md"
   },
   {
     "id": "Bitwarden.Bitwarden",
     "name": "Bitwarden",
-    "version": "2026.10.3",
-    "date": "2026-11-04",
+    "version": "2026.11.0",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
     "changed": true,
-    "path": "bitwarden.bitwarden/2026.10.3.md"
+    "path": "bitwarden.bitwarden/2026.11.0.md"
   },
   {
     "id": "BlenderFoundation.Blender",
     "name": "Blender",
-    "version": "5.2.3",
-    "date": "2026-11-04",
+    "version": "5.3.0",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": true,
-    "path": "blenderfoundation.blender/5.2.3.md"
+    "path": "blenderfoundation.blender/5.3.0.md"
   },
   {
     "id": "Brave.Brave",
     "name": "Brave",
-    "version": "156.1.98.63",
-    "date": "2026-11-04",
+    "version": "158.1.100.58",
+    "date": "2026-11-23",
     "warn": 3,
     "bad": 0,
     "leftovers": 4,
     "leftovers_checked": true,
-    "changed": true,
-    "path": "brave.brave/156.1.98.63.md"
+    "changed": false,
+    "path": "brave.brave/158.1.100.58.md"
   },
   {
     "id": "Google.ChromeRemoteDesktopHost",
@@ -98,14 +98,14 @@
   {
     "id": "CPUID.CPU-Z",
     "name": "CPU-Z",
-    "version": "3.01",
-    "date": "2026-11-04",
+    "version": "3.02",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": false,
-    "path": "cpuid.cpu-z/3.01.md"
+    "path": "cpuid.cpu-z/3.02.md"
   },
   {
     "id": "Overwolf.CurseForge",
@@ -122,62 +122,62 @@
   {
     "id": "Anysphere.Cursor",
     "name": "Cursor",
-    "version": "3.27.12",
-    "date": "2026-11-04",
+    "version": "3.31.15",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "anysphere.cursor/3.27.12.md"
+    "changed": true,
+    "path": "anysphere.cursor/3.31.15.md"
   },
   {
     "id": "Discord.Discord",
     "name": "Discord",
-    "version": "1.0.9267",
-    "date": "2026-11-04",
+    "version": "1.0.9269",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 6,
     "leftovers_checked": true,
-    "changed": true,
-    "path": "discord.discord/1.0.9267.md"
+    "changed": false,
+    "path": "discord.discord/1.0.9269.md"
   },
   {
     "id": "Dropbox.Dropbox",
     "name": "Dropbox",
-    "version": "270.4.3312",
-    "date": "2026-11-04",
+    "version": "280.4.5053",
+    "date": "2026-11-23",
     "warn": 4,
     "bad": 0,
     "leftovers": 6,
     "leftovers_checked": true,
     "changed": true,
-    "path": "dropbox.dropbox/270.4.3312.md"
+    "path": "dropbox.dropbox/280.4.5053.md"
   },
   {
     "id": "ElectronicArts.EADesktop",
     "name": "EA app",
-    "version": "13.822.0.6335",
-    "date": "2026-11-04",
+    "version": "13.832.0.6345",
+    "date": "2026-11-23",
     "warn": 3,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
     "changed": true,
-    "path": "electronicarts.eadesktop/13.822.0.6335.md"
+    "path": "electronicarts.eadesktop/13.832.0.6345.md"
   },
   {
     "id": "Element.Element",
     "name": "Element",
-    "version": "1.12.33",
-    "date": "2026-11-04",
+    "version": "1.12.35",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 2,
     "leftovers_checked": true,
     "changed": true,
-    "path": "element.element/1.12.33.md"
+    "path": "element.element/1.12.35.md"
   },
   {
     "id": "EpicGames.EpicGamesLauncher",
@@ -218,14 +218,14 @@
   {
     "id": "Figma.Figma",
     "name": "Figma",
-    "version": "126.11.7",
-    "date": "2026-11-04",
+    "version": "126.12.7",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 3,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "figma.figma/126.11.7.md"
+    "changed": true,
+    "path": "figma.figma/126.12.7.md"
   },
   {
     "id": "Foxit.FoxitReader",
@@ -242,14 +242,14 @@
   {
     "id": "Nvidia.GeForceNow",
     "name": "GeForce NOW",
-    "version": "2.0.90.126",
-    "date": "2026-11-04",
+    "version": "2.0.90.138",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
-    "changed": true,
-    "path": "nvidia.geforcenow/2.0.90.126.md"
+    "changed": false,
+    "path": "nvidia.geforcenow/2.0.90.138.md"
   },
   {
     "id": "GIMP.GIMP",
@@ -266,14 +266,14 @@
   {
     "id": "GitHub.GitHubDesktop",
     "name": "GitHub Desktop",
-    "version": "3.6.10",
-    "date": "2026-11-04",
+    "version": "3.7.0",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 3,
     "leftovers_checked": true,
     "changed": true,
-    "path": "github.githubdesktop/3.6.10.md"
+    "path": "github.githubdesktop/3.7.0.md"
   },
   {
     "id": "GOG.Galaxy",
@@ -290,26 +290,26 @@
   {
     "id": "Google.Chrome",
     "name": "Google Chrome",
-    "version": "157.0.8103.39",
-    "date": "2026-11-04",
+    "version": "158.0.8127.37",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": false,
-    "path": "google.chrome/157.0.8103.39.md"
+    "path": "google.chrome/158.0.8127.37.md"
   },
   {
     "id": "Google.GoogleDrive",
     "name": "Google Drive",
-    "version": "133.0.2.0",
-    "date": "2026-11-04",
+    "version": "134.0.1.0",
+    "date": "2026-11-23",
     "warn": 2,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": true,
-    "path": "google.googledrive/133.0.2.0.md"
+    "changed": false,
+    "path": "google.googledrive/134.0.1.0.md"
   },
   {
     "id": "Greenshot.Greenshot",
@@ -338,14 +338,14 @@
   {
     "id": "REALiX.HWiNFO",
     "name": "HWiNFO",
-    "version": "8.54",
-    "date": "2026-11-04",
+    "version": "8.60",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
     "changed": false,
-    "path": "realix.hwinfo/8.54.md"
+    "path": "realix.hwinfo/8.60.md"
   },
   {
     "id": "Inkscape.Inkscape",
@@ -434,98 +434,98 @@
   {
     "id": "LastPass.LastPass",
     "name": "LastPass",
-    "version": "5.4.5.1509",
-    "date": "2026-11-04",
+    "version": "5.4.6.1572",
+    "date": "2026-11-23",
     "warn": 2,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "lastpass.lastpass/5.4.5.1509.md"
+    "changed": true,
+    "path": "lastpass.lastpass/5.4.6.1572.md"
   },
   {
     "id": "TheDocumentFoundation.LibreOffice",
     "name": "LibreOffice",
-    "version": "26.8.2.2",
-    "date": "2026-11-04",
+    "version": "26.8.3.1",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 2,
     "leftovers_checked": true,
     "changed": false,
-    "path": "thedocumentfoundation.libreoffice/26.8.2.2.md"
+    "path": "thedocumentfoundation.libreoffice/26.8.3.1.md"
   },
   {
     "id": "LibreWolf.LibreWolf",
     "name": "LibreWolf",
-    "version": "159.0.1-1",
-    "date": "2026-11-04",
+    "version": "160.0.1-1",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": true,
-    "path": "librewolf.librewolf/159.0.1-1.md"
+    "path": "librewolf.librewolf/160.0.1-1.md"
   },
   {
     "id": "Logitech.GHUB",
     "name": "Logitech G HUB",
-    "version": "2026.7.992920",
-    "date": "2026-11-04",
+    "version": "2026.7.1011216",
+    "date": "2026-11-23",
     "warn": 2,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
     "changed": true,
-    "path": "logitech.ghub/2026.7.992920.md"
+    "path": "logitech.ghub/2026.7.1011216.md"
   },
   {
     "id": "Malwarebytes.Malwarebytes",
     "name": "Malwarebytes",
-    "version": "5.7.2.358",
-    "date": "2026-11-04",
+    "version": "5.7.3.376",
+    "date": "2026-11-23",
     "warn": 2,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "malwarebytes.malwarebytes/5.7.2.358.md"
+    "changed": true,
+    "path": "malwarebytes.malwarebytes/5.7.3.376.md"
   },
   {
     "id": "Mattermost.MattermostDesktop",
     "name": "Mattermost",
-    "version": "6.3.2.0",
-    "date": "2026-11-04",
+    "version": "6.4.0.0",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "mattermost.mattermostdesktop/6.3.2.0.md"
+    "changed": true,
+    "path": "mattermost.mattermostdesktop/6.4.0.0.md"
   },
   {
     "id": "Mega.MEGASync",
     "name": "MEGAsync",
-    "version": "6.7.0",
-    "date": "2026-11-04",
+    "version": "6.7.1",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
     "changed": false,
-    "path": "mega.megasync/6.7.0.md"
+    "path": "mega.megasync/6.7.1.md"
   },
   {
     "id": "clsid2.mpc-hc",
     "name": "MPC-HC",
-    "version": "2.8.4",
-    "date": "2026-11-04",
+    "version": "2.8.5",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
-    "changed": false,
-    "path": "clsid2.mpc-hc/2.8.4.md"
+    "changed": true,
+    "path": "clsid2.mpc-hc/2.8.5.md"
   },
   {
     "id": "MullvadVPN.MullvadVPN",
@@ -542,110 +542,110 @@
   {
     "id": "Nextcloud.NextcloudDesktop",
     "name": "Nextcloud",
-    "version": "35.0.2.20261030",
-    "date": "2026-11-04",
+    "version": "35.0.3.20261104",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": false,
-    "path": "nextcloud.nextclouddesktop/35.0.2.20261030.md"
+    "path": "nextcloud.nextclouddesktop/35.0.3.20261104.md"
   },
   {
     "id": "OpenJS.NodeJS.LTS",
     "name": "Node.js",
-    "version": "26.13.0",
-    "date": "2026-11-04",
+    "version": "26.13.1",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": false,
-    "path": "openjs.nodejs.lts/26.13.0.md"
+    "path": "openjs.nodejs.lts/26.13.1.md"
   },
   {
     "id": "NordSecurity.NordPass",
     "name": "NordPass",
-    "version": "7.12.15",
-    "date": "2026-11-04",
+    "version": "7.13.5",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "nordsecurity.nordpass/7.12.15.md"
+    "changed": true,
+    "path": "nordsecurity.nordpass/7.13.5.md"
   },
   {
     "id": "NordSecurity.NordVPN",
     "name": "NordVPN",
-    "version": "8.14.4.0",
-    "date": "2026-11-04",
+    "version": "8.16.1.0",
+    "date": "2026-11-23",
     "warn": 2,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": true,
-    "path": "nordsecurity.nordvpn/8.14.4.0.md"
+    "path": "nordsecurity.nordvpn/8.16.1.0.md"
   },
   {
     "id": "Notepad++.Notepad++",
     "name": "Notepad++",
-    "version": "8.9.8.1",
-    "date": "2026-10-15",
+    "version": "8.9.9.1",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
     "changed": false,
-    "path": "notepadplusplus.notepadplusplus/8.9.8.1.md"
+    "path": "notepadplusplus.notepadplusplus/8.9.9.1.md"
   },
   {
     "id": "Notion.Notion",
     "name": "Notion",
-    "version": "7.41.1",
-    "date": "2026-11-04",
-    "warn": 0,
-    "bad": 0,
-    "leftovers": 2,
-    "leftovers_checked": true,
-    "changed": true,
-    "path": "notion.notion/7.41.1.md"
-  },
-  {
-    "id": "OBSProject.OBSStudio",
-    "name": "OBS Studio",
-    "version": "33.0.0",
-    "date": "2026-11-04",
-    "warn": 0,
-    "bad": 0,
-    "leftovers": 0,
-    "leftovers_checked": true,
-    "changed": true,
-    "path": "obsproject.obsstudio/33.0.0.md"
-  },
-  {
-    "id": "Obsidian.Obsidian",
-    "name": "Obsidian",
-    "version": "1.15.0",
-    "date": "2026-11-04",
+    "version": "7.44.1",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
     "changed": true,
-    "path": "obsidian.obsidian/1.15.0.md"
+    "path": "notion.notion/7.44.1.md"
+  },
+  {
+    "id": "OBSProject.OBSStudio",
+    "name": "OBS Studio",
+    "version": "33.0.1",
+    "date": "2026-11-23",
+    "warn": 0,
+    "bad": 0,
+    "leftovers": 0,
+    "leftovers_checked": true,
+    "changed": false,
+    "path": "obsproject.obsstudio/33.0.1.md"
+  },
+  {
+    "id": "Obsidian.Obsidian",
+    "name": "Obsidian",
+    "version": "1.15.1",
+    "date": "2026-11-23",
+    "warn": 0,
+    "bad": 0,
+    "leftovers": 1,
+    "leftovers_checked": true,
+    "changed": true,
+    "path": "obsidian.obsidian/1.15.1.md"
   },
   {
     "id": "Ollama.Ollama",
     "name": "Ollama",
-    "version": "0.40.14",
-    "date": "2026-11-04",
+    "version": "0.40.16",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 3,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "ollama.ollama/0.40.14.md"
+    "changed": true,
+    "path": "ollama.ollama/0.40.16.md"
   },
   {
     "id": "ONLYOFFICE.DesktopEditors",
@@ -662,26 +662,26 @@
   {
     "id": "Opera.Opera",
     "name": "Opera",
-    "version": "139.0.6053.22",
-    "date": "2026-11-04",
+    "version": "140.0.6074.36",
+    "date": "2026-11-23",
     "warn": 3,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
     "changed": true,
-    "path": "opera.opera/139.0.6053.22.md"
+    "path": "opera.opera/140.0.6074.36.md"
   },
   {
     "id": "dotPDN.PaintDotNet",
     "name": "paint.net",
-    "version": "5.1.12",
-    "date": "2026-11-04",
+    "version": "5.2",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "dotpdn.paintdotnet/5.1.12.md"
+    "changed": true,
+    "path": "dotpdn.paintdotnet/5.2.md"
   },
   {
     "id": "Parsec.Parsec",
@@ -710,14 +710,14 @@
   {
     "id": "Playnite.Playnite",
     "name": "Playnite",
-    "version": "10.58",
-    "date": "2026-11-04",
+    "version": "10.63",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
-    "changed": false,
-    "path": "playnite.playnite/10.58.md"
+    "changed": true,
+    "path": "playnite.playnite/10.63.md"
   },
   {
     "id": "Plex.PlexMediaServer",
@@ -734,26 +734,26 @@
   {
     "id": "Postman.Postman",
     "name": "Postman",
-    "version": "12.35.1",
-    "date": "2026-11-04",
+    "version": "12.37.4",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 2,
     "leftovers_checked": true,
     "changed": true,
-    "path": "postman.postman/12.35.1.md"
+    "path": "postman.postman/12.37.4.md"
   },
   {
     "id": "Microsoft.PowerToys",
     "name": "PowerToys",
-    "version": "0.102.3001.0",
-    "date": "2026-11-04",
+    "version": "0.102.3101.0",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": true,
-    "path": "microsoft.powertoys/0.102.3001.0.md"
+    "changed": false,
+    "path": "microsoft.powertoys/0.102.3101.0.md"
   },
   {
     "id": "Proton.ProtonDrive",
@@ -770,14 +770,14 @@
   {
     "id": "Proton.ProtonVPN",
     "name": "Proton VPN",
-    "version": "5.1.9",
-    "date": "2026-11-04",
+    "version": "5.1.10",
+    "date": "2026-11-23",
     "warn": 2,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "proton.protonvpn/5.1.9.md"
+    "changed": true,
+    "path": "proton.protonvpn/5.1.10.md"
   },
   {
     "id": "PuTTY.PuTTY",
@@ -830,50 +830,50 @@
   {
     "id": "RockstarGames.Launcher",
     "name": "Rockstar Games Launcher",
-    "version": "1.0.110.3139",
-    "date": "2026-11-04",
+    "version": "1.0.110.3150",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 3,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "rockstargames.launcher/1.0.110.3139.md"
+    "changed": true,
+    "path": "rockstargames.launcher/1.0.110.3150.md"
   },
   {
     "id": "ShareX.ShareX",
     "name": "ShareX",
-    "version": "21.0.0",
-    "date": "2026-10-15",
+    "version": "22.4.0",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "sharex.sharex/21.0.0.md"
+    "changed": true,
+    "path": "sharex.sharex/22.4.0.md"
   },
   {
     "id": "OpenWhisperSystems.Signal",
     "name": "Signal",
-    "version": "8.33.0",
-    "date": "2026-11-04",
+    "version": "8.36.0",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": true,
-    "path": "openwhispersystems.signal/8.33.0.md"
+    "path": "openwhispersystems.signal/8.36.0.md"
   },
   {
     "id": "SlackTechnologies.Slack",
     "name": "Slack",
-    "version": "4.53.280",
-    "date": "2026-11-04",
+    "version": "4.53.292",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 3,
     "leftovers_checked": true,
-    "changed": true,
-    "path": "slacktechnologies.slack/4.53.280.md"
+    "changed": false,
+    "path": "slacktechnologies.slack/4.53.292.md"
   },
   {
     "id": "Valve.Steam",
@@ -890,122 +890,122 @@
   {
     "id": "Surfshark.Surfshark",
     "name": "Surfshark",
-    "version": "6.21.0999",
-    "date": "2026-11-04",
-    "warn": 2,
+    "version": "6.22.1999",
+    "date": "2026-11-23",
+    "warn": 3,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": false,
-    "changed": false,
-    "path": "surfshark.surfshark/6.21.0999.md"
+    "changed": true,
+    "path": "surfshark.surfshark/6.22.1999.md"
   },
   {
     "id": "Tailscale.Tailscale",
     "name": "Tailscale",
-    "version": "1.104.5",
-    "date": "2026-11-04",
+    "version": "1.104.7",
+    "date": "2026-11-23",
     "warn": 3,
     "bad": 0,
     "leftovers": 3,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "tailscale.tailscale/1.104.5.md"
+    "changed": true,
+    "path": "tailscale.tailscale/1.104.7.md"
   },
   {
     "id": "TeamViewer.TeamViewer",
     "name": "TeamViewer",
-    "version": "15.83.5.0",
-    "date": "2026-11-04",
+    "version": "15.83.7.0",
+    "date": "2026-11-23",
     "warn": 2,
     "bad": 0,
     "leftovers": 2,
     "leftovers_checked": true,
     "changed": true,
-    "path": "teamviewer.teamviewer/15.83.5.0.md"
+    "path": "teamviewer.teamviewer/15.83.7.0.md"
   },
   {
     "id": "Telegram.TelegramDesktop",
     "name": "Telegram Desktop",
-    "version": "7.3.3",
-    "date": "2026-11-04",
+    "version": "7.4.4",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
     "changed": true,
-    "path": "telegram.telegramdesktop/7.3.3.md"
+    "path": "telegram.telegramdesktop/7.4.4.md"
   },
   {
     "id": "Mozilla.Thunderbird",
     "name": "Thunderbird",
-    "version": "159.0",
-    "date": "2026-11-04",
+    "version": "160.0",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": true,
-    "path": "mozilla.thunderbird/159.0.md"
+    "path": "mozilla.thunderbird/160.0.md"
   },
   {
     "id": "GlavSoft.TightVNC",
     "name": "TightVNC",
-    "version": "2.8.89.0",
-    "date": "2026-11-04",
+    "version": "2.8.90.0",
+    "date": "2026-11-23",
     "warn": 3,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": false,
-    "path": "glavsoft.tightvnc/2.8.89.0.md"
+    "path": "glavsoft.tightvnc/2.8.90.0.md"
   },
   {
     "id": "Ubisoft.Connect",
     "name": "Ubisoft Connect",
-    "version": "175.0.13393",
-    "date": "2026-11-04",
+    "version": "175.2.13423",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 2,
     "leftovers_checked": true,
     "changed": false,
-    "path": "ubisoft.connect/175.0.13393.md"
+    "path": "ubisoft.connect/175.2.13423.md"
   },
   {
     "id": "Rakuten.Viber",
     "name": "Viber",
-    "version": "29.3.0.0",
-    "date": "2026-11-04",
+    "version": "29.5.0.0",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "rakuten.viber/29.3.0.0.md"
+    "changed": true,
+    "path": "rakuten.viber/29.5.0.0.md"
   },
   {
     "id": "Microsoft.VisualStudioCode",
     "name": "Visual Studio Code",
-    "version": "1.143.1",
-    "date": "2026-11-04",
+    "version": "1.146.0",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 0,
     "leftovers_checked": true,
     "changed": true,
-    "path": "microsoft.visualstudiocode/1.143.1.md"
+    "path": "microsoft.visualstudiocode/1.146.0.md"
   },
   {
     "id": "Vivaldi.Vivaldi",
     "name": "Vivaldi",
-    "version": "8.2.4133.96",
-    "date": "2026-11-04",
+    "version": "8.3.4191.47",
+    "date": "2026-11-23",
     "warn": 1,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
-    "changed": true,
-    "path": "vivaldi.vivaldi/8.2.4133.96.md"
+    "changed": false,
+    "path": "vivaldi.vivaldi/8.3.4191.47.md"
   },
   {
     "id": "VideoLAN.VLC",
@@ -1058,26 +1058,26 @@
   {
     "id": "WinSCP.WinSCP",
     "name": "WinSCP",
-    "version": "6.7",
-    "date": "2026-10-15",
-    "warn": 0,
+    "version": "6.7.1",
+    "date": "2026-11-23",
+    "warn": 1,
     "bad": 0,
-    "leftovers": 0,
+    "leftovers": 8,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "winscp.winscp/6.7.md"
+    "changed": true,
+    "path": "winscp.winscp/6.7.1.md"
   },
   {
     "id": "wire.wire",
     "name": "Wire",
-    "version": "3.44.5377",
-    "date": "2026-11-04",
+    "version": "3.46.5382",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
-    "leftovers": 4,
+    "leftovers": 3,
     "leftovers_checked": true,
-    "changed": false,
-    "path": "wire.wire/3.44.5377.md"
+    "changed": true,
+    "path": "wire.wire/3.46.5382.md"
   },
   {
     "id": "WireGuard.WireGuard",
@@ -1094,14 +1094,14 @@
   {
     "id": "WiresharkFoundation.Wireshark",
     "name": "Wireshark",
-    "version": "4.6.9",
-    "date": "2026-11-04",
+    "version": "4.6.10",
+    "date": "2026-11-23",
     "warn": 0,
     "bad": 0,
     "leftovers": 1,
     "leftovers_checked": true,
     "changed": false,
-    "path": "wiresharkfoundation.wireshark/4.6.9.md"
+    "path": "wiresharkfoundation.wireshark/4.6.10.md"
   },
   {
     "id": "Kingsoft.WPSOffice",

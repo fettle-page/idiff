@@ -1,6 +1,6 @@
-# OBS Studio 33.0.0
+# OBS Studio 33.0.1
 
-## OBS Studio 33.0.0: installed
+## OBS Studio 33.0.1: installed
 
 - ✓ No services, drivers or firewall rules
 - · Files in Program Files \(549 MB\)
@@ -23,21 +23,17 @@
 
 ## After uninstall
 
-### OBS Studio 33.0.0: after uninstall, no leftovers
+### OBS Studio 33.0.1: after uninstall, no leftovers
 
 - ✓ Nothing left behind
 
-## Changed since the previous version
-
-- \+ Files in Program Files \(549 MB\)
-- \- Files in Program Files \(466 MB\)
-
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261103.298.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261116.315.1) by idiff 1.1.0 on 2026-11-23, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/45171434798). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
 
 ## Older versions
 
+- [33.0.0](33.0.0.md) (2026-11-04)
 - [32.2.2](32.2.2.md) (2026-10-15)

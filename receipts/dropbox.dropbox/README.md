@@ -1,17 +1,17 @@
-# Dropbox 270.4.3312
+# Dropbox 280.4.5053
 
-## Dropbox 270.4.3312: installed
+## Dropbox 280.4.5053: installed
 
-- ⚠ Adds 4 background services: DbxSvc, Dropbox Elevation Service \(DropboxElevationService\), DropboxUpdater InternalService 123.0.6299.117 \(DropboxUpdaterInternalService123.0.6299.117\), DropboxUpdater Service 123.0.6299.117 \(DropboxUpdaterService123.0.6299.117\) \(starts with Windows\) \(full system rights\)
+- ⚠ Adds 4 background services: DbxSvc, Dropbox Elevation Service \(DropboxElevationService\), DropboxUpdater InternalService 123.0.6299.152 \(DropboxUpdaterInternalService123.0.6299.152\), DropboxUpdater Service 123.0.6299.152 \(DropboxUpdaterService123.0.6299.152\) \(starts with Windows\) \(full system rights\)
 - ⚠ 1 scheduled task: runs an updater at sign-in, as SYSTEM
 - ⚠ Starts with Windows
 - ⚠ Allows incoming connections for dropbox.exe
 - ✓ No drivers
 - · Adds right-click menu entries
 - · Opens dropbox-client:// links
-- · Files in Program Files \(641 MB\)
+- · Files in Program Files \(666 MB\)
 - · Adds a Start menu entry
-- · 4 Windows background changes hidden \(listed below\)
+- · 6 Windows background changes hidden \(listed below\)
 
 ### Also changed while installing \(couldn't tell if it was this app\)
 
@@ -19,40 +19,38 @@
 
 ### Hidden: Windows background changes
 
-- · Changed service "BITS"
+- · Changed scheduled task "PrintJobCleanupTask"
+- · Added folder "AppData\\Local\\Mozilla"
+- · Added folder "AppData\\Roaming\\Mozilla"
 - · Changed store app "Windows Security"
 - · Added store app "Windows Package Manager Source \(winget\) V2"
 - · Added link handler "windowsdefender"
 
 ## After uninstall
 
-### Dropbox 270.4.3312: after uninstall, 6 leftovers
+### Dropbox 280.4.5053: after uninstall, 6 leftovers
 
-- ✗ Service "DropboxUpdater InternalService 123.0.6299.117 \(DropboxUpdaterInternalService123.0.6299.117\)" is still there
-- ✗ Service "DropboxUpdater Service 123.0.6299.117 \(DropboxUpdaterService123.0.6299.117\)" is still there
-- ✗ Scheduled task "DropboxUpdaterTaskSystem123.0.6299.117{6B21664C-AB4F-4326-9BFD-E9151D88ECAC}" is still there
-- ✗ 6 MB in Program Files \(x86\)\\Dropbox
+- ✗ Service "DropboxUpdater InternalService 123.0.6299.152 \(DropboxUpdaterInternalService123.0.6299.152\)" is still there
+- ✗ Service "DropboxUpdater Service 123.0.6299.152 \(DropboxUpdaterService123.0.6299.152\)" is still there
+- ✗ Scheduled task "DropboxUpdaterTaskSystem123.0.6299.152{DCBBAB7B-FFA1-4124-B078-2AD29661228A}" is still there
+- ✗ 12 MB in Program Files \(x86\)\\Dropbox
 - ✗ 6 MB in Program Files\\Dropbox
 - ✗ Store app "Dropbox" is still there
 
 ## Changed since the previous version
 
-- \+ Adds 4 background services: DbxSvc, Dropbox Elevation Service \(DropboxElevationService\), DropboxUpdater InternalService 123.0.6299.117 \(DropboxUpdaterInternalService123.0.6299.117\), DropboxUpdater Service 123.0.6299.117 \(DropboxUpdaterService123.0.6299.117\) \(starts with Windows\) \(full system rights\)
-- \+ 1 scheduled task: runs an updater at sign-in, as SYSTEM
-- \+ Opens dropbox-client:// links
-- \+ Files in Program Files \(641 MB\)
-- \- Adds 4 background services: Dropbox Update Service \(dbupdate\), Dropbox Update Service \(dbupdatem\), DbxSvc, Dropbox Elevation Service \(DropboxElevationService\) \(starts with Windows\) \(full system rights\)
-- \- 2 scheduled tasks: runs an updater at sign-in, as SYSTEM; runs an updater every day, as SYSTEM
-- \- Files in Program Files \(1.7 GB\)
-- \- Files in ProgramData \(290 KB\)
-- \- Files in your user folder \(21 MB\)
+- \+ Adds 4 background services: DbxSvc, Dropbox Elevation Service \(DropboxElevationService\), DropboxUpdater InternalService 123.0.6299.152 \(DropboxUpdaterInternalService123.0.6299.152\), DropboxUpdater Service 123.0.6299.152 \(DropboxUpdaterService123.0.6299.152\) \(starts with Windows\) \(full system rights\)
+- \+ Files in Program Files \(666 MB\)
+- \- Adds 4 background services: DbxSvc, Dropbox Elevation Service \(DropboxElevationService\), DropboxUpdater InternalService 123.0.6299.117 \(DropboxUpdaterInternalService123.0.6299.117\), DropboxUpdater Service 123.0.6299.117 \(DropboxUpdaterService123.0.6299.117\) \(starts with Windows\) \(full system rights\)
+- \- Files in Program Files \(641 MB\)
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261103.298.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261116.315.1) by idiff 1.1.0 on 2026-11-23, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/45171434798). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
 
 ## Older versions
 
+- [270.4.3312](270.4.3312.md) (2026-11-04)
 - [262.4.3183](262.4.3183.md) (2026-10-15)

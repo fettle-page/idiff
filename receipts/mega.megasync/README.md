@@ -1,6 +1,6 @@
-# MEGAsync 6.7.0
+# MEGAsync 6.7.1
 
-## MEGAsync 6.7.0: installed
+## MEGAsync 6.7.1: installed
 
 - ✓ No services, drivers or firewall rules
 - · Adds right-click menu entries
@@ -25,7 +25,7 @@
 
 The uninstall didn't finish on the test machine, so these may include things it would have removed.
 
-### MEGAsync 6.7.0: after uninstall, 7 leftovers
+### MEGAsync 6.7.1: after uninstall, 7 leftovers
 
 - ⚠ The uninstall was still running after 5 minutes, so this list may include things it would have removed
 - ✗ Program "MEGAsync" is still there
@@ -38,6 +38,10 @@ The uninstall didn't finish on the test machine, so these may include things it 
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261116.315.1) by idiff 1.1.0 on 2026-11-23, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/45171434798). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [6.7.0](6.7.0.md) (2026-11-04)

@@ -1,0 +1,121 @@
+{
+  "meta": {
+    "id": "Vivaldi.Vivaldi",
+    "name": "Vivaldi",
+    "version": "8.3.4191.47",
+    "date": "2026-11-23",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261116.315.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/45171434798",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Vivaldi 8.3.4191.47: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for vivaldi.exe",
+        "items": [
+          "{74e42007-07d5-4c94-9f1a-a4fe6e87ee67}"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services or drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Opens vivaldi-browser:// links",
+        "items": [
+          "protocol|hkcu|vivaldi-browser"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "Files only in your user folder (1.0 GB)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\vivaldi"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a desktop shortcut",
+        "items": [
+          "c:\\users\\runneradmin\\desktop\\vivaldi.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Adds a Start menu entry",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\roaming\\microsoft\\windows\\start menu\\programs\\vivaldi.lnk"
+        ],
+        "why": [
+          "runs from the app's folder"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "2 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed service \"PcaSvc\"",
+        "items": [
+          "pcasvc"
+        ],
+        "why": [
+          "part of Windows"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Vivaldi 8.3.4191.47: after uninstall, 1 leftover",
+    "lines": [
+      {
+        "level": "Bad",
+        "text": "Folder \"AppData\\Local\\Vivaldi\" is still there (empty)",
+        "items": [
+          "c:\\users\\runneradmin\\appdata\\local\\vivaldi"
+        ],
+        "why": [
+          "inside the app's folder"
+        ]
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

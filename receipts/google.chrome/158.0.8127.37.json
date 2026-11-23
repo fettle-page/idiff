@@ -1,0 +1,128 @@
+{
+  "meta": {
+    "id": "Google.Chrome",
+    "name": "Google Chrome",
+    "version": "158.0.8127.37",
+    "date": "2026-11-23",
+    "idiff_version": "1.1.0",
+    "runner_image": "win25-vs2026 20261116.315.1",
+    "run_url": "https://github.com/fettle-page/idiff/actions/runs/45171434798",
+    "failed": null
+  },
+  "receipt": {
+    "mode": "Install",
+    "title": "Google Chrome 158.0.8127.37: installed",
+    "lines": [
+      {
+        "level": "Warn",
+        "text": "Allows incoming connections for chrome.exe",
+        "items": [
+          "{24c7eb55-0f5c-4953-aa5e-98acf1a3b95a}"
+        ],
+        "why": [
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Good",
+        "text": "No services or drivers",
+        "items": [],
+        "why": []
+      },
+      {
+        "level": "Note",
+        "text": "Changes service \"Google Chrome Elevation Service (GoogleChromeElevationService)\"",
+        "items": [
+          "googlechromeelevationservice"
+        ],
+        "why": [
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changes service \"Google Updater Internal Service (GoogleUpdaterInternalService157.0.8089.0)\"",
+        "items": [
+          "googleupdaterinternalservice157.0.8089.0"
+        ],
+        "why": [
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Changes service \"Google Updater Service (GoogleUpdaterService157.0.8089.0)\"",
+        "items": [
+          "googleupdaterservice157.0.8089.0"
+        ],
+        "why": [
+          "signed by the app's publisher"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "3 Windows background changes hidden (idiff show --all)",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [
+      {
+        "level": "Note",
+        "text": "Added store app \"Microsoft Visual C++ 2015 UWP Runtime Package\"",
+        "items": [
+          "microsoft.vclibs.140.00_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "no rule matched"
+        ]
+      }
+    ],
+    "hidden": [
+      {
+        "level": "Note",
+        "text": "Changed store app \"Windows Security\"",
+        "items": [
+          "microsoft.sechealthui_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: a Microsoft Store app updated itself"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added store app \"Windows Package Manager Source (winget) V2\"",
+        "items": [
+          "microsoft.winget.source_8wekyb3d8bbwe"
+        ],
+        "why": [
+          "Windows background change: winget refreshing its package list"
+        ]
+      },
+      {
+        "level": "Note",
+        "text": "Added link handler \"windowsdefender\"",
+        "items": [
+          "protocol|hkcu|windowsdefender"
+        ],
+        "why": [
+          "Windows background change: Windows Security registering its own link handler"
+        ]
+      }
+    ]
+  },
+  "leftovers": {
+    "mode": "Leftovers",
+    "title": "Google Chrome 158.0.8127.37: after uninstall, no leftovers",
+    "lines": [
+      {
+        "level": "Good",
+        "text": "Nothing left behind",
+        "items": [],
+        "why": []
+      }
+    ],
+    "unknown": [],
+    "hidden": []
+  }
+}

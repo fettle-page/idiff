@@ -1,6 +1,6 @@
-# HWiNFO 8.54
+# HWiNFO 8.60
 
-## HWiNFO 8.54: installed
+## HWiNFO 8.60: installed
 
 - ✓ No services, drivers or firewall rules
 - · Files in Program Files \(16 MB\)
@@ -21,12 +21,16 @@
 
 ## After uninstall
 
-### HWiNFO 8.54: after uninstall, 1 leftover
+### HWiNFO 8.60: after uninstall, 1 leftover
 
 - ✗ 11 MB in Program Files\\HWiNFO64
 
 ## How this was made
 
-Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261030.294.1) by idiff 1.1.0 on 2026-11-04, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/41841853441). idiff only reads; see the README for how it decides what belongs to the app.
+Installed silently with winget on a fresh GitHub Actions runner (win25-vs2026 20261116.315.1) by idiff 1.1.0 on 2026-11-23, then uninstalled silently. The app itself was never started. [Workflow run](https://github.com/fettle-page/idiff/actions/runs/45171434798). idiff only reads; see the README for how it decides what belongs to the app.
 
 [How idiff decides what's the app's](../../README.md#how-it-decides-whats-the-apps)
+
+## Older versions
+
+- [8.54](8.54.md) (2026-11-04)
